@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+/*
+  TODO: When self-hosting, place Satoshi-Variable.woff2 in src/assets/fonts/
+  and replace the CDN approach in index.html with:
+
+  @font-face {
+    font-family: "Satoshi";
+    src: url("../assets/fonts/Satoshi-Variable.woff2") format("woff2");
+    font-weight: 300 900;
+    font-style: normal;
+    font-display: swap;
+  }
+*/
+
+@theme {
+  --color-bg: #f4f1ea;
+  --color-surface: #ebe7de;
+  --color-text-primary: #171717;
+  --color-text-muted: #6f6a60;
+  --color-border: #d8d2c7;
+  --color-accent-dark: #2b2a27;
+  --color-accent-warm: #9a8f7f;
+
+  --font-sans: "Satoshi", "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Satoshi", "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Satoshi", "Geist", "Helvetica Neue", Arial, sans-serif;
+
+  --breakpoint-xs: 480px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+::selection {
+  background-color: var(--color-accent-dark);
+  color: var(--color-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.logo-text{
+    font-family: "Helvetica Neue", Arial, sans-serif;
+}
