@@ -1,0 +1,523 @@
+/* --- Blueprint Section --- */
+.blueprint-section {
+  position: relative;
+  overflow: hidden;
+  background: #f4f1ea;
+}
+
+.blueprint-section .clip {
+  position: absolute;
+  inset: 0;
+}
+
+.blueprint-section .scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1600px;
+  perspective-origin: 50% 50%;
+}
+
+.blueprint-section .ambient-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.blueprint-section .ambient-line {
+  position: absolute;
+  background: rgba(43,42,39,0.04);
+  height: 1px;
+  width: 100%;
+}
+.blueprint-section .ambient-line:nth-child(1) { top: 15%; }
+.blueprint-section .ambient-line:nth-child(2) { top: 42%; }
+.blueprint-section .ambient-line:nth-child(3) { top: 58%; }
+.blueprint-section .ambient-line:nth-child(4) { top: 75%; }
+.blueprint-section .ambient-vert {
+  position: absolute;
+  background: rgba(43,42,39,0.03);
+  width: 1px;
+  height: 100%;
+}
+.blueprint-section .ambient-vert:nth-child(5) { left: 20%; }
+.blueprint-section .ambient-vert:nth-child(6) { left: 55%; }
+.blueprint-section .ambient-vert:nth-child(7) { left: 78%; }
+
+.blueprint-section .blueprint {
+  position: relative;
+  width: 1400px;
+  height: 900px;
+  perspective: 1400px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+  box-shadow:
+    0 2px 4px rgba(43,42,39,0.06),
+    0 8px 24px rgba(43,42,39,0.08),
+    0 32px 64px rgba(43,42,39,0.04);
+  border-radius: 2px;
+}
+
+.blueprint-section .panels-3d {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  transform-style: preserve-3d;
+}
+
+.blueprint-section .panel {
+  flex: 1;
+  position: relative;
+  height: 100%;
+  background: linear-gradient(135deg, #faf8f4 0%, #f5f2ec 40%, #f0ece4 100%);
+  overflow: hidden;
+  will-change: transform;
+}
+
+.blueprint-section .panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-size: 24px 24px;
+  background-image:
+    linear-gradient(to right, rgba(43,42,39,0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(43,42,39,0.035) 1px, transparent 1px);
+  pointer-events: none;
+}
+
+.blueprint-section .panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(255,255,255,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 60%, rgba(200,195,185,0.12) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.blueprint-section .panel-left {
+  transform-origin: 100% 50%;
+}
+
+.blueprint-section .panel-right {
+  transform-origin: 0% 50%;
+}
+
+.blueprint-section .crease {
+  position: absolute;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.blueprint-section .crease-left {
+  left: calc(100% / 3 - 1.5px);
+}
+
+.blueprint-section .crease-right {
+  left: calc(100% * 2 / 3 - 1.5px);
+}
+
+.blueprint-section .crease-line {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(43,42,39,0.12) 30%,
+    rgba(43,42,39,0.15) 50%,
+    rgba(43,42,39,0.08) 70%,
+    transparent 100%
+  );
+}
+
+.blueprint-section .fold-shadow {
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  width: 60px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.blueprint-section .fold-shadow-left {
+  left: -40px;
+  background: linear-gradient(to left, rgba(43,42,39,0.12), transparent);
+}
+
+.blueprint-section .fold-shadow-right {
+  right: -40px;
+  background: linear-gradient(to right, rgba(43,42,39,0.12), transparent);
+}
+
+.blueprint-section .drawing {
+  position: absolute;
+  inset: 60px;
+  pointer-events: none;
+}
+
+.blueprint-section .drawing-left { right: 0; left: 40px; }
+.blueprint-section .drawing-center { left: 0; right: 0; }
+.blueprint-section .drawing-right { left: 0; right: 40px; }
+
+.blueprint-section .wall-outer {
+  position: absolute;
+  border: 1.5px solid rgba(43,42,39,0.5);
+}
+
+.blueprint-section .wall-top {
+  top: 18%;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-bottom: none;
+}
+
+.blueprint-section .wall-bottom {
+  bottom: 25%;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: none;
+}
+
+.blueprint-section .wall-left {
+  left: 0;
+  top: 18%;
+  bottom: 25%;
+  width: 0;
+  border-right: none;
+}
+
+.blueprint-section .wall-right {
+  right: 0;
+  top: 18%;
+  bottom: 25%;
+  width: 0;
+  border-left: none;
+}
+
+.blueprint-section .wall-inner {
+  position: absolute;
+  border-left: 1px solid rgba(43,42,39,0.35);
+  height: 30%;
+  top: 18%;
+  left: 58%;
+}
+
+.blueprint-section .door-gap-fill {
+  position: absolute;
+  left: calc(58% - 1px);
+  top: 30%;
+  width: 3px;
+  height: 18%;
+  background: linear-gradient(135deg, #faf8f4 0%, #f5f2ec 100%);
+  z-index: 1;
+}
+
+.blueprint-section .door-arc {
+  position: absolute;
+  left: 58%;
+  top: 30%;
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgba(43,42,39,0.25);
+  border-radius: 0 0 60px 0;
+  border-top: none;
+  border-left: none;
+}
+
+.blueprint-section .window-mark {
+  position: absolute;
+  height: 12px;
+  width: 48px;
+  border: 1px solid rgba(43,42,39,0.35);
+  border-bottom: none;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(43,42,39,0.2) 0px,
+    rgba(43,42,39,0.2) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+.blueprint-section .window-mark-1 {
+  top: calc(18% - 12px);
+  left: 22%;
+}
+
+.blueprint-section .window-mark-2 {
+  top: calc(18% - 12px);
+  left: 62%;
+}
+
+.blueprint-section .dim {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.blueprint-section .dim-line {
+  height: 0;
+  border-top: 1px solid rgba(43,42,39,0.2);
+  flex: 1;
+  position: relative;
+}
+
+.blueprint-section .dim-line::before,
+.blueprint-section .dim-line::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 7px;
+  background: rgba(43,42,39,0.3);
+}
+
+.blueprint-section .dim-line::before { left: 0; }
+.blueprint-section .dim-line::after { right: 0; }
+
+.blueprint-section .dim-label {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(43,42,39,0.45);
+  font-weight: 500;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.blueprint-section .dim-horiz {
+  flex-direction: row;
+  width: 50%;
+}
+
+.blueprint-section .dim-top {
+  top: 10%;
+  left: 10%;
+}
+
+.blueprint-section .dim-bottom {
+  bottom: 18%;
+  left: 25%;
+  width: 35%;
+}
+
+.blueprint-section .dim-left-ext {
+  top: 45%;
+  left: 5%;
+  width: 60%;
+}
+
+.blueprint-section .scale-bar {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.blueprint-section .scale-segment {
+  height: 4px;
+  width: 40px;
+}
+
+.blueprint-section .scale-segment:nth-child(odd) {
+  background: rgba(43,42,39,0.4);
+}
+
+.blueprint-section .scale-segment:nth-child(even) {
+  background: transparent;
+  border-top: 1px solid rgba(43,42,39,0.3);
+  border-bottom: 1px solid rgba(43,42,39,0.3);
+  height: 3px;
+}
+
+.blueprint-section .scale-label {
+  font-size: 8px;
+  letter-spacing: 0.05em;
+  color: rgba(43,42,39,0.35);
+  margin-left: 6px;
+  text-transform: uppercase;
+}
+
+.blueprint-section .compass {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  width: 40px;
+  height: 40px;
+}
+
+.blueprint-section .compass-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.blueprint-section .title-block {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  text-align: right;
+}
+
+.blueprint-section .title-studio {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: rgba(43,42,39,0.5);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.blueprint-section .title-project {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: rgba(43,42,39,0.3);
+  text-transform: uppercase;
+}
+
+.blueprint-section .corner-mark {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(43,42,39,0.15);
+}
+
+.blueprint-section .corner-mark-tl { top: 30px; left: 30px; border-right: none; border-bottom: none; }
+
+.blueprint-section .corner-mark-tr { top: 30px; right: 30px; border-left: none; border-bottom: none; }
+
+.blueprint-section .corner-mark-bl { bottom: 30px; left: 30px; border-right: none; border-top: none; }
+
+.blueprint-section .corner-mark-br { bottom: 30px; right: 30px; border-left: none; border-top: none; }
+
+.blueprint-section .room-label {
+  position: absolute;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: rgba(43,42,39,0.25);
+  text-transform: uppercase;
+}
+
+.blueprint-section .room-label-living {
+  top: 45%;
+  left: 22%;
+}
+
+.blueprint-section .room-label-bedroom {
+  top: 45%;
+  left: 68%;
+}
+
+.blueprint-section .section-cut {
+  position: absolute;
+  top: 18%;
+  left: 46%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.blueprint-section .section-arrow {
+  font-size: 10px;
+  color: rgba(43,42,39,0.3);
+  letter-spacing: 0.1em;
+}
+
+.blueprint-section .section-label {
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: rgba(43,42,39,0.25);
+}
+
+.blueprint-section .drawing-overlay {
+  position: absolute;
+  inset: 80px 85px;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.blueprint-section .drawing-overlay svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.blueprint-section .svg-walls path,
+.blueprint-section .svg-doors path,
+.blueprint-section .svg-windows line,
+.blueprint-section .svg-measurements line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.blueprint-section .door-wrapper {
+  position: absolute;
+  left: 761.5px;
+  top: 336.5px;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.blueprint-section .door-align {
+  position: absolute;
+  width: 60px;
+  height: 80px;
+  transform-style: preserve-3d;
+  transform: rotate(-90deg) rotateX(-90deg);
+  transform-origin: 0 0;
+}
+
+.blueprint-section .door-swing {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);
+  transform-origin: 0 50%;
+}
+
+.blueprint-section .door-panel {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(232,215,180,0.5) 0%,
+    rgba(215,190,155,0.35) 100%
+  );
+  border: 1px solid rgba(255,195,110,0.25);
+  border-left: 2px solid rgba(255,195,110,0.4);
+  border-radius: 1px;
+  box-shadow:
+    2px 0 12px rgba(255,180,80,0.12),
+    0 0 20px rgba(255,200,120,0.06);
+}
+
+.blueprint-section .scene6-warm {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 40% 48%,
+    #f5e8cc 0%,
+    #f4f1ea 40%,
+    #efe9dc 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.blueprint-section .ambient-breathing {
+  will-change: transform;
+}

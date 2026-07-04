@@ -2,6 +2,7 @@ import {useEffect} from "react";
 import {Navbar} from "./components/navigation/Navbar.tsx";
 import {Hero} from "./pages/Hero.tsx";
 import {AboutIntro} from "./pages/AboutIntro.tsx";
+
 import Lenis from "lenis";
 import gsap from "gsap";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
