@@ -1,6 +1,7 @@
 import hero1 from '../assets/images/hero.avif'
 import hero2 from '../assets/images/hero2.avif'
 import heroPortal from '../assets/images/hero-portal-v4.png'
+import heroWordmark from '../assets/branding/lagom-wordmark.svg'
 import {motion} from "motion/react";
 import { useRef, useState} from "react";
 import { useGSAP } from "@gsap/react";
@@ -195,9 +196,8 @@ export const Hero = () => {
 
                 <div className="absolute inset-x-0 top-1/2 z-10 -translate-y-1/2 px-[var(--spacing-viewport-gutter)]">
                     <div className="overflow-hidden py-4">
-                        <div ref={wordmarkRef} className="flex items-baseline gap-[clamp(1rem,2.5vw,3rem)] whitespace-nowrap text-white will-change-transform">
-                            <span className="text-[clamp(5rem,14vw,13.5rem)] font-medium leading-[0.72] tracking-[-0.075em]">Lagom</span>
-                            <span className="text-[clamp(2rem,5vw,5.25rem)] font-light uppercase leading-none tracking-[-0.055em]">Arkitektur</span>
+                        <div ref={wordmarkRef} className="w-full will-change-transform">
+                            <img src={heroWordmark} alt="Lagom Arkitektur" className="block h-auto w-full" />
                         </div>
                     </div>
                 </div>
@@ -206,6 +206,7 @@ export const Hero = () => {
                     <div className="overflow-hidden">
                         <a
                             href="/works"
+                            data-cursor=""
                             data-hero-project-item
                             className="flex items-center gap-1.5 text-sm font-semibold uppercase text-white will-change-transform"
                             onMouseEnter={() => {

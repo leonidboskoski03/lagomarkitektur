@@ -16,6 +16,7 @@ export function ProjectDetail() {
         <h1 className="font-display text-4xl mb-4">Projektet hittades inte</h1>
         <Link
           to="/projekt"
+          data-cursor=""
           className="text-sm tracking-widest uppercase underline"
         >
           Tillbaka till projekt
@@ -103,6 +104,7 @@ export function ProjectDetail() {
       <div className="border-t border-border">
         <Link
           to={`/projekt/${nextProject.slug}`}
+          data-cursor=""
           className="group block section-space-sm hover:bg-surface/30 transition-colors"
         >
           <PageContainer className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">

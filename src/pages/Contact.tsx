@@ -37,6 +37,7 @@ export function Contact() {
               </span>
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
+                data-cursor=""
                 className="font-display text-2xl md:text-3xl text-text-primary hover:text-text-muted transition-colors"
               >
                 {CONTACT_EMAIL}
@@ -49,6 +50,7 @@ export function Contact() {
               </span>
               <a
                 href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`}
+                data-cursor=""
                 className="font-display text-2xl md:text-3xl text-text-primary hover:text-text-muted transition-colors"
               >
                 {CONTACT_PHONE}

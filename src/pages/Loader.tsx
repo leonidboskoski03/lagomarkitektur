@@ -390,13 +390,13 @@ export const Loader = () => {
                 className="absolute bottom-0 left-0 right-0 z-[20] h-[3.5rem] overflow-hidden [contain:paint] md:h-[8.25rem]"
             >
                 <div
-                    className="absolute inset-x-0 bottom-0 flex items-end justify-between px-10 pb-5"
+                    className="absolute inset-x-0 bottom-0 flex items-end justify-between px-10 pb-5 font-satoshi"
                 >
                     <div ref={lagomDomRef} className="flex leading-none overflow-hidden">
                             {"LAGOM".split("").map((character, index) => (
                                 <span
                                     key={index}
-                                    className="lagom-char-mask lagom-exit-item inline-block h-[1em] overflow-hidden align-top text-4xl font-bold leading-none text-white md:text-[7rem]"
+                                    className="lagom-char-mask lagom-exit-item inline-block h-[1em] overflow-hidden align-top text-4xl font-light leading-none text-white md:text-[7rem]"
                                 >
                                     <span className="lagom-char-track block will-change-transform">
                                         <span className="block">{character}</span>
@@ -408,7 +408,7 @@ export const Loader = () => {
 
                     <div
                         ref={counterDomRef}
-                        className="flex justify-end overflow-hidden text-4xl font-bold leading-none tabular-nums text-white md:text-[7rem]"
+                        className="-space-x-[0.06em] flex justify-end overflow-hidden text-4xl font-light leading-none tabular-nums text-white md:text-[7rem]"
                         aria-label="Loading progress"
                     >
                             {COUNTER_REELS.map((reel, reelIndex) => (

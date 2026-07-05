@@ -1,0 +1,6 @@
+Boi koi se koristeni vo web site: 
+
+rgb(236, 234, 230) - kremovata
+rgb(11, 28, 38) - teget
+
+Font koj e koristen vo web stranata - MANROPE 

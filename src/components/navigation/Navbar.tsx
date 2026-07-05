@@ -177,12 +177,13 @@ export function Navbar() {
 
             <nav className="flex gap-4 text-white">
                 {links.map((link, index) => (
-                    <div key={link.href} className="overflow-hidden">
+                    <div key={link.href} className="overflow-hidden" data-cursor={""}>
                         <div
                             ref={(element) => { navItemRefs.current[index] = element; }}
                             className="will-change-transform"
+                            data-cursor={""}
                         >
-                            <ClipMaskTextAnimation text={link.label} className="text-sm" />
+                            <ClipMaskTextAnimation text={link.label} className="text-sm font-[600]" />
                         </div>
                     </div>
                 ))}

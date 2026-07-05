@@ -92,6 +92,7 @@ export function Home() {
           />
           <Link
             to="/om-oss"
+            data-cursor=""
             className="inline-block text-sm tracking-widest uppercase border-b border-text-primary pb-1 hover:text-text-muted hover:border-text-muted transition-colors"
           >
             Läs mer om vår filosofi
@@ -108,6 +109,7 @@ export function Home() {
           <div className="mt-16 text-center">
             <Link
               to="/projekt"
+              data-cursor=""
               className="inline-block text-sm tracking-widest uppercase border-b border-text-primary pb-1 hover:text-text-muted hover:border-text-muted transition-colors"
             >
               Visa alla projekt
@@ -125,6 +127,7 @@ export function Home() {
           </h2>
           <Link
             to="/kontakt"
+            data-cursor=""
             className="inline-block px-10 py-4 border border-text-primary text-sm tracking-widest uppercase hover:bg-text-primary hover:text-bg transition-all duration-300"
           >
             Hör av dig

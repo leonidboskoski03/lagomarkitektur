@@ -204,7 +204,7 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
         >
             <div className="viewport-container grid h-full grid-rows-[auto_1fr_auto] py-5 md:py-8">
                 <div className="flex items-start justify-between">
-                    <a href="/" aria-label="Lagom Arkitektur home" className="py-2">
+                    <a href="/" data-cursor="" aria-label="Lagom Arkitektur home" className="py-2">
                         <MenuUtilityText text="Lagom Arkitektur" className="text-sm font-bold tracking-[-0.035em]" />
                     </a>
                     <button
@@ -243,6 +243,7 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
                                     <a
                                         ref={(element) => { routeRefs.current[index] = element; }}
                                         href={link.href}
+                                        data-cursor=""
                                         onClick={onClose}
                                         onMouseEnter={() => handleRouteEnter(index)}
                                         onMouseLeave={() => handleRouteLeave(index)}
@@ -289,8 +290,8 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
                         <MenuUtilityText text="Architecture · Interior · Landscape" />
                     </div>
                     <div className="flex justify-end gap-5">
-                        <a href="mailto:studio@lagomarkitektur.se"><MenuUtilityText text="Email" /></a>
-                        <a href="https://www.instagram.com/" target="_blank" rel="noreferrer"><MenuUtilityText text="Instagram" /></a>
+                        <a href="mailto:studio@lagomarkitektur.se" data-cursor=""><MenuUtilityText text="Email" /></a>
+                        <a href="https://www.instagram.com/" data-cursor="" target="_blank" rel="noreferrer"><MenuUtilityText text="Instagram" /></a>
                     </div>
                 </div>
             </div>

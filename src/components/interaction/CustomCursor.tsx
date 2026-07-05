@@ -3,7 +3,8 @@ import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
 import {motionEases} from "../../lib/motion";
 
-const interactiveSelector = " button, input, textarea, select, [data-cursor]";
+const interactiveSelector = "button, a, input, textarea, select, [data-cursor]";
+const passiveContentSelector = "p, h1, h2, h3, h4, h5, h6, label, span, img, picture, figure, figcaption, svg";
 
 export function CustomCursor() {
     const rootRef = useRef<HTMLDivElement | null>(null);
@@ -30,20 +31,26 @@ export function CustomCursor() {
         let stateTimeline: gsap.core.Timeline | null = null;
         let queuedInteractive: Element | null = null;
 
+        const resolveCursorTarget = (target: Element | null) => {
+            const candidate = target?.closest(interactiveSelector) as HTMLElement | null;
+            if (candidate?.dataset.cursor !== "scroll") return candidate;
+
+            const content = target?.closest(passiveContentSelector);
+            return content && candidate.contains(content) ? null : candidate;
+        };
+
         const setCursorState = contextSafe!((target: Element | null) => {
             const candidate = target?.closest(interactiveSelector) as HTMLElement | null;
             const input = candidate?.matches("input, textarea, select");
-            const anchor = candidate?.matches("a");
             const plainCloseState = candidate?.dataset.cursor === "close";
             const closeControl = candidate?.matches('[aria-label*="close" i]');
-            const logoLink = candidate?.matches('a[aria-label*="home" i]');
-            const forcedDefault = candidate?.dataset.cursor === "default" || input || anchor || (closeControl && !plainCloseState) || logoLink;
+            const forcedDefault = candidate?.dataset.cursor === "default" || input || (closeControl && !plainCloseState);
             const interactive = forcedDefault ? null : candidate;
             const explicitLabel = interactive?.dataset.cursor;
             const scrollState = explicitLabel?.toLowerCase() === "scroll";
             const closeState = explicitLabel?.toLowerCase() === "close";
             const openState = Boolean(interactive && !scrollState && !closeState);
-            const text = closeState ? "Close" : scrollState ? "Scroll" : explicitLabel || (interactive ? "Open" : "");
+            const text = closeState ? "Close" : scrollState ? "Scroll" : explicitLabel || (interactive ? "" : "");
             const width = closeState ? 54 : openState ? 46 : interactive ? 88 : 46;
             const height = closeState ? 54 : openState ? 46 : interactive ? 44 : 46;
             const scale = interactive ? 1 : 12 / 46;
@@ -78,7 +85,7 @@ export function CustomCursor() {
         });
 
         const queueCursorState = (target: Element | null) => {
-            const nextInteractive = target?.closest(interactiveSelector) || null;
+            const nextInteractive = resolveCursorTarget(target);
             if (nextInteractive === queuedInteractive) return;
             queuedInteractive = nextInteractive;
             stateDelay?.kill();
@@ -98,7 +105,6 @@ export function CustomCursor() {
         const handleWheel = () => {
             gsap.fromTo(arrow, {y: -4}, {y: 4, duration: 0.4, repeat: 1, yoyo: true, ease: motionEases.settle, overwrite: "auto"});
         };
-
         window.addEventListener("pointermove", handlePointerMove, {passive: true});
         document.addEventListener("pointerover", handlePointerOver, {passive: true});
         document.addEventListener("pointerout", handlePointerOut, {passive: true});

@@ -28,6 +28,7 @@ export function Footer() {
               <li>
                 <a
                   href="mailto:hej@lagomarkitektur.se"
+                  data-cursor=""
                   className="hover:text-white transition-colors"
                 >
                   hej@lagomarkitektur.se
@@ -36,6 +37,7 @@ export function Footer() {
               <li>
                 <a
                   href="tel:+46701234567"
+                  data-cursor=""
                   className="hover:text-white transition-colors"
                 >
                   +46 70 123 45 67
@@ -59,6 +61,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     to={link.href}
+                    data-cursor=""
                     className="hover:text-white transition-colors"
                   >
                     {link.label}

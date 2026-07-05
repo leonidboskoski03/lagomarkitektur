@@ -12,9 +12,9 @@ export function LogoMark({onMouseEnter, animatedParts = false}: LogoMarkProps) {
         <svg
             ref={svgRef}
             onMouseEnter={onMouseEnter}
-            width="60"
-            height="60"
-            viewBox="0 0 150 200"
+            width="31"
+            height="36"
+            viewBox="69 28 101 118"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className="cursor-pointer"
