@@ -7,6 +7,7 @@ import Lenis from "lenis";
 import gsap from "gsap";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {Loader} from "./pages/Loader.tsx";
+import {CustomCursor} from "./components/interaction/CustomCursor.tsx";
 
 function App() {
     useEffect(() => {
@@ -20,6 +21,13 @@ function App() {
 
         lenis.on("scroll", ScrollTrigger.update);
 
+        const handleScrollLock = (event: Event) => {
+            const {locked} = (event as CustomEvent<{locked: boolean}>).detail;
+            if (locked) lenis.stop();
+            else lenis.start();
+        };
+        window.addEventListener("lagom:scroll-lock", handleScrollLock);
+
         const raf = (time: number) => {
             lenis.raf(time);
             requestAnimationFrame(raf);
@@ -27,12 +35,14 @@ function App() {
         requestAnimationFrame(raf);
 
         return () => {
+            window.removeEventListener("lagom:scroll-lock", handleScrollLock);
             lenis.destroy();
         };
     }, []);
 
     return (
         <main className={"bg-white min-h-screen"}>
+            <CustomCursor/>
             <Loader/>
             <Navbar/>
             <Hero/>

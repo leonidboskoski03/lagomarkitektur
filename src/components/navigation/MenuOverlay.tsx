@@ -18,9 +18,7 @@ interface MenuOverlayProps {
 }
 
 export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
-    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const [clipActiveIndex, setClipActiveIndex] = useState<number | null>(null);
-    const [closeHovered, setCloseHovered] = useState(false);
     const overlayRef = useRef<HTMLDivElement | null>(null);
     const closeButtonRef = useRef<HTMLButtonElement | null>(null);
     const closeContentRef = useRef<HTMLSpanElement | null>(null);
@@ -42,11 +40,9 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
 
         if (isOpen) {
             hoveredIndexRef.current = null;
-            setHoveredIndex(null);
             setClipActiveIndex(null);
-            setCloseHovered(false);
             gsap.set(overlay, {visibility: "visible", pointerEvents: "auto"});
-            gsap.set(overlay, {backgroundColor: "#f4f1ea"});
+            gsap.set(overlay, {backgroundColor: "#000000"});
             gsap.set(routes, {opacity: 1});
             gsap.set(routeLabelRefs.current, {x: 0});
             gsap.set(routeBackgroundRefs.current, {scaleX: 0});
@@ -100,7 +96,6 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
     const handleRouteEnter = (activeIndex: number) => {
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         hoveredIndexRef.current = activeIndex;
-        setHoveredIndex(activeIndex);
         setClipActiveIndex(null);
         hoverTimelineRef.current?.kill();
 
@@ -116,7 +111,7 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
             defaults: {overwrite: "auto"},
         })
             .to(overlayRef.current, {
-                backgroundColor: "#ece8df",
+                backgroundColor: "#000000",
                 duration: reduceMotion ? 0 : 0.6,
                 ease: motionEases.settle,
             }, 0)
@@ -126,13 +121,13 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
                 ease: motionEases.reveal,
             }, 0)
             .to(routeLabelRefs.current[activeIndex], {
-                x: -36,
-                duration: reduceMotion ? 0 : 0.58,
+                x: -12,
+                duration: reduceMotion ? 0 : 0.12,
                 ease: motionEases.enter,
-                onComplete: () => {
-                    if (hoveredIndexRef.current === activeIndex) setClipActiveIndex(activeIndex);
-                },
             }, 0)
+            .call(() => {
+                    if (hoveredIndexRef.current === activeIndex) setClipActiveIndex(activeIndex);
+                }, [], reduceMotion ? 0 : 0.58)
             .fromTo(routeLineRefs.current[activeIndex],
                 {scaleX: 0, transformOrigin: "left center"},
                 {scaleX: 1, duration: reduceMotion ? 0 : 0.72, ease: motionEases.enter},
@@ -142,7 +137,6 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
 
     const handleRouteLeave = (activeIndex: number) => {
         hoveredIndexRef.current = null;
-        setHoveredIndex(null);
         setClipActiveIndex(null);
         hoverTimelineRef.current?.kill();
         gsap.to(routeRefs.current, {
@@ -152,7 +146,7 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
             overwrite: "auto",
         });
         gsap.to(overlayRef.current, {
-            backgroundColor: "#f4f1ea",
+            backgroundColor: "#000000",
             duration: 0.52,
             ease: motionEases.settle,
             overwrite: "auto",
@@ -206,7 +200,7 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
             aria-modal="true"
             aria-label="Site menu"
             aria-hidden={!isOpen}
-            className="invisible fixed inset-0 z-[140] bg-[#f4f1ea] text-black [clip-path:circle(0%_at_calc(100%-var(--spacing-viewport-gutter))_3.5rem)]"
+            className="invisible fixed inset-0 z-[140] bg-black text-white [clip-path:circle(0%_at_calc(100%-var(--spacing-viewport-gutter))_3.5rem)]"
         >
             <div className="viewport-container grid h-full grid-rows-[auto_1fr_auto] py-5 md:py-8">
                 <div className="flex items-start justify-between">
@@ -217,17 +211,25 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
                         ref={closeButtonRef}
                         type="button"
                         onClick={onClose}
-                        onMouseEnter={() => setCloseHovered(true)}
-                        onMouseLeave={() => setCloseHovered(false)}
-                        onFocus={() => setCloseHovered(true)}
-                        onBlur={() => setCloseHovered(false)}
+                        data-cursor="default"
                         className="group relative overflow-hidden rounded-full px-5 py-3 text-xs font-semibold uppercase"
                         aria-label="Close menu"
                     >
                         <span className="block overflow-hidden">
-                            <span ref={closeContentRef} className="relative z-10 flex items-center gap-3 text-black">
-                                <ClipMaskTextAnimation text="Close" controlled active={closeHovered} />
-                                <span className="relative block size-3 transition-transform duration-500 ease-[cubic-bezier(.33,1,.68,1)] group-hover:rotate-90 before:absolute before:left-1/2 before:top-0 before:h-full before:w-px before:-rotate-45 before:bg-current after:absolute after:left-1/2 after:top-0 after:h-full after:w-px after:rotate-45 after:bg-current" />
+                            <span ref={closeContentRef} className="relative z-10 flex items-center gap-3 text-white">
+                                <MenuUtilityText
+                                    text="Close"
+                                    className="px-4"
+                                    trailing={
+                                        <svg
+                                            viewBox="0 0 12 12"
+                                            aria-hidden="true"
+                                            className="size-3 transition-transform duration-500 ease-[cubic-bezier(.33,1,.68,1)] group-hover:rotate-90"
+                                        >
+                                            <path d="M1 1L11 11M11 1L1 11" fill="none" stroke="currentColor" strokeWidth="1" />
+                                        </svg>
+                                    }
+                                />
                             </span>
                         </span>
                     </button>
@@ -236,7 +238,7 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
                 <nav aria-label="Main menu" className="flex items-center py-12 md:justify-end">
                     <ol className="w-full md:w-[78%] lg:w-[70%]">
                         {menuLinks.map((link, index) => (
-                            <li key={link.href} className="relative border-b border-black/25 first:border-t">
+                            <li key={link.href} className="relative border-b border-white/25 first:border-t">
                                 <div className="overflow-hidden">
                                     <a
                                         ref={(element) => { routeRefs.current[index] = element; }}
@@ -246,18 +248,22 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
                                         onMouseLeave={() => handleRouteLeave(index)}
                                         onFocus={() => handleRouteEnter(index)}
                                         onBlur={() => handleRouteLeave(index)}
-                                        className="group relative flex items-baseline justify-between py-2.5 text-black will-change-[transform,opacity] md:py-3"
+                                        className="group relative flex items-baseline justify-between py-2.5 text-white will-change-[transform,opacity] md:py-3"
                                     >
                                         <span
                                             ref={(element) => { routeBackgroundRefs.current[index] = element; }}
-                                            className="absolute inset-0 z-0 origin-right scale-x-0 bg-[#171714] will-change-transform"
+                                            className="absolute inset-0 z-0 origin-right scale-x-0 bg-white will-change-transform"
                                         />
-                                        <span className={`relative z-10 pl-4 text-[0.65rem] font-semibold tabular-nums md:pl-6 ${hoveredIndex === index ? "text-white mix-blend-difference" : "text-black"}`}>
+                                        <span
+                                            className="relative z-10 pl-4 text-[0.65rem] font-semibold tabular-nums md:pl-6"
+                                            style={{color: "#ffffff", mixBlendMode: "difference"}}
+                                        >
                                             {String(index + 1).padStart(2, "0")}
                                         </span>
                                         <span
                                             ref={(element) => { routeLabelRefs.current[index] = element; }}
-                                            className={`relative z-10 block pr-[clamp(1.5rem,5vw,5rem)] will-change-transform ${hoveredIndex === index ? "text-white mix-blend-difference" : "text-black"}`}
+                                            className="relative z-10 block pr-[clamp(1.5rem,5vw,5rem)] will-change-transform"
+                                            style={{color: "#ffffff", mixBlendMode: "difference"}}
                                         >
                                             <ClipMaskTextAnimation
                                                 text={link.label}
@@ -292,18 +298,27 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
     );
 }
 
-function MenuUtilityText({text, className = ""}: {text: string; className?: string}) {
+function MenuUtilityText({
+    text,
+    className = "",
+    trailing,
+}: {
+    text: string;
+    className?: string;
+    trailing?: React.ReactNode;
+}) {
     const [hovered, setHovered] = useState(false);
 
     return (
         <span
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
-            className={`bg-black group relative -mx-2 block overflow-hidden px-2 py-1 ${className}`}
+            className={`group relative -mx-2 block overflow-hidden bg-black px-2 py-1 ${className}`}
         >
-            <span className="absolute inset-0  bg-[#F4F1EA] transition-transform duration-600 ease-[cubic-bezier(.65,0,.35,1)] group-hover:translate-y-[-110%]" />
-            <span className="relative z-10 block text-white mix-blend-difference">
+            <span className="absolute inset-0 translate-y-full bg-white transition-transform duration-600 ease-[cubic-bezier(.65,0,.35,1)] group-hover:translate-y-0" />
+            <span className="relative z-10 flex items-center gap-3 text-white mix-blend-difference">
                 <ClipMaskTextAnimation text={text} controlled active={hovered} />
+                {trailing}
             </span>
         </span>
     );

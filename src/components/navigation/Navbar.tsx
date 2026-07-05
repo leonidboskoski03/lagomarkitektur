@@ -9,6 +9,7 @@ import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {MenuOverlay} from "./MenuOverlay";
 import {LogoMark} from "../branding/LogoMark";
 import {ClipMaskTextAnimation} from "../animation/ClipMaskTextAnimation";
+import {ContactOverlay} from "../contact/ContactOverlay";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -49,6 +50,7 @@ const handleMouseEnter = () => {
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isContactOpen, setIsContactOpen] = useState(false);
     const headerRef = useRef<HTMLElement | null>(null);
     const primaryNavContentRef = useRef<HTMLDivElement | null>(null);
     const logoMarkRef = useRef<HTMLDivElement | null>(null);
@@ -57,6 +59,7 @@ export function Navbar() {
     const buttonRef = useRef<HTMLDivElement | null>(null);
     const secondaryNavRef = useRef<HTMLDivElement | null>(null);
     const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+    const contactButtonRef = useRef<HTMLButtonElement | null>(null);
     const closeMenu = useCallback(() => setIsMenuOpen(false), []);
 
     useGSAP((_context, contextSafe) => {
@@ -187,7 +190,10 @@ export function Navbar() {
 
             <div className="overflow-hidden rounded-4xl">
                 <div ref={buttonRef} className="will-change-transform">
-                    <GetInTouchButton />
+                    <GetInTouchButton onClick={(event) => {
+                        contactButtonRef.current = event.currentTarget;
+                        setIsContactOpen(true);
+                    }} />
                 </div>
             </div>
           </div>
@@ -198,7 +204,10 @@ export function Navbar() {
             role="navigation"
             aria-label="Secondary navigation"
         >
-            <GetInTouchButton variant="dark" />
+            <GetInTouchButton variant="dark" onClick={(event) => {
+                contactButtonRef.current = event.currentTarget;
+                setIsContactOpen(true);
+            }} />
             <button
                 ref={menuButtonRef}
                 type="button"
@@ -212,16 +221,29 @@ export function Navbar() {
             </button>
         </div>
         <MenuOverlay isOpen={isMenuOpen} onClose={closeMenu} triggerRef={menuButtonRef} />
+        <ContactOverlay
+            isOpen={isContactOpen}
+            onClose={() => setIsContactOpen(false)}
+            triggerRef={contactButtonRef}
+        />
       </>
     );
 }
 
-function GetInTouchButton({variant = "light"}: {variant?: "light" | "dark"}) {
+function GetInTouchButton({
+    variant = "light",
+    onClick,
+}: {
+    variant?: "light" | "dark";
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}) {
     const [hovered, setHovered] = useState(false);
     const isDark = variant === "dark";
 
     return (
         <motion.button
+            type="button"
+            onClick={onClick}
             className={clsx(
                 "rounded-full p-4 flex gap-2 items-center",
                 isDark ? "bg-black text-white" : "bg-white text-black"

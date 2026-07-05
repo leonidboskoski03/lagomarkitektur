@@ -22,9 +22,9 @@
   --color-accent-dark: #2b2a27;
   --color-accent-warm: #9a8f7f;
 
-  --font-sans: "Satoshi", "Geist", "Helvetica Neue", Arial, sans-serif;
-  --font-display: "Satoshi", "Geist", "Helvetica Neue", Arial, sans-serif;
-  --font-body: "Satoshi", "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Clash Grotesk", "Satoshi", "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Clash Grotesk", "Satoshi", "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Clash Grotesk", "Satoshi", "Geist", "Helvetica Neue", Arial, sans-serif;
 
   --breakpoint-xs: 480px;
 
@@ -56,6 +56,29 @@ body::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;
+}
+
+.contact-panel {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.contact-panel::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .has-custom-cursor,
+  .has-custom-cursor body,
+  .has-custom-cursor a,
+  .has-custom-cursor button,
+  .has-custom-cursor input,
+  .has-custom-cursor textarea,
+  .has-custom-cursor select {
+    cursor: none !important;
+  }
 }
 
 body {
