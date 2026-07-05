@@ -3,6 +3,7 @@ import { getProjectBySlug, projects } from "../data/projects";
 import { ProjectHero } from "../components/project/ProjectHero";
 import { ImageReveal } from "../components/ui/ImageReveal";
 import { useGsapReveal } from "../hooks/useGsapReveal";
+import { PageContainer } from "../components/layout/PageContainer";
 
 export function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -11,7 +12,7 @@ export function ProjectDetail() {
 
   if (!project) {
     return (
-      <div className="pt-40 px-6 md:px-16 text-center">
+      <PageContainer className="pt-40 text-center">
         <h1 className="font-display text-4xl mb-4">Projektet hittades inte</h1>
         <Link
           to="/projekt"
@@ -19,7 +20,7 @@ export function ProjectDetail() {
         >
           Tillbaka till projekt
         </Link>
-      </div>
+      </PageContainer>
     );
   }
 
@@ -31,7 +32,7 @@ export function ProjectDetail() {
     <>
       <ProjectHero project={project} />
 
-      <div ref={contentRef} className="max-w-7xl mx-auto px-6 md:px-16 py-16 md:py-32">
+      <PageContainer ref={contentRef} className="section-space">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-20">
           <div className="md:col-span-2">
             <p className="text-base md:text-lg leading-relaxed text-text-primary">
@@ -97,14 +98,14 @@ export function ProjectDetail() {
             <p className="text-sm text-text-muted">{project.credits}</p>
           </div>
         )}
-      </div>
+      </PageContainer>
 
       <div className="border-t border-border">
         <Link
           to={`/projekt/${nextProject.slug}`}
-          className="group block px-6 md:px-16 py-16 md:py-24 hover:bg-surface/30 transition-colors"
+          className="group block section-space-sm hover:bg-surface/30 transition-colors"
         >
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <PageContainer className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
             <div>
               <span className="text-xs tracking-widest uppercase text-text-muted block mb-2">
                 Nästa projekt
@@ -116,7 +117,7 @@ export function ProjectDetail() {
             <span className="text-sm tracking-widest uppercase text-text-muted group-hover:text-text-primary transition-colors">
               Visa →
             </span>
-          </div>
+          </PageContainer>
         </Link>
       </div>
     </>

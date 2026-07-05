@@ -12,7 +12,7 @@ import {
     NAVBAR_REVEAL_EVENT,
     type LoaderRevealEventDetail,
 } from "../lib/revealEvents";
-import { motionEases } from "../lib/motion";
+import { motionEaseCurves, motionEases } from "../lib/motion";
 
 const items = ["featured project", "Myrtle Pool House","Villa House", "2024", "view project"]
 const descriptionLines = [
@@ -38,13 +38,13 @@ export const Hero = () => {
             clipPath: "inset(0 0 100% 0)",
             scale: 1,
             duration: 0.8,
-            ease: "power3.inOut",
+            ease: motionEases.settle,
         },"hero")
 
         tl.to(heroRef2.current, {
             scale: 1,
             duration: 0.8,
-            ease: "power2.inOut",
+            ease: motionEases.settle,
         },"hero+=0.05")
     }
 
@@ -55,13 +55,13 @@ export const Hero = () => {
             clipPath: "inset(0 0 0% 0)",
             scale: 1.06,
             duration: 0.8,
-            ease: "power2.inOut",
+            ease: motionEases.settle,
         },"hero")
 
         tl.to(heroRef2.current, {
             scale: 1.08,
             duration: 0.8,
-            ease: "power2.inOut",
+            ease: motionEases.settle,
         },"hero")
     }
 
@@ -186,7 +186,7 @@ export const Hero = () => {
                     scale: 1.10
                 }}/>
 
-                <div className={"absolute top-1/2 left-1/2 z-10 flex h-[10vh] w-full -translate-x-1/2 -translate-y-1/2 items-start justify-between px-[6.5rem]"}>
+                <div className="viewport-container absolute inset-x-0 top-1/2 z-10 flex h-[10vh] -translate-y-1/2 items-start justify-between">
                     {items.map((item, index) => {
                         return(
                             <div
@@ -215,8 +215,8 @@ export const Hero = () => {
                     })}
                 </div>
 
-                <div className={"absolute bottom-10 z-10 w-1/2 pl-[6.5rem]"}>
-                    <h1 className={"text-white text-3xl"}>
+                <div className="viewport-container absolute inset-x-0 bottom-10 z-10">
+                    <h1 className="w-1/2 text-3xl text-white">
                         {descriptionLines.map((line, index) => (
                             <span key={line} className="block overflow-hidden">
                                 <span
@@ -248,7 +248,7 @@ const DotAnimation = ({hovered}:{hovered: boolean}) => {
                 strokeWidth={1}
                 initial={false}
                 animate={hovered ? {scale: 0.63, fill: "white"} : {scale: 0.85, fill: "none"}}
-                transition={{duration: 0.5, ease: [0.25, 0.1, 0.25, 1]}}
+                transition={{duration: 0.5, ease: motionEaseCurves.settle}}
             />
         </svg>
     )
@@ -280,7 +280,7 @@ const NavItemUnderlineAnimation = ({ label }: { label: string }) => {
             {
                 xPercent: 110,
                 duration: 1,
-                ease: "power3.inOut",
+                ease: motionEases.settle,
             },
             0
         );
@@ -291,7 +291,7 @@ const NavItemUnderlineAnimation = ({ label }: { label: string }) => {
             {
                 xPercent: 0,
                 duration: 1,
-                ease: "power3.inOut",
+                ease: motionEases.settle,
             },
             0.16
         );
@@ -307,7 +307,7 @@ const NavItemUnderlineAnimation = ({ label }: { label: string }) => {
         tl.to(redLineRef.current,{
             xPercent: 110,
             duration: 0.8,
-            ease: "power3.inOut",
+            ease: motionEases.settle,
         })
 
         gsap.set([whiteLineRef.current], {xPercent: -110});
@@ -317,7 +317,7 @@ const NavItemUnderlineAnimation = ({ label }: { label: string }) => {
             {
                 xPercent: 0,
                 duration: 1,
-                ease: "power3.inOut",
+                ease: motionEases.settle,
             },
             0.16
         );

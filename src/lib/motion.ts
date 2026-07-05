@@ -9,3 +9,7 @@ export const motionEases = {
     depart: CustomEase.create("lagom-depart", ".64,0,.78,0"),
     settle: CustomEase.create("lagom-settle", ".33,1,.68,1"),
 } as const;
+
+export const motionEaseCurves = {
+    settle: [0.33, 1, 0.68, 1] as [number, number, number, number],
+} as const;

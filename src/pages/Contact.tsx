@@ -2,6 +2,7 @@ import type { FormEvent } from "react";
 import { SectionHeading } from "../components/ui/SectionHeading";
 import { useGsapReveal } from "../hooks/useGsapReveal";
 import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_ADDRESS } from "../lib/constants";
+import { PageContainer } from "../components/layout/PageContainer";
 
 export function Contact() {
   const formRef = useGsapReveal<HTMLDivElement>();
@@ -18,19 +19,17 @@ export function Contact() {
   }
 
   return (
-    <div className="pt-32 pb-24 md:pb-40">
-      <div className="px-6 md:px-16 mb-24">
-        <div className="max-w-7xl mx-auto">
+    <div className="pt-32 pb-[var(--spacing-section)]">
+      <PageContainer className="space-y-[var(--spacing-section-sm)]">
+        <div>
           <SectionHeading
             label="Kontakt"
             title="Låt oss skapa något tillsammans"
             description="Är du intresserad av att samarbeta? Tveka inte att höra av dig. Vi tar gärna en första kopp kaffe och pratar om ditt projekt."
           />
         </div>
-      </div>
 
-      <div className="px-6 md:px-16">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
+        <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-24">
           <div className="space-y-12">
             <div>
               <span className="text-xs tracking-widest uppercase text-text-muted block mb-3">
@@ -128,7 +127,7 @@ export function Contact() {
             </form>
           </div>
         </div>
-      </div>
+      </PageContainer>
     </div>
   );
 }

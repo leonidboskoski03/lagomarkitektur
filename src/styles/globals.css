@@ -27,6 +27,14 @@
   --font-body: "Satoshi", "Geist", "Helvetica Neue", Arial, sans-serif;
 
   --breakpoint-xs: 480px;
+
+  --spacing-page-gutter: clamp(1.5rem, 5.4vw, 6.5rem);
+  --spacing-viewport-gutter: clamp(1.5rem, 2.1vw, 2.5rem);
+  --spacing-section-sm: clamp(4rem, 7vw, 7rem);
+  --spacing-section: clamp(6rem, 10vw, 10rem);
+  --spacing-section-lg: clamp(8rem, 13vw, 13rem);
+  --width-content: 100rem;
+  --width-viewport-content: 120rem;
 }
 
 *,
@@ -39,6 +47,15 @@ html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 body {
@@ -48,6 +65,36 @@ body {
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   line-height: 1.6;
+}
+
+.page-gutter {
+  padding-inline: var(--spacing-page-gutter);
+}
+
+.layout-container {
+  width: 100%;
+  max-width: var(--width-content);
+  margin-inline: auto;
+  padding-inline: var(--spacing-page-gutter);
+}
+
+.viewport-container {
+  width: 100%;
+  max-width: var(--width-viewport-content);
+  margin-inline: auto;
+  padding-inline: var(--spacing-viewport-gutter);
+}
+
+.section-space-sm {
+  padding-block: var(--spacing-section-sm);
+}
+
+.section-space {
+  padding-block: var(--spacing-section);
+}
+
+.section-space-lg {
+  padding-block: var(--spacing-section-lg);
 }
 
 img {

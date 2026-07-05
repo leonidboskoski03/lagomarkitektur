@@ -7,6 +7,8 @@ import { getFeaturedProjects } from "../data/projects";
 import { SectionHeading } from "../components/ui/SectionHeading";
 import { ProjectGrid } from "../components/project/ProjectGrid";
 import { StickyOverlapHero } from "../components/sections/StickyOverlapHero";
+import { PageContainer } from "../components/layout/PageContainer";
+import { Section } from "../components/layout/Section";
 
 const featured = getFeaturedProjects();
 
@@ -51,9 +53,9 @@ export function Home() {
 
         <div
           ref={heroContentRef}
-          className="relative z-10 h-full flex flex-col justify-end pb-24 md:pb-40 px-6 md:px-16"
+          className="relative z-10 flex h-full flex-col justify-end pb-24 md:pb-40"
         >
-          <div className="max-w-7xl mx-auto w-full">
+          <PageContainer>
             <span className="text-xs tracking-widest uppercase text-white/50 mb-4 block">
               Lagom Arkitektur
             </span>
@@ -64,7 +66,7 @@ export function Home() {
               En svensk arkitektbyrå som skapar hållbara, tidlösa och
               mänskliga rum i samspel med omgivningen.
             </p>
-          </div>
+          </PageContainer>
         </div>
       </section>
 
@@ -82,8 +84,7 @@ export function Home() {
         description="Vi skapar rum som formas av tydlighet, materialärlighet och hur människor faktiskt lever och verkar."
       />
 
-      <section className="px-6 md:px-16 py-24 md:py-40">
-        <div className="max-w-7xl mx-auto">
+      <Section>
           <SectionHeading
             label="Om oss"
             title="Vi ritar rum som varar"
@@ -95,11 +96,9 @@ export function Home() {
           >
             Läs mer om vår filosofi
           </Link>
-        </div>
-      </section>
+      </Section>
 
-      <section className="px-6 md:px-16 py-24 md:py-40 bg-surface/40">
-        <div className="max-w-7xl mx-auto">
+      <Section className="bg-surface/40">
           <SectionHeading
             label="Utvalda projekt"
             title="Utvalda arbeten"
@@ -114,11 +113,9 @@ export function Home() {
               Visa alla projekt
             </Link>
           </div>
-        </div>
-      </section>
+      </Section>
 
-      <section ref={ctaRef} className="px-6 md:px-16 py-32 md:py-48">
-        <div className="max-w-7xl mx-auto text-center">
+      <Section ref={ctaRef} spacing="large" containerClassName="text-center">
           <span className="text-xs tracking-widest uppercase text-text-muted mb-4 block">
             Kontakt
           </span>
@@ -132,8 +129,7 @@ export function Home() {
           >
             Hör av dig
           </Link>
-        </div>
-      </section>
+      </Section>
     </>
   );
 }

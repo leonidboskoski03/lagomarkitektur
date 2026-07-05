@@ -1,5 +1,6 @@
 import { useGsapReveal } from "../hooks/useGsapReveal";
 import { SectionHeading } from "../components/ui/SectionHeading";
+import { PageContainer } from "../components/layout/PageContainer";
 
 const services = [
   "Arkitektur",
@@ -24,19 +25,17 @@ export function About() {
   const teamRef = useGsapReveal<HTMLDivElement>();
 
   return (
-    <div className="pt-32 pb-24 md:pb-40">
-      <div className="px-6 md:px-16 mb-24">
-        <div className="max-w-7xl mx-auto">
+    <div className="pt-32 pb-[var(--spacing-section)]">
+      <PageContainer className="space-y-[var(--spacing-section)]">
+        <div>
           <SectionHeading
             label="Om oss"
             title="En byrå med rötterna i den svenska arkitekturtraditionen"
             description="Lagom Arkitektur grundades 2010 av Elin Bergström med en vision om att skapa arkitektur som känns självklar — varken för mycket eller för lite, utan precis lagom."
           />
         </div>
-      </div>
 
-      <div className="px-6 md:px-16 mb-24 md:mb-40">
-        <div className="max-w-7xl mx-auto">
+        <div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
             <div>
               <span className="text-xs tracking-widest uppercase text-text-muted mb-4 block">
@@ -70,10 +69,8 @@ export function About() {
             <div className="aspect-[3/4] bg-surface" />
           </div>
         </div>
-      </div>
 
-      <div ref={servicesRef} className="px-6 md:px-16 mb-24 md:mb-40">
-        <div className="max-w-7xl mx-auto">
+        <div ref={servicesRef}>
           <SectionHeading label="Tjänster" title="Vad vi erbjuder" />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {services.map((service) => (
@@ -86,10 +83,8 @@ export function About() {
             ))}
           </div>
         </div>
-      </div>
 
-      <div ref={teamRef} className="px-6 md:px-16">
-        <div className="max-w-7xl mx-auto">
+        <div ref={teamRef}>
           <SectionHeading label="Team" title="Vårt team" />
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             {team.map((member) => (
@@ -101,7 +96,7 @@ export function About() {
             ))}
           </div>
         </div>
-      </div>
+      </PageContainer>
     </div>
   );
 }

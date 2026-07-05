@@ -54,10 +54,33 @@ export const Loader = () => {
     const containerRef = useRef<HTMLDivElement>(null!);
 
     useLayoutEffect(() => {
+        const root = document.documentElement;
+        const body = document.body;
+        const previousRootOverflow = root.style.overflow;
+        const previousBodyOverflow = body.style.overflow;
+        const previousRootOverscroll = root.style.overscrollBehavior;
+        const previousBodyOverscroll = body.style.overscrollBehavior;
+
+        const lockScroll = () => {
+            root.style.overflow = "hidden";
+            body.style.overflow = "hidden";
+            root.style.overscrollBehavior = "none";
+            body.style.overscrollBehavior = "none";
+        };
+
+        const unlockScroll = () => {
+            root.style.overflow = previousRootOverflow;
+            body.style.overflow = previousBodyOverflow;
+            root.style.overscrollBehavior = previousRootOverscroll;
+            body.style.overscrollBehavior = previousBodyOverscroll;
+        };
+
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
             containerRef.current.style.display = "none";
             return;
         }
+
+        lockScroll();
 
         const centerMaskLogo = () => {
             maskSvgRef.current.setAttribute(
@@ -295,6 +318,7 @@ export const Loader = () => {
                 display: "none",
                 pointerEvents: "none",
             });
+            timeline.call(unlockScroll);
 
         }, containerRef);
 
@@ -303,6 +327,7 @@ export const Loader = () => {
         return () => {
             window.removeEventListener("resize", centerMaskLogo);
             ctx.revert();
+            unlockScroll();
         };
     }, []);
 

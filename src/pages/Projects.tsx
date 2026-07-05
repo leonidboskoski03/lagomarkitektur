@@ -3,6 +3,7 @@ import { projects } from "../data/projects";
 import { SectionHeading } from "../components/ui/SectionHeading";
 import { ProjectCard } from "../components/project/ProjectCard";
 import { useGsapReveal } from "../hooks/useGsapReveal";
+import { PageContainer } from "../components/layout/PageContainer";
 
 const categories = Array.from(new Set(projects.map((p) => p.category)));
 
@@ -18,9 +19,8 @@ export function Projects() {
   );
 
   return (
-    <div className="pt-32 pb-24 md:pb-40">
-      <div className="px-6 md:px-16">
-        <div className="max-w-7xl mx-auto">
+    <div className="pt-32 pb-[var(--spacing-section)]">
+      <PageContainer>
           <SectionHeading
             label="Projekt"
             title="Alla projekt"
@@ -40,16 +40,12 @@ export function Projects() {
               </span>
             ))}
           </div>
-        </div>
-      </div>
-
-      <div ref={gridRef} className="px-6 md:px-16">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+        <div ref={gridRef} className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12 lg:grid-cols-3">
           {projectList.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
         </div>
-      </div>
+      </PageContainer>
     </div>
   );
 }

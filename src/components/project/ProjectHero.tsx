@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 import type { Project } from "../../types/project";
+import { PageContainer } from "../layout/PageContainer";
 
 interface ProjectHeroProps {
   project: Project;
@@ -41,9 +42,9 @@ export function ProjectHero({ project }: ProjectHeroProps) {
       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
       <div
         ref={contentRef}
-        className="absolute bottom-0 left-0 right-0 p-6 md:p-16 pb-12 md:pb-24"
+        className="absolute inset-x-0 bottom-0 pb-12 md:pb-24"
       >
-        <div className="max-w-7xl mx-auto">
+        <PageContainer>
           <span className="text-xs tracking-widest uppercase text-white/60 mb-3 block">
             {project.category}
           </span>
@@ -54,7 +55,7 @@ export function ProjectHero({ project }: ProjectHeroProps) {
             <span>{project.year}</span>
             <span>{project.location}</span>
           </div>
-        </div>
+        </PageContainer>
       </div>
     </div>
   );

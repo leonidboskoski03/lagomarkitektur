@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Section } from "../layout/Section";
 
 type StickyOverlapHeroProps = {
   imageSrc: string;
@@ -47,8 +48,10 @@ export function StickyOverlapHero({
         on top. The bg-bg value physically hides the image beneath
         as the user scrolls.
       */}
-      <section className="relative z-[2] -mt-[20vh] min-h-screen bg-bg md:-mt-[35vh]">
-        <div className="mx-auto max-w-7xl px-6 py-24 md:px-16 md:py-48">
+      <Section
+        spacing="large"
+        className="relative z-[2] -mt-[20vh] min-h-screen bg-bg md:-mt-[35vh]"
+      >
           {eyebrow && (
             <span className="mb-5 block font-sans text-[0.6875rem] leading-none tracking-[0.12em] uppercase text-text-muted">
               {eyebrow}
@@ -64,8 +67,7 @@ export function StickyOverlapHero({
               {description}
             </p>
           )}
-        </div>
-      </section>
+      </Section>
     </>
   );
 }
