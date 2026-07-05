@@ -14,7 +14,7 @@ const COUNTER_REELS = [
 ];
 
 const LOGO_REVEAL_DURATION = 2.65;
-const HERO_IMAGE_POST_LOADER_DURATION = 1;
+const HERO_IMAGE_POST_LOADER_DURATION = 0.5;
 const HERO_CONTENT_START_SCALE_PROGRESS = 0.85;
 
 const getTimeProgressAtEaseValue = (targetValue: number) => {
@@ -276,7 +276,7 @@ export const Loader = () => {
                 svgOrigin: "0% 20%",
                 duration: LOGO_REVEAL_DURATION,
                 ease: motionEases.reveal,
-            }, "reveal");
+            }, "reveal-=0.3");
             timeline.call(() => {
                 window.dispatchEvent(new CustomEvent(LOADER_REVEAL_EVENT, {
                     detail: { imageDuration: HERO_IMAGE_REVEAL_DURATION },

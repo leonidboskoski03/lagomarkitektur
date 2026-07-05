@@ -32,7 +32,7 @@ function App() {
     }, []);
 
     return (
-        <main className={"bg-black min-h-screen"}>
+        <main className={"bg-white min-h-screen"}>
             <Loader/>
             <Navbar/>
             <Hero/>

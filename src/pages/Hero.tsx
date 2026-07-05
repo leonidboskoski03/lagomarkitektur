@@ -1,5 +1,6 @@
 import hero1 from '../assets/images/hero.avif'
 import hero2 from '../assets/images/hero2.avif'
+import heroPortal from '../assets/images/hero-portal-v4.png'
 import {motion} from "motion/react";
 import { useRef, useState} from "react";
 import { useGSAP } from "@gsap/react";
@@ -26,6 +27,7 @@ export const Hero = () => {
     const [hovered, setHovered] = useState(false);
     const heroRef = useRef<HTMLDivElement | null>(null);
     const heroRef2 = useRef<HTMLDivElement | null>(null);
+    const heroPortalRef = useRef<HTMLDivElement | null>(null);
     const sectionRef = useRef<HTMLElement | null>(null);
     const descriptionLineRefs = useRef<Array<HTMLSpanElement | null>>([]);
 
@@ -64,7 +66,7 @@ export const Hero = () => {
     }
 
     useGSAP((_context, contextSafe) => {
-        if (!heroRef.current || !heroRef2.current) return;
+        if (!heroRef.current || !heroRef2.current || !heroPortalRef.current) return;
 
         const projectItems = gsap.utils.toArray<HTMLDivElement>(
             "[data-hero-project-item]",
@@ -77,6 +79,7 @@ export const Hero = () => {
             gsap.set(descriptionLines, { yPercent: 115 });
             gsap.set(projectItems, { yPercent: 115 });
             gsap.set([heroRef.current, heroRef2.current], { scale: 0.8 });
+            gsap.set(heroPortalRef.current, { scale: 1 });
         }
 
         const revealImage = contextSafe!((event: Event) => {
@@ -91,6 +94,16 @@ export const Hero = () => {
                 duration: imageDuration,
                 ease: motionEases.reveal,
                 force3D: true,
+            });
+            gsap.to(heroPortalRef.current, {
+                scale: 1.5,
+                duration: imageDuration,
+                ease: motionEases.reveal,
+                force3D: true,
+                delay: 0.085,
+                onComplete: () => {
+                    if(heroPortalRef.current !== null) heroPortalRef.current.style.display = "none";
+                }
             });
         });
 
@@ -144,8 +157,15 @@ export const Hero = () => {
     }, { scope: sectionRef });
 
     return (
-        <section ref={sectionRef} className="relative z-[1] h-[200vh] bg-black">
+        <section ref={sectionRef} className="relative z-[1] h-[200vh] bg-white">
             <div className="sticky top-0 h-screen overflow-hidden">
+
+                <div
+                    ref={heroPortalRef}
+                    className="absolute inset-0 z-20 h-full w-full bg-cover bg-center will-change-transform"
+                    style={{ backgroundImage: `url(${heroPortal})` }}
+                    aria-hidden="true"
+                />
 
                 <div className={"absolute top-0 z-10"} ref={heroRef} style={{
                     backgroundImage: `url(${hero1})`,
@@ -156,7 +176,7 @@ export const Hero = () => {
                     scale: 1.06
                 }}/>
 
-                <div className={"absolute top-0"} ref={heroRef2} style={{
+                <div className={"absolute top-0 z-[1]"} ref={heroRef2} style={{
                     backgroundImage: `url(${hero2})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
