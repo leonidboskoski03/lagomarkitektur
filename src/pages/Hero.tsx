@@ -14,11 +14,9 @@ import {
 } from "../lib/revealEvents";
 import { motionEaseCurves, motionEases } from "../lib/motion";
 
-const items = ["featured project", "Myrtle Pool House","Villa House", "2024", "view project"]
 const descriptionLines = [
-    "The OH Architecture style is defined by",
-    "strong, solid forms with subtle elegance,",
-    "natural balance and enduring appeal",
+    "Sustainable architecture shaped by",
+    "balance, meaning, and purpose."
 ];
 
 gsap.registerPlugin(ScrollTrigger);
@@ -30,10 +28,10 @@ export const Hero = () => {
     const heroPortalRef = useRef<HTMLDivElement | null>(null);
     const sectionRef = useRef<HTMLElement | null>(null);
     const descriptionLineRefs = useRef<Array<HTMLSpanElement | null>>([]);
+    const wordmarkRef = useRef<HTMLDivElement | null>(null);
 
     const handleHeroMouseOn = () => {
         const tl = gsap.timeline();
-        console.log("hovered")
         tl.to(heroRef.current, {
             clipPath: "inset(0 0 100% 0)",
             scale: 1,
@@ -68,16 +66,18 @@ export const Hero = () => {
     useGSAP((_context, contextSafe) => {
         if (!heroRef.current || !heroRef2.current || !heroPortalRef.current) return;
 
-        const projectItems = gsap.utils.toArray<HTMLDivElement>(
+        const projectItems = gsap.utils.toArray<HTMLElement>(
             "[data-hero-project-item]",
             sectionRef.current
         );
         const descriptionLines = descriptionLineRefs.current.filter(Boolean);
+        const wordmark = wordmarkRef.current;
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
         if (!reduceMotion) {
             gsap.set(descriptionLines, { yPercent: 115 });
             gsap.set(projectItems, { yPercent: 115 });
+            gsap.set(wordmark, { yPercent: 115, rotation: 0.75 });
             gsap.set([heroRef.current, heroRef2.current], { scale: 0.8 });
             gsap.set(heroPortalRef.current, { scale: 1 });
         }
@@ -114,10 +114,17 @@ export const Hero = () => {
             }
 
             const revealTimeline = gsap.timeline()
-                .addLabel("description", 0)
-                .addLabel("projects", 0.12)
+                .addLabel("wordmark", 0)
+                .addLabel("description", 0.1)
+                .addLabel("projects", 0.16)
                 .addLabel("navbar", 0.35);
 
+            revealTimeline.to(wordmark, {
+                yPercent: 0,
+                rotation: 0,
+                duration: 0.72,
+                ease: motionEases.enter,
+            }, "wordmark");
             revealTimeline.to(descriptionLines, {
                 yPercent: 0,
                 duration: 0.62,
@@ -186,37 +193,36 @@ export const Hero = () => {
                     scale: 1.10
                 }}/>
 
-                <div className="viewport-container absolute inset-x-0 top-1/2 z-10 flex h-[10vh] -translate-y-1/2 items-start justify-between">
-                    {items.map((item, index) => {
-                        return(
-                            <div
-                                key={item}
-                                className={`flex h-full ${index % 2 ? "items-end" : "items-start"}`}
-                            >
-                                <div className="overflow-hidden">
-                                    <div
-                                        data-hero-project-item
-                                        className="flex items-center justify-center text-sm font-bold uppercase text-white"
-                                        onMouseEnter={() => {
-                                            setHovered(true)
-                                            if (index === items.length -1) handleHeroMouseOn()
-                                        }}
-                                        onMouseLeave={() => {
-                                            setHovered(false)
-                                            if (index === items.length -1) handleHeroMouseOff()
-                                        }}
-                                    >
-                                        {items.length === index + 1 ? <NavItemUnderlineAnimation label={item}/> : item}
-                                        {items.length === index + 1 ? <DotAnimation hovered={hovered}/> : null}
-                                    </div>
-                                </div>
-                            </div>
-                        )
-                    })}
+                <div className="absolute inset-x-0 top-1/2 z-10 -translate-y-1/2 px-[var(--spacing-viewport-gutter)]">
+                    <div className="overflow-hidden py-4">
+                        <div ref={wordmarkRef} className="flex items-baseline gap-[clamp(1rem,2.5vw,3rem)] whitespace-nowrap text-white will-change-transform">
+                            <span className="text-[clamp(5rem,14vw,13.5rem)] font-medium leading-[0.72] tracking-[-0.075em]">Lagom</span>
+                            <span className="text-[clamp(2rem,5vw,5.25rem)] font-light uppercase leading-none tracking-[-0.055em]">Arkitektur</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="viewport-container absolute inset-x-0 bottom-10 z-10">
-                    <h1 className="w-1/2 text-3xl text-white">
+                <div className="viewport-container absolute inset-x-0 bottom-8 z-10 flex items-end justify-between gap-8 md:bottom-10">
+                    <div className="overflow-hidden">
+                        <a
+                            href="/works"
+                            data-hero-project-item
+                            className="flex items-center gap-1.5 text-sm font-semibold uppercase text-white will-change-transform"
+                            onMouseEnter={() => {
+                                setHovered(true)
+                                handleHeroMouseOn()
+                            }}
+                            onMouseLeave={() => {
+                                setHovered(false)
+                                handleHeroMouseOff()
+                            }}
+                        >
+                            <NavItemUnderlineAnimation label="View project" />
+                            <DotAnimation hovered={hovered} />
+                        </a>
+                    </div>
+
+                    <h1 className="w-fit max-w-[29rem] text-left text-[clamp(1rem,1.7vw,1.5rem)] font-normal leading-[1.12] tracking-[-0.035em] text-white">
                         {descriptionLines.map((line, index) => (
                             <span key={line} className="block overflow-hidden">
                                 <span
