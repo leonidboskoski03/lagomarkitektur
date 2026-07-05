@@ -5,13 +5,29 @@ import { useRef, useState} from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+    HERO_CONTENT_REVEAL_EVENT,
+    LOADER_REVEAL_EVENT,
+    NAVBAR_REVEAL_EVENT,
+    type LoaderRevealEventDetail,
+} from "../lib/revealEvents";
+import { motionEases } from "../lib/motion";
 
 const items = ["featured project", "Myrtle Pool House","Villa House", "2024", "view project"]
+const descriptionLines = [
+    "The OH Architecture style is defined by",
+    "strong, solid forms with subtle elegance,",
+    "natural balance and enduring appeal",
+];
+
+gsap.registerPlugin(ScrollTrigger);
 
 export const Hero = () => {
     const [hovered, setHovered] = useState(false);
     const heroRef = useRef<HTMLDivElement | null>(null);
     const heroRef2 = useRef<HTMLDivElement | null>(null);
+    const sectionRef = useRef<HTMLElement | null>(null);
+    const descriptionLineRefs = useRef<Array<HTMLSpanElement | null>>([]);
 
     const handleHeroMouseOn = () => {
         const tl = gsap.timeline();
@@ -47,10 +63,67 @@ export const Hero = () => {
         },"hero")
     }
 
-    useGSAP(() => {
-        gsap.registerPlugin(ScrollTrigger);
+    useGSAP((_context, contextSafe) => {
+        if (!heroRef.current || !heroRef2.current) return;
 
-        if (!heroRef.current) return;
+        const projectItems = gsap.utils.toArray<HTMLDivElement>(
+            "[data-hero-project-item]",
+            sectionRef.current
+        );
+        const descriptionLines = descriptionLineRefs.current.filter(Boolean);
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        if (!reduceMotion) {
+            gsap.set(descriptionLines, { yPercent: 115 });
+            gsap.set(projectItems, { yPercent: 115 });
+            gsap.set([heroRef.current, heroRef2.current], { scale: 0.8 });
+        }
+
+        const revealImage = contextSafe!((event: Event) => {
+            if (reduceMotion) {
+                return;
+            }
+
+            const { imageDuration } = (event as CustomEvent<LoaderRevealEventDetail>).detail;
+
+            gsap.to([heroRef.current, heroRef2.current], {
+                scale: 1.15,
+                duration: imageDuration,
+                ease: motionEases.reveal,
+                force3D: true,
+            });
+        });
+
+        const revealContent = contextSafe!(() => {
+            if (reduceMotion) {
+                window.dispatchEvent(new Event(NAVBAR_REVEAL_EVENT));
+                return;
+            }
+
+            const revealTimeline = gsap.timeline()
+                .addLabel("description", 0)
+                .addLabel("projects", 0.12)
+                .addLabel("navbar", 0.35);
+
+            revealTimeline.to(descriptionLines, {
+                yPercent: 0,
+                duration: 0.62,
+                ease: motionEases.enter,
+                stagger: { each: 0.055, from: "end" },
+            }, "description");
+            revealTimeline.to(projectItems, {
+                yPercent: 0,
+                duration: 0.56,
+                ease: motionEases.enter,
+                stagger: { each: 0.045, from: "start" },
+            }, "projects");
+            revealTimeline.call(() => {
+                window.dispatchEvent(new Event(NAVBAR_REVEAL_EVENT));
+            }, [], "navbar");
+        });
+
+        window.addEventListener(LOADER_REVEAL_EVENT, revealImage, { once: true });
+        window.addEventListener(HERO_CONTENT_REVEAL_EVENT, revealContent, { once: true });
 
         gsap.to(heroRef.current, {
             yPercent: -50,
@@ -63,10 +136,15 @@ export const Hero = () => {
                 scrub: true,
             }
         });
-    });
+
+        return () => {
+            window.removeEventListener(LOADER_REVEAL_EVENT, revealImage);
+            window.removeEventListener(HERO_CONTENT_REVEAL_EVENT, revealContent);
+        };
+    }, { scope: sectionRef });
 
     return (
-        <section className="relative z-[1] h-[200vh] bg-black">
+        <section ref={sectionRef} className="relative z-[1] h-[200vh] bg-black">
             <div className="sticky top-0 h-screen overflow-hidden">
 
                 <div className={"absolute top-0 z-10"} ref={heroRef} style={{
@@ -88,34 +166,47 @@ export const Hero = () => {
                     scale: 1.10
                 }}/>
 
-                <div className={" h-[10vh]  absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex justify-between w-full px-[6.5rem]"}>
+                <div className={"absolute top-1/2 left-1/2 z-10 flex h-[10vh] w-full -translate-x-1/2 -translate-y-1/2 items-start justify-between px-[6.5rem]"}>
                     {items.map((item, index) => {
                         return(
-                            <div key={index} className={`${index % 2 ? 'self-end' : ''}`}>
-                                <h1
-                                    className={`flex justify-center items-center text-sm font-bold uppercase text-white`}
-                                    onMouseEnter={() => {
-                                        setHovered(true)
-                                        if (index === items.length -1) handleHeroMouseOn()
-                                    }}
-                                    onMouseLeave={() => {
-                                        setHovered(false)
-                                        if (index === items.length -1) handleHeroMouseOff()
-                                    }}
-                                >
-                                    {items.length === index + 1 ? <NavItemUnderlineAnimation label={item}/> : item}
-                                    {items.length === index + 1 ? <DotAnimation hovered={hovered}/> : null}
-                                </h1>
+                            <div
+                                key={item}
+                                className={`flex h-full ${index % 2 ? "items-end" : "items-start"}`}
+                            >
+                                <div className="overflow-hidden">
+                                    <div
+                                        data-hero-project-item
+                                        className="flex items-center justify-center text-sm font-bold uppercase text-white"
+                                        onMouseEnter={() => {
+                                            setHovered(true)
+                                            if (index === items.length -1) handleHeroMouseOn()
+                                        }}
+                                        onMouseLeave={() => {
+                                            setHovered(false)
+                                            if (index === items.length -1) handleHeroMouseOff()
+                                        }}
+                                    >
+                                        {items.length === index + 1 ? <NavItemUnderlineAnimation label={item}/> : item}
+                                        {items.length === index + 1 ? <DotAnimation hovered={hovered}/> : null}
+                                    </div>
+                                </div>
                             </div>
                         )
                     })}
                 </div>
 
-                <div className={"absolute bottom-10 z-10 w-1/3 pl-[6.5rem]"}>
+                <div className={"absolute bottom-10 z-10 w-1/2 pl-[6.5rem]"}>
                     <h1 className={"text-white text-3xl"}>
-                        The OH Architecture style is defined by
-                        strong, solid forms with subtle elegance,
-                        natural balance and enduring appeal
+                        {descriptionLines.map((line, index) => (
+                            <span key={line} className="block overflow-hidden">
+                                <span
+                                    ref={(element) => { descriptionLineRefs.current[index] = element; }}
+                                    className="block"
+                                >
+                                    {line}
+                                </span>
+                            </span>
+                        ))}
                     </h1>
                 </div>
             </div>

@@ -2,6 +2,9 @@ import {motion} from "motion/react";
 import {useRef, useState} from "react";
 import gsap from "gsap";
 import clsx from "clsx";
+import {useGSAP} from "@gsap/react";
+import {NAVBAR_REVEAL_EVENT} from "../../lib/revealEvents";
+import {motionEases} from "../../lib/motion";
 
 const links = [
     {href: "/works", label: "works"},
@@ -39,23 +42,74 @@ const handleMouseEnter = () => {
 };
 
 export function Navbar() {
+    const headerRef = useRef<HTMLElement | null>(null);
+    const logoMarkRef = useRef<HTMLDivElement | null>(null);
+    const logoTextRef = useRef<HTMLDivElement | null>(null);
+    const navItemRefs = useRef<Array<HTMLDivElement | null>>([]);
+    const buttonRef = useRef<HTMLDivElement | null>(null);
+
+    useGSAP((_context, contextSafe) => {
+        const navItems = navItemRefs.current.filter(Boolean);
+        const animatedItems = [logoMarkRef.current, logoTextRef.current, ...navItems, buttonRef.current].filter(Boolean);
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        if (!reduceMotion) gsap.set(animatedItems, { yPercent: 115 });
+
+        const revealNavbar = contextSafe!(() => {
+            if (reduceMotion) return;
+
+            const timeline = gsap.timeline({ defaults: { ease: motionEases.enter } })
+                .addLabel("logo", 0)
+                .addLabel("links", 0.08)
+                .addLabel("action", 0.16);
+
+            timeline.to(logoMarkRef.current, { yPercent: 0, duration: 0.62 }, "logo");
+            timeline.to(logoTextRef.current, { yPercent: 0, duration: 0.58 }, "logo+=0.035");
+            timeline.to(navItems, {
+                yPercent: 0,
+                duration: 0.54,
+                stagger: 0.035,
+            }, "links");
+            timeline.to(buttonRef.current, { yPercent: 0, duration: 0.6 }, "action");
+        });
+
+        window.addEventListener(NAVBAR_REVEAL_EVENT, revealNavbar, { once: true });
+        return () => window.removeEventListener(NAVBAR_REVEAL_EVENT, revealNavbar);
+    }, { scope: headerRef });
+
     return (
-        <header className="fixed top-0 z-[100] flex h-[15vh] w-full items-center justify-between px-8 md:px-16 mix-blend-difference">
-            <div className="text-white mix-blend-difference">
-                <Logo />
+        <header ref={headerRef} className="fixed top-0 z-[100] flex h-[15vh] w-full items-center justify-between px-8 md:px-16 mix-blend-difference">
+            <div className="flex items-start justify-center gap-2 text-white mix-blend-difference">
+                <div className="overflow-hidden">
+                    <div ref={logoMarkRef} className="will-change-transform">
+                        <LogoMark />
+                    </div>
+                </div>
+                <div className="self-center overflow-hidden">
+                    <div ref={logoTextRef} className="will-change-transform">
+                        <ClipMaskTextAnimation text="lagom" className="logo-text text-2xl uppercase font-bold" handleMouseEnter={handleMouseEnter} />
+                    </div>
+                </div>
             </div>
 
             <nav className="flex gap-4 text-white mix-blend-difference">
-                {links.map((link) => (
-                    <ClipMaskTextAnimation
-                        text={link.label}
-                        key={link.href}
-                        className="text-sm"
-                    />
+                {links.map((link, index) => (
+                    <div key={link.href} className="overflow-hidden">
+                        <div
+                            ref={(element) => { navItemRefs.current[index] = element; }}
+                            className="will-change-transform"
+                        >
+                            <ClipMaskTextAnimation text={link.label} className="text-sm" />
+                        </div>
+                    </div>
                 ))}
             </nav>
 
-            <GetInTouchButton />
+            <div className="overflow-hidden rounded-4xl">
+                <div ref={buttonRef} className="will-change-transform">
+                    <GetInTouchButton />
+                </div>
+            </div>
         </header>
     );
 }
@@ -109,16 +163,6 @@ export function ClipMaskTextAnimation({text, className, handleMouseEnter}: { tex
         </div>
     );
 }
-
-const Logo = () => {
-
-    return (
-        <div className={"flex items-start justify-center gap-2 cursor-pointer"}>
-            <LogoMark/>
-            <ClipMaskTextAnimation text={"lagom"} className={"logo-text text-2xl self-center uppercase font-bold"} handleMouseEnter={handleMouseEnter} />
-        </div>
-    );
-};
 
 export function LogoMark() {
     const svgRef = useRef<SVGSVGElement>(null!);
