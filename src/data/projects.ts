@@ -1,4 +1,84 @@
 import type { Project } from "../types/project";
+import quietMidModernityHero from "../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/1.jpg";
+import quietMidModernityThumb from "../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/1.png";
+import sereneLuxeHero from "../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/1.png";
+import sereneLuxeThumb from "../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/night version/1.png";
+import gentlemanLoftHero from "../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/1.png";
+import gentlemanLoftThumb from "../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/2.png";
+import stoneframeHero from "../assets/LAGOM Arkitektur/4. Project - L-28 Stoneframe villa/Visualizations/1.png";
+import stoneframeThumb from "../assets/LAGOM Arkitektur/4. Project - L-28 Stoneframe villa/Visualizations/2.png";
+import aviatorHero from "../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/1.png";
+import aviatorThumb from "../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/2.png";
+
+export interface ProjectShowcaseItem {
+  id: string;
+  index: string;
+  slug: string;
+  prefix: string;
+  title: string;
+  tags: string[];
+  properties: string[];
+  image: string;
+  thumbnail: string;
+}
+
+export const projectShowcaseProjects: ProjectShowcaseItem[] = [
+  {
+    id: "01",
+    index: "01",
+    slug: "quiet-mid-modernity",
+    prefix: "A/N",
+    title: "The Quiet Mid-Modernity",
+    tags: ["Apartment", "Minimalism", "Natural", "Materials"],
+    properties: ["2023", "Malmö, Sweden", "Area: 78 sqm"],
+    image: quietMidModernityHero,
+    thumbnail: quietMidModernityThumb,
+  },
+  {
+    id: "02",
+    index: "02",
+    slug: "serene-luxe-residence",
+    prefix: "S/L",
+    title: "Serene Luxe Residence",
+    tags: ["Residence", "Soft luxury", "Warm stone", "Interior"],
+    properties: ["2024", "Skopje", "Area: 146 sqm"],
+    image: sereneLuxeHero,
+    thumbnail: sereneLuxeThumb,
+  },
+  {
+    id: "03",
+    index: "03",
+    slug: "gentlemans-loft-cave",
+    prefix: "G/L",
+    title: "Gentleman’s Loft Cave",
+    tags: ["Loft", "Private lounge", "Dark timber", "Atmosphere"],
+    properties: ["2024", "Urban residence", "Area: 112 sqm"],
+    image: gentlemanLoftHero,
+    thumbnail: gentlemanLoftThumb,
+  },
+  {
+    id: "04",
+    index: "04",
+    slug: "l-28-stoneframe-villa",
+    prefix: "L-28",
+    title: "Stoneframe Villa",
+    tags: ["Villa", "Architecture", "Stone", "Courtyard"],
+    properties: ["2024", "Residential", "Area: 240 sqm"],
+    image: stoneframeHero,
+    thumbnail: stoneframeThumb,
+  },
+  {
+    id: "05",
+    index: "05",
+    slug: "lounge-bar-aviator",
+    prefix: "AV",
+    title: "Lounge Bar Aviator 2.0",
+    tags: ["Hospitality", "Bar", "Moody", "Lighting"],
+    properties: ["2023", "Commercial", "Area: 185 sqm"],
+    image: aviatorHero,
+    thumbnail: aviatorThumb,
+  },
+];
 
 export const projects: Project[] = [
   {

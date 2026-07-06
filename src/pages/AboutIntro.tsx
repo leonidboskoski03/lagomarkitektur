@@ -16,14 +16,17 @@ const headingLines = [
     "personal, and quietly effortless.",
 ];
 
-const statement = "LAGOM Architecture creates sustainable spaces defined by balance, meaning, and purpose — where every element is carefully considered and feels just right.";
+const statementSentences = [
+    "LAGOM Architecture creates sustainable spaces defined by balance, meaning, and purpose.",
+    "Every element is carefully considered and feels just right.",
+];
 
 const exitRoutes = [
     {xPercent: 26, yPercent: -24, z: 1320, duration: 1.18, offset: 0.04, imageScale: 1.035},
     {xPercent: -36, yPercent: -17, z: 1430, duration: 1.46, offset: 0.12, imageScale: 1.055},
-    {xPercent: 58, yPercent: 155, z: 1540, duration: 1.85, offset: 0.3, imageScale: 1.065},
     {xPercent: -42, yPercent: 35, z: 1500, duration: 1.62, offset: 0.18, imageScale: 1.07},
     {xPercent: 19, yPercent: 43, z: 1380, duration: 1.3, offset: 0.09, imageScale: 1.045},
+    {xPercent: 58, yPercent: 155, z: 1540, duration: 1.85, offset: 0.3, imageScale: 1.065},
 ];
 
 const imageField = [
@@ -38,11 +41,6 @@ const imageField = [
         className: "left-[17vw] top-[15vh] z-30 h-[22vh] w-[20vw] max-md:left-[4vw] max-md:top-[32vh] max-md:h-[19vh] max-md:w-[42vw]",
     },
     {
-        src: stoneframeEntry,
-        alt: "L-28 Stoneframe villa entrance and stone courtyard",
-        className: "left-[34vw] top-[28vh] z-40 h-[38vh] w-[34vw] max-md:left-[17vw] max-md:top-[42vh] max-md:h-[27vh] max-md:w-[70vw]",
-    },
-    {
         src: stoneframeSide,
         alt: "L-28 Stoneframe villa side elevation in afternoon light",
         className: "bottom-[5vh] left-[10vw] h-[30vh] w-[21vw] max-md:-left-[8vw] max-md:bottom-[10vh] max-md:h-[22vh] max-md:w-[48vw]",
@@ -51,6 +49,11 @@ const imageField = [
         src: archmoodArch,
         alt: "Minimal interior with a sculpted architectural arch",
         className: "bottom-[7vh] left-[33vw] z-30 h-[22vh] w-[20vw] max-md:bottom-[7vh] max-md:left-[38vw] max-md:h-[18vh] max-md:w-[48vw]",
+    },
+    {
+        src: stoneframeEntry,
+        alt: "L-28 Stoneframe villa entrance and stone courtyard",
+        className: "left-[34vw] top-[28vh] z-40 h-[38vh] w-[34vw] max-md:left-[17vw] max-md:top-[42vh] max-md:h-[27vh] max-md:w-[70vw]",
     },
 ];
 
@@ -66,7 +69,7 @@ export const AboutIntro = () => {
         const heading = gsap.utils.toArray<HTMLElement>("[data-about-heading-line]", stage);
         const figures = gsap.utils.toArray<HTMLElement>("[data-about-image]", stage);
         const images = gsap.utils.toArray<HTMLElement>("[data-about-image-inner]", stage);
-        const words = gsap.utils.toArray<HTMLElement>("[data-about-word]", stage);
+        const statementLines = gsap.utils.toArray<HTMLElement>("[data-about-statement-sentence]", stage);
         const matchMedia = gsap.matchMedia();
 
         matchMedia.add(
@@ -79,7 +82,7 @@ export const AboutIntro = () => {
                 if (reduceMotion) return;
 
                 gsap.set(heading, {yPercent: 115, rotation: 0.5});
-                gsap.set(words, {yPercent: 115, autoAlpha: 0, filter: "blur(7px)"});
+                gsap.set(statementLines, {yPercent: 115, autoAlpha: 0, filter: "blur(7px)"});
                 gsap.set(figures, {
                     yPercent: 16,
                     z: 0,
@@ -92,12 +95,16 @@ export const AboutIntro = () => {
                 });
                 gsap.set(images, {yPercent: 24, scale: 1.14, transformOrigin: "50% 100%"});
 
+                const pinDistanceVh = desktop ? 560 : 440;
+                const projectOverlapVh = 100;
+                const projectOverlapStartProgress = 1 - projectOverlapVh / pinDistanceVh;
+
                 const timeline = gsap.timeline({
                     defaults: {ease: motionEases.reveal},
                     scrollTrigger: {
                         trigger: section,
                         start: "top top",
-                        end: desktop ? "+=460%" : "+=340%",
+                        end: `+=${pinDistanceVh}%`,
                         pin: stage,
                         scrub: true,
                         anticipatePin: 1,
@@ -135,12 +142,12 @@ export const AboutIntro = () => {
                 timeline.addLabel("image-exit", imageExitStart);
                 timeline.set(figures, {clipPath: "inset(0% 0 0% 0)", z: 0}, "images-visible");
 
-                timeline.to(words, {
+                timeline.to(statementLines, {
                     yPercent: 0,
                     autoAlpha: 1,
                     filter: "blur(0px)",
-                    duration: 0.5,
-                    stagger: 0.018,
+                    duration: 0.58,
+                    stagger: 0.08,
                     ease: motionEases.enter,
                 }, 1.12);
 
@@ -169,7 +176,76 @@ export const AboutIntro = () => {
                     }, `image-exit+=${route.offset + route.duration - 0.16}`);
                 });
 
-                return () => timeline.kill();
+                const imageExitComplete = imageExitStart + Math.max(...exitRoutes.map((route) => route.offset + route.duration));
+                const imageExitCompleteProgress = projectOverlapStartProgress;
+                timeline.to({}, {
+                    duration: imageExitComplete / imageExitCompleteProgress - imageExitComplete,
+                });
+
+                const statementExitTimeline = gsap.timeline({
+                    paused: true,
+                    defaults: {ease: motionEases.depart},
+                });
+                const headingExitTimeline = gsap.timeline({
+                    paused: true,
+                    defaults: {ease: motionEases.depart},
+                });
+                const statementExitProgress = 0.78;
+                const headingExitProgress = 0.92;
+
+                const reversedStatementLines = [...statementLines].reverse();
+                const reversedHeadingLines = [...heading].reverse();
+
+                statementExitTimeline.to(reversedStatementLines, {
+                    yPercent: -115,
+                    autoAlpha: 0,
+                    filter: "blur(7px)",
+                    duration: 0.58,
+                    stagger: 0.09,
+                });
+
+                headingExitTimeline.to(reversedHeadingLines, {
+                    yPercent: -115,
+                    autoAlpha: 0,
+                    duration: 0.58,
+                    stagger: 0.08,
+                });
+
+                let statementExited = false;
+                let headingExited = false;
+                const textExitTrigger = ScrollTrigger.create({
+                    trigger: section,
+                    start: "top top",
+                    end: `+=${pinDistanceVh}%`,
+                    invalidateOnRefresh: true,
+                    refreshPriority: 1,
+                    onUpdate: (self) => {
+                        console.log(`AboutIntro progress: ${(self.progress * 100).toFixed(1)}%`);
+
+                        if (self.progress >= statementExitProgress && !statementExited) {
+                            statementExited = true;
+                            statementExitTimeline.play();
+                        } else if (self.progress < statementExitProgress && statementExited) {
+                            statementExited = false;
+                            statementExitTimeline.reverse();
+                        }
+
+                        if (self.progress >= headingExitProgress && !headingExited) {
+                            headingExited = true;
+                            headingExitTimeline.play();
+                        } else if (self.progress < headingExitProgress && headingExited) {
+                            headingExited = false;
+                            headingExitTimeline.reverse();
+                        }
+                    },
+                });
+
+                return () => {
+                    timeline.kill();
+                    statementExitTimeline.kill();
+                    headingExitTimeline.kill();
+                    textExitTrigger?.kill();
+                };
             },
             stage,
         );
@@ -180,7 +256,7 @@ export const AboutIntro = () => {
     return (
         <section ref={sectionRef} className="relative z-[2] min-h-screen bg-white text-[#171717] -mt-[100vh]">
             <div ref={stageRef} className="relative h-dvh w-full overflow-hidden [perspective:1600px] [perspective-origin:50%_48%]">
-                <div className="absolute left-[var(--spacing-viewport-gutter)] top-[7vh] z-10 max-w-[58rem] md:top-[8vh]">
+                <div data-about-heading-block className="absolute left-[var(--spacing-viewport-gutter)] top-[7vh] z-10 max-w-[58rem] md:top-[8vh]">
                     <h2 className="text-[clamp(1.85rem,3.6vw,4.1rem)] font-medium leading-[1.02] tracking-[-0.055em]">
                         {headingLines.map((line) => (
                             <span key={line} className="block overflow-hidden pb-[0.06em]">
@@ -209,11 +285,11 @@ export const AboutIntro = () => {
                     ))}
                 </div>
 
-                <p className="absolute bottom-[5vh] right-[var(--spacing-viewport-gutter)] z-10 max-w-[34rem] text-[clamp(1rem,1.45vw,1.35rem)] leading-[1.18] tracking-[-0.025em] max-md:bottom-[3vh] max-md:max-w-[72vw]">
-                    {statement.split(" ").map((word, index) => (
-                        <span key={`${word}-${index}`} className="inline-block overflow-hidden align-bottom">
-                            <span data-about-word className="inline-block will-change-[transform,filter,opacity]">
-                                {word}{index < statement.split(" ").length - 1 ? "\u00a0" : ""}
+                <p data-about-statement-block className="absolute bottom-[5vh] right-[var(--spacing-viewport-gutter)] z-10 max-w-[34rem] text-[clamp(1rem,1.45vw,1.35rem)] leading-[1.18] tracking-[-0.025em] max-md:bottom-[3vh] max-md:max-w-[72vw]">
+                    {statementSentences.map((sentence) => (
+                        <span key={sentence} className="block overflow-hidden pb-[0.04em]">
+                            <span data-about-statement-sentence className="block will-change-[transform,filter,opacity]">
+                                {sentence}
                             </span>
                         </span>
                     ))}

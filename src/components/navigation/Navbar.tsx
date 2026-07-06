@@ -154,6 +154,22 @@ export function Navbar() {
             onLeaveBack: hideSecondaryNavbar,
         });
 
+        const projectSection = document.querySelector("[data-project-section]");
+
+        if (projectSection) {
+            ScrollTrigger.create({
+                trigger: projectSection,
+                start: "top 30%",
+                end: "bottom top",
+                invalidateOnRefresh: true,
+                onEnter: () => {
+                    hideNavbar();
+                    hideSecondaryNavbar();
+                },
+                onLeaveBack: showSecondaryNavbar,
+            });
+        }
+
         window.addEventListener(NAVBAR_REVEAL_EVENT, revealNavbar, { once: true });
         return () => window.removeEventListener(NAVBAR_REVEAL_EVENT, revealNavbar);
     }, { scope: headerRef });
