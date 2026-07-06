@@ -7,6 +7,11 @@ import {projectShowcaseProjects} from "../data/projects";
 
 gsap.registerPlugin(ScrollTrigger);
 
+type PathPoint = {
+    x: number;
+    y: number;
+};
+
 const titleJoin = (prefix: string, title: string) => `${prefix} - ${title}`;
 const renderMetaItems = (items: string[]) => (
     items.map((item, index) => (
@@ -15,6 +20,70 @@ const renderMetaItems = (items: string[]) => (
         </span>
     ))
 );
+
+const cubicPoint = (start: PathPoint, controlA: PathPoint, controlB: PathPoint, end: PathPoint, progress: number) => {
+    const inverse = 1 - progress;
+    const inverseSquared = inverse * inverse;
+    const progressSquared = progress * progress;
+
+    return {
+        x: inverseSquared * inverse * start.x
+            + 3 * inverseSquared * progress * controlA.x
+            + 3 * inverse * progressSquared * controlB.x
+            + progressSquared * progress * end.x,
+        y: inverseSquared * inverse * start.y
+            + 3 * inverseSquared * progress * controlA.y
+            + 3 * inverse * progressSquared * controlB.y
+            + progressSquared * progress * end.y,
+    };
+};
+
+const createArcLengthCurve = (start: PathPoint, controlA: PathPoint, controlB: PathPoint, end: PathPoint) => {
+    const samples = 90;
+    const lengths = [{progress: 0, length: 0}];
+    let previous = start;
+    let totalLength = 0;
+
+    for (let index = 1; index <= samples; index += 1) {
+        const progress = index / samples;
+        const point = cubicPoint(start, controlA, controlB, end, progress);
+        totalLength += Math.hypot(point.x - previous.x, point.y - previous.y);
+        lengths.push({progress, length: totalLength});
+        previous = point;
+    }
+
+    return (distanceProgress: number) => {
+        const targetLength = gsap.utils.clamp(0, 1, distanceProgress) * totalLength;
+        const nextIndex = lengths.findIndex((item) => item.length >= targetLength);
+
+        if (nextIndex <= 0) return start;
+
+        const before = lengths[nextIndex - 1];
+        const after = lengths[nextIndex];
+        const segmentProgress = (targetLength - before.length) / Math.max(after.length - before.length, 1);
+        const bezierProgress = gsap.utils.interpolate(before.progress, after.progress, segmentProgress);
+
+        return cubicPoint(start, controlA, controlB, end, bezierProgress);
+    };
+};
+
+const findClosestCurveProgress = (curve: (progress: number) => PathPoint, distance: (point: PathPoint) => number) => {
+    let closestProgress = 0;
+    let closestDistance = Number.POSITIVE_INFINITY;
+
+    for (let sample = 0; sample <= 180; sample += 1) {
+        const progress = sample / 180;
+        const point = curve(progress);
+        const currentDistance = distance(point);
+
+        if (currentDistance < closestDistance) {
+            closestDistance = currentDistance;
+            closestProgress = progress;
+        }
+    }
+
+    return closestProgress;
+};
 
 export const ProjectSection = () => {
     const sectionRef = useRef<HTMLElement | null>(null);
@@ -69,13 +138,30 @@ export const ProjectSection = () => {
                 const cardHeight = cardWidth * 0.5625;
                 const enterX = -window.innerWidth * 0.5 - cardWidth - 32;
                 const enterY = window.innerHeight * 0.5 + cardHeight * 0.5 + 32;
-                const passX = -cardWidth * 0.22;
-                const passY = -window.innerHeight * 0.36;
-                const exitX = desktop ? window.innerWidth * 0.04 : window.innerWidth * 0.02;
-                const exitY = -window.innerHeight * 0.76;
+                const exitX = -cardWidth / 2;
+                const exitY = -window.innerHeight * 0.88;
+                const cardCurve = createArcLengthCurve(
+                    {x: enterX, y: enterY},
+                    {x: -window.innerWidth * 0.42, y: window.innerHeight * 0.5},
+                    {x: desktop ? window.innerWidth * 0.08 : window.innerWidth * 0.04, y: -window.innerHeight * 0.18},
+                    {x: exitX, y: exitY},
+                );
+                const cardCenterHitProgress = findClosestCurveProgress(
+                    cardCurve,
+                    (point) => Math.hypot(point.x + cardWidth / 2, point.y + cardHeight / 2),
+                );
+                const cardRevealStartProgress = findClosestCurveProgress(
+                    cardCurve,
+                    (point) => Math.abs(point.y),
+                );
+                const cardRevealEndProgress = findClosestCurveProgress(
+                    cardCurve,
+                    (point) => Math.abs(point.y + cardHeight),
+                );
                 const cardGap = desktop ? 0.72 : 0.78;
                 const cardStart = 0.42;
                 const crossDelay = 1.08;
+                const pathDuration = crossDelay + 1.08;
 
                 gsap.set(backgrounds, {
                     autoAlpha: 0,
@@ -93,10 +179,11 @@ export const ProjectSection = () => {
                 gsap.set([titles, indexes, tags, properties], {
                     yPercent: 112,
                     autoAlpha: 0,
-                    willChange: "transform, opacity",
+                    clipPath: "inset(100% 0 0% 0)",
+                    willChange: "transform, opacity, clip-path",
                 });
-                gsap.set([titles[0], indexes[0]], {yPercent: 0, autoAlpha: 1});
-                gsap.set([tags[0], properties[0]], {yPercent: 0, autoAlpha: 1});
+                gsap.set([titles[0], indexes[0]], {yPercent: 0, autoAlpha: 1, clipPath: "inset(0% 0 0% 0)"});
+                gsap.set([tags[0], properties[0]], {yPercent: 0, autoAlpha: 1, clipPath: "inset(0% 0 0% 0)"});
                 gsap.set(firstMetaItems, {yPercent: 112, autoAlpha: 0});
                 gsap.set(line, {scaleX: 0, transformOrigin: "center center"});
                 gsap.set(centerGroup, {autoAlpha: 0.74, scale: 0.985, willChange: "transform, opacity"});
@@ -172,7 +259,8 @@ export const ProjectSection = () => {
                 });
 
                 cards.forEach((card) => {
-                    const image = card.querySelector("img");
+                    const primaryImage = card.querySelector("[data-project-card-primary]");
+                    const secondaryImage = card.querySelector("[data-project-card-secondary]");
                     gsap.set(card, {
                         width: cardWidth,
                         height: cardHeight,
@@ -185,10 +273,16 @@ export const ProjectSection = () => {
                         transformOrigin: "50% 50%",
                         willChange: "transform, clip-path",
                     });
-                    gsap.set(image, {
+                    gsap.set(primaryImage, {
+                        clipPath: "inset(0% 0 0% 0)",
                         scale: 1.12,
                         yPercent: 10,
-                        willChange: "transform",
+                        willChange: "transform, clip-path",
+                    });
+                    gsap.set(secondaryImage, {
+                        clipPath: "inset(100% 0 0% 0)",
+                        scale: 1.06,
+                        willChange: "transform, clip-path",
                     });
                 });
 
@@ -212,7 +306,7 @@ export const ProjectSection = () => {
                         stagger: 0.1,
                         ease: motionEases.reveal,
                     }, 0.06)
-                    .to(cards.map((card) => card.querySelector("img")), {
+                    .to(cards.map((card) => card.querySelector("[data-project-card-primary]")), {
                         yPercent: 0,
                         scale: 1,
                         duration: 0.95,
@@ -222,37 +316,49 @@ export const ProjectSection = () => {
 
                 cards.forEach((card, index) => {
                     const start = cardStart + index * cardGap;
-                    const cross = start + crossDelay;
+                    const pathState = {progress: 0};
+                    const primaryImage = card.querySelector("[data-project-card-primary]");
+                    const secondaryImage = card.querySelector("[data-project-card-secondary]");
+                    const revealStart = start + Math.min(cardRevealStartProgress, cardRevealEndProgress) * pathDuration;
+                    const revealDuration = Math.abs(cardRevealEndProgress - cardRevealStartProgress) * pathDuration;
 
                     timeline
-                        .to(card, {
-                            x: passX,
-                            y: passY,
-                            scale: 0.94,
-                            rotation: 0,
-                            duration: crossDelay,
+                        .to(pathState, {
+                            progress: 1,
+                            duration: pathDuration,
                             ease: "none",
+                            onUpdate: () => {
+                                const point = cardCurve(pathState.progress);
+                                const scale = pathState.progress < 0.56
+                                    ? gsap.utils.interpolate(0.88, 0.94, pathState.progress / 0.56)
+                                    : gsap.utils.interpolate(0.94, 0.9, (pathState.progress - 0.56) / 0.44);
+                                const fadeProgress = gsap.utils.clamp(0, 1, (pathState.progress - 0.86) / 0.14);
+
+                                gsap.set(card, {
+                                    x: point.x,
+                                    y: point.y,
+                                    scale,
+                                    autoAlpha: 1 - fadeProgress,
+                                });
+                            },
                         }, start)
-                        .to(card, {
-                            x: exitX,
-                            y: exitY,
-                            scale: 0.9,
-                            rotation: 0,
-                            duration: 1.08,
+                        .to(primaryImage, {
+                            clipPath: "inset(100% 0 0% 0)",
+                            duration: revealDuration,
                             ease: "none",
-                        }, cross)
-                        .to(card, {
-                            autoAlpha: 0,
-                            scale: 0.9,
-                            duration: 0.28,
-                            ease: motionEases.depart,
-                        }, cross + 0.9);
+                        }, revealStart)
+                        .to(secondaryImage, {
+                            clipPath: "inset(0% 0 0% 0)",
+                            duration: revealDuration,
+                            ease: "none",
+                        }, revealStart)
+                        .set(card, {autoAlpha: 0}, start + pathDuration);
                 });
 
                 projectShowcaseProjects.forEach((_, index) => {
                     if (index === 0) return;
 
-                    const switchAt = cardStart + (index - 1) * cardGap + crossDelay;
+                    const switchAt = cardStart + (index - 1) * cardGap + cardCenterHitProgress * pathDuration;
                     const previous = index - 1;
 
                     timeline
@@ -272,17 +378,20 @@ export const ProjectSection = () => {
                         }, switchAt + 0.05)
                         .to([titles[previous], indexes[previous], tags[previous], properties[previous]], {
                             yPercent: -112,
-                            autoAlpha: 0,
+                            autoAlpha: 0.92,
+                            clipPath: "inset(0% 0 100% 0)",
                             duration: 0.32,
                             stagger: 0.018,
                             ease: motionEases.depart,
                         }, switchAt)
                         .fromTo([indexes[index], titles[index], tags[index], properties[index]], {
                             yPercent: 112,
-                            autoAlpha: 0,
+                            autoAlpha: 0.92,
+                            clipPath: "inset(100% 0 0% 0)",
                         }, {
                             yPercent: 0,
                             autoAlpha: 1,
+                            clipPath: "inset(0% 0 0% 0)",
                             duration: 0.5,
                             stagger: 0.026,
                             ease: motionEases.enter,
@@ -373,9 +482,18 @@ export const ProjectSection = () => {
                             aria-label={`Open project ${project.title}`}
                         >
                             <img
+                                data-project-card-secondary
+                                src={project.image}
+                                alt=""
+                                aria-hidden="true"
+                                className="absolute inset-0 z-0 h-full w-full object-cover"
+                                loading="lazy"
+                            />
+                            <img
+                                data-project-card-primary
                                 src={project.thumbnail}
                                 alt={project.title}
-                                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                className="absolute inset-0 z-10 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                 loading="lazy"
                             />
                             <span className="absolute inset-0 bg-black/10 transition-colors duration-500 group-hover:bg-black/0"/>
