@@ -3,7 +3,8 @@ import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {motionEases} from "../lib/motion";
-import {projectShowcaseProjects} from "../data/projects";
+import {projectShowcaseIntro, projectShowcaseProjects} from "../data/projects";
+import projectIntroImage from "../assets/images/hero2.avif";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -85,6 +86,8 @@ const findClosestCurveProgress = (curve: (progress: number) => PathPoint, distan
     return closestProgress;
 };
 
+const clampValue = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
 export const ProjectSection = () => {
     const sectionRef = useRef<HTMLElement | null>(null);
     const stageRef = useRef<HTMLDivElement | null>(null);
@@ -100,10 +103,16 @@ export const ProjectSection = () => {
         const indexes = gsap.utils.toArray<HTMLElement>("[data-project-index]", stage);
         const tags = gsap.utils.toArray<HTMLElement>("[data-project-tags]", stage);
         const properties = gsap.utils.toArray<HTMLElement>("[data-project-properties]", stage);
-        const firstMetaItems = [
-            ...gsap.utils.toArray<HTMLElement>("[data-project-meta-item]", tags[0]),
-            ...gsap.utils.toArray<HTMLElement>("[data-project-meta-item]", properties[0]),
+        const introBackground = stage.querySelector<HTMLElement>("[data-project-intro-bg]");
+        const introTagsElement = stage.querySelector<HTMLElement>("[data-project-intro-tags]");
+        const introPropertiesElement = stage.querySelector<HTMLElement>("[data-project-intro-properties]");
+        const introIndexElement = stage.querySelector<HTMLElement>("[data-project-intro-index]");
+        const introTitleElement = stage.querySelector<HTMLElement>("[data-project-intro-title]");
+        const introMetaItems = [
+            ...gsap.utils.toArray<HTMLElement>("[data-project-meta-item]", introTagsElement),
+            ...gsap.utils.toArray<HTMLElement>("[data-project-meta-item]", introPropertiesElement),
         ];
+        const metaItems = gsap.utils.toArray<HTMLElement>("[data-project-meta-item]", stage);
         const backgroundFrame = stage.querySelector<HTMLElement>("[data-project-bg-frame]");
         const centerGroup = stage.querySelector<HTMLElement>("[data-project-center-group]");
         const indexWrap = stage.querySelector<HTMLElement>("[data-project-index-wrap]");
@@ -122,12 +131,17 @@ export const ProjectSection = () => {
                 const {desktop, reduceMotion} = context.conditions as {desktop: boolean; reduceMotion: boolean};
 
                 if (reduceMotion) {
+                    gsap.set([introBackground, introTagsElement, introPropertiesElement, introIndexElement, introTitleElement], {
+                        autoAlpha: 0,
+                        clipPath: "inset(0% 0 0% 0)",
+                        clearProps: "transform",
+                    });
                     gsap.set([backgrounds[0], cards, titles[0], indexes[0], tags[0], properties[0]], {
                         autoAlpha: 1,
                         clipPath: "inset(0% 0 0% 0)",
                         clearProps: "transform",
                     });
-                    gsap.set(firstMetaItems, {autoAlpha: 1, clearProps: "transform"});
+                    gsap.set(metaItems, {autoAlpha: 1, clearProps: "transform"});
                     gsap.set([centerGroup, indexWrap, titleWrap, line], {autoAlpha: 1, clearProps: "transform"});
                     gsap.set(line, {scaleX: 1});
                     gsap.set(backgroundFrame, {padding: 0});
@@ -146,10 +160,6 @@ export const ProjectSection = () => {
                     {x: desktop ? window.innerWidth * 0.08 : window.innerWidth * 0.04, y: -window.innerHeight * 0.18},
                     {x: exitX, y: exitY},
                 );
-                const cardCenterHitProgress = findClosestCurveProgress(
-                    cardCurve,
-                    (point) => Math.hypot(point.x + cardWidth / 2, point.y + cardHeight / 2),
-                );
                 const cardRevealStartProgress = findClosestCurveProgress(
                     cardCurve,
                     (point) => Math.abs(point.y),
@@ -158,22 +168,26 @@ export const ProjectSection = () => {
                     cardCurve,
                     (point) => Math.abs(point.y + cardHeight),
                 );
+                const cardTopHitProgress = cardRevealStartProgress;
+                const cardFadeStartProgress = 0.94;
                 const cardGap = desktop ? 0.72 : 0.78;
                 const cardStart = 0.42;
                 const crossDelay = 1.08;
                 const pathDuration = crossDelay + 1.08;
 
+                gsap.set(introBackground, {
+                    autoAlpha: 1,
+                    scale: 1,
+                    filter: "brightness(0.48) contrast(1.08) saturate(0.86)",
+                    transformOrigin: "50% 50%",
+                    willChange: "transform, opacity, filter",
+                });
                 gsap.set(backgrounds, {
                     autoAlpha: 0,
                     scale: 1.08,
                     filter: "brightness(0.44) contrast(1.1) saturate(0.88)",
                     transformOrigin: "50% 50%",
                     willChange: "transform, opacity, filter",
-                });
-                gsap.set(backgrounds[0], {
-                    autoAlpha: 1,
-                    scale: 1,
-                    filter: "brightness(0.5) contrast(1.08) saturate(0.92)",
                 });
 
                 gsap.set([titles, indexes, tags, properties], {
@@ -182,13 +196,18 @@ export const ProjectSection = () => {
                     clipPath: "inset(100% 0 0% 0)",
                     willChange: "transform, opacity, clip-path",
                 });
-                gsap.set([titles[0], indexes[0]], {yPercent: 0, autoAlpha: 1, clipPath: "inset(0% 0 0% 0)"});
-                gsap.set([tags[0], properties[0]], {yPercent: 0, autoAlpha: 1, clipPath: "inset(0% 0 0% 0)"});
-                gsap.set(firstMetaItems, {yPercent: 112, autoAlpha: 0});
-                gsap.set(line, {scaleX: 0, transformOrigin: "center center"});
+                gsap.set([introTagsElement, introPropertiesElement, introIndexElement, introTitleElement], {
+                    yPercent: 0,
+                    autoAlpha: 1,
+                    clipPath: "inset(0% 0 0% 0)",
+                    willChange: "transform, opacity, clip-path",
+                });
+                gsap.set(metaItems, {yPercent: 0, autoAlpha: 1});
+                gsap.set(introMetaItems, {yPercent: 112, autoAlpha: 0});
+                gsap.set(line, {scaleX: 0, autoAlpha: 1, transformOrigin: "center center"});
                 gsap.set(centerGroup, {autoAlpha: 0.74, scale: 0.985, willChange: "transform, opacity"});
                 gsap.set(indexWrap, {x: desktop ? window.innerWidth * 0.18 : window.innerWidth * 0.12, willChange: "transform"});
-                gsap.set(titleWrap, {x: desktop ? -window.innerWidth * 0.18 : -window.innerWidth * 0.12, willChange: "transform"});
+                gsap.set(titleWrap, {x: desktop ? -window.innerWidth * 0.18 : -window.innerWidth * 0.12, willChange: "transform, width"});
                 gsap.set(rail, {transformPerspective: 1200});
                 gsap.set(backgroundFrame, {padding: desktop ? 128 : 64});
 
@@ -220,32 +239,6 @@ export const ProjectSection = () => {
                         duration: 1,
                     }, 0.08);
 
-                const metadataIntro = gsap.timeline({
-                    paused: true,
-                    defaults: {ease: motionEases.enter},
-                });
-
-                metadataIntro
-                    .to(firstMetaItems, {
-                        yPercent: 0,
-                        autoAlpha: 1,
-                        duration: 0.58,
-                        stagger: 0.035,
-                    }, 0)
-                    .to([tags[0], properties[0]], {
-                        autoAlpha: 1,
-                        duration: 0.01,
-                    }, 0);
-
-                ScrollTrigger.create({
-                    trigger: section,
-                    start: "top -10%",
-                    end: "bottom top",
-                    onEnter: () => metadataIntro.play(),
-                    onLeaveBack: () => metadataIntro.reverse(),
-                    invalidateOnRefresh: true,
-                });
-
                 gsap.to(backgroundFrame, {
                     padding: 0,
                     ease: "none",
@@ -257,6 +250,155 @@ export const ProjectSection = () => {
                         invalidateOnRefresh: true,
                     },
                 });
+
+                const introMetadataIntro = gsap.timeline({
+                    paused: true,
+                    defaults: {ease: motionEases.enter},
+                });
+
+                introMetadataIntro.to(introMetaItems, {
+                    yPercent: 0,
+                    autoAlpha: 1,
+                    duration: 0.58,
+                    stagger: 0.035,
+                }, 0);
+
+                ScrollTrigger.create({
+                    trigger: section,
+                    start: "top -10%",
+                    end: "bottom top",
+                    onEnter: () => introMetadataIntro.play(),
+                    onLeaveBack: () => introMetadataIntro.reverse(),
+                    invalidateOnRefresh: true,
+                });
+
+                const uniqueElements = (items: Array<HTMLElement | null | undefined>) => (
+                    Array.from(new Set(items.filter((item): item is HTMLElement => Boolean(item))))
+                );
+                const getContentTargets = (index: number) => (
+                    index >= 0
+                        ? uniqueElements([indexes[index], titles[index], tags[index], properties[index]])
+                        : uniqueElements([introIndexElement, introTitleElement, introTagsElement, introPropertiesElement])
+                );
+                const allContentTargets = uniqueElements([
+                    introIndexElement,
+                    introTitleElement,
+                    introTagsElement,
+                    introPropertiesElement,
+                    ...indexes,
+                    ...titles,
+                    ...tags,
+                    ...properties,
+                ]);
+                const switchTimes = projectShowcaseProjects.map((_, index) => (
+                    cardStart + index * cardGap + cardTopHitProgress * pathDuration
+                ));
+                const layoutPreviewTimes = switchTimes;
+                let activeProjectIndex = -1;
+                let activeLayoutIndex = -1;
+                let contentTransitionTimeline: gsap.core.Timeline | undefined;
+
+                const getTitleElement = (index: number) => (
+                    index >= 0 ? titles[index] : introTitleElement
+                );
+
+                const getTitleWidth = (index: number) => {
+                    const titleElement = getTitleElement(index);
+                    const sideGutter = desktop ? 40 : 24;
+                    const centerGap = desktop ? 16 : 12;
+                    const indexWidth = indexWrap?.getBoundingClientRect().width ?? 82;
+                    const minimumLineWidth = desktop ? 96 : 48;
+                    const availableWidth = window.innerWidth - sideGutter * 2 - indexWidth - centerGap * 2 - minimumLineWidth;
+                    const measuredWidth = titleElement?.scrollWidth ?? 0;
+                    const titleSafetyBuffer = desktop ? 36 : 24;
+
+                    return clampValue(measuredWidth + titleSafetyBuffer, desktop ? 260 : 168, availableWidth);
+                };
+
+                const previewProjectLayout = (nextIndex: number) => {
+                    if (nextIndex === activeLayoutIndex) return;
+
+                    activeLayoutIndex = nextIndex;
+
+                    gsap.to(titleWrap, {
+                        width: getTitleWidth(nextIndex),
+                        delay: 0.12,
+                        duration: 0.78,
+                        ease: motionEases.reveal,
+                        overwrite: "auto",
+                    });
+                    gsap.fromTo(line, {
+                        autoAlpha: 0.72,
+                    }, {
+                        autoAlpha: 1,
+                        delay: 0.12,
+                        duration: 0.78,
+                        ease: motionEases.reveal,
+                        overwrite: "auto",
+                    });
+                };
+
+                gsap.set(titleWrap, {width: getTitleWidth(-1)});
+
+                const switchProjectContent = (nextIndex: number) => {
+                    if (nextIndex === activeProjectIndex) return;
+
+                    const previousIndex = activeProjectIndex;
+                    const direction = nextIndex > previousIndex ? 1 : -1;
+                    const outgoingTargets = getContentTargets(previousIndex);
+                    const incomingTargets = getContentTargets(nextIndex);
+                    const transitionTargets = new Set([...outgoingTargets, ...incomingTargets]);
+                    const staleTargets = allContentTargets.filter((target) => !transitionTargets.has(target));
+
+                    contentTransitionTimeline?.kill();
+                    gsap.killTweensOf(allContentTargets);
+                    gsap.set(staleTargets, {
+                        yPercent: 112 * direction,
+                        autoAlpha: 0,
+                        clipPath: direction > 0 ? "inset(100% 0 0% 0)" : "inset(0% 0 100% 0)",
+                    });
+                    activeProjectIndex = nextIndex;
+
+                    contentTransitionTimeline = gsap.timeline({
+                        defaults: {
+                            ease: motionEases.enter,
+                            overwrite: true,
+                        },
+                        onComplete: () => {
+                            const activeTargets = new Set(getContentTargets(activeProjectIndex));
+                            const inactiveTargets = allContentTargets.filter((target) => !activeTargets.has(target));
+
+                            gsap.set(inactiveTargets, {
+                                yPercent: 112 * direction,
+                                autoAlpha: 0,
+                                clipPath: direction > 0 ? "inset(100% 0 0% 0)" : "inset(0% 0 100% 0)",
+                            });
+                        },
+                    })
+                        .to(outgoingTargets, {
+                            yPercent: -112 * direction,
+                            autoAlpha: 0.84,
+                            clipPath: direction > 0 ? "inset(0% 0 100% 0)" : "inset(100% 0 0% 0)",
+                            duration: 0.62,
+                            stagger: 0.032,
+                            ease: motionEases.reveal,
+                            overwrite: true,
+                        }, 0)
+                        .fromTo(incomingTargets, {
+                            yPercent: 112 * direction,
+                            autoAlpha: 0.86,
+                            clipPath: direction > 0 ? "inset(100% 0 0% 0)" : "inset(0% 0 100% 0)",
+                        }, {
+                            yPercent: 0,
+                            autoAlpha: 1,
+                            clipPath: "inset(0% 0 0% 0)",
+                            duration: 0.82,
+                            stagger: 0.038,
+                            ease: motionEases.reveal,
+                            immediateRender: false,
+                            overwrite: true,
+                        }, 0.22);
+                };
 
                 cards.forEach((card) => {
                     const primaryImage = card.querySelector("[data-project-card-primary]");
@@ -280,9 +422,9 @@ export const ProjectSection = () => {
                         willChange: "transform, clip-path",
                     });
                     gsap.set(secondaryImage, {
-                        clipPath: "inset(100% 0 0% 0)",
+                        clipPath: "inset(0% 0 0% 0)",
                         scale: 1.06,
-                        willChange: "transform, clip-path",
+                        willChange: "transform",
                     });
                 });
 
@@ -297,6 +439,22 @@ export const ProjectSection = () => {
                         anticipatePin: 1,
                         invalidateOnRefresh: true,
                     },
+                });
+
+                timeline.eventCallback("onUpdate", () => {
+                    const currentTime = timeline.time();
+                    let nextIndex = -1;
+                    let previewIndex = -1;
+
+                    switchTimes.forEach((switchAt, index) => {
+                        if (currentTime >= switchAt) nextIndex = index;
+                    });
+                    layoutPreviewTimes.forEach((switchAt, index) => {
+                        if (currentTime >= switchAt) previewIndex = index;
+                    });
+
+                    previewProjectLayout(previewIndex);
+                    switchProjectContent(nextIndex);
                 });
 
                 timeline
@@ -318,9 +476,8 @@ export const ProjectSection = () => {
                     const start = cardStart + index * cardGap;
                     const pathState = {progress: 0};
                     const primaryImage = card.querySelector("[data-project-card-primary]");
-                    const secondaryImage = card.querySelector("[data-project-card-secondary]");
                     const revealStart = start + Math.min(cardRevealStartProgress, cardRevealEndProgress) * pathDuration;
-                    const revealDuration = Math.abs(cardRevealEndProgress - cardRevealStartProgress) * pathDuration;
+                    const revealDuration = Math.max(Math.abs(cardRevealEndProgress - cardRevealStartProgress) * pathDuration, 0.24);
 
                     timeline
                         .to(pathState, {
@@ -332,7 +489,7 @@ export const ProjectSection = () => {
                                 const scale = pathState.progress < 0.56
                                     ? gsap.utils.interpolate(0.88, 0.94, pathState.progress / 0.56)
                                     : gsap.utils.interpolate(0.94, 0.9, (pathState.progress - 0.56) / 0.44);
-                                const fadeProgress = gsap.utils.clamp(0, 1, (pathState.progress - 0.86) / 0.14);
+                                const fadeProgress = gsap.utils.clamp(0, 1, (pathState.progress - cardFadeStartProgress) / (1 - cardFadeStartProgress));
 
                                 gsap.set(card, {
                                     x: point.x,
@@ -347,22 +504,16 @@ export const ProjectSection = () => {
                             duration: revealDuration,
                             ease: "none",
                         }, revealStart)
-                        .to(secondaryImage, {
-                            clipPath: "inset(0% 0 0% 0)",
-                            duration: revealDuration,
-                            ease: "none",
-                        }, revealStart)
                         .set(card, {autoAlpha: 0}, start + pathDuration);
                 });
 
                 projectShowcaseProjects.forEach((_, index) => {
-                    if (index === 0) return;
-
-                    const switchAt = cardStart + (index - 1) * cardGap + cardCenterHitProgress * pathDuration;
+                    const switchAt = switchTimes[index];
                     const previous = index - 1;
+                    const previousBackground = previous >= 0 ? backgrounds[previous] : introBackground;
 
                     timeline
-                        .to(backgrounds[previous], {
+                        .to(previousBackground, {
                             autoAlpha: 0,
                             scale: 1.035,
                             filter: "brightness(0.28) contrast(1.14) saturate(0.72)",
@@ -375,27 +526,6 @@ export const ProjectSection = () => {
                             filter: "brightness(0.5) contrast(1.08) saturate(0.92)",
                             duration: 0.68,
                             ease: motionEases.enter,
-                        }, switchAt + 0.05)
-                        .to([titles[previous], indexes[previous], tags[previous], properties[previous]], {
-                            yPercent: -112,
-                            autoAlpha: 0.92,
-                            clipPath: "inset(0% 0 100% 0)",
-                            duration: 0.32,
-                            stagger: 0.018,
-                            ease: motionEases.depart,
-                        }, switchAt)
-                        .fromTo([indexes[index], titles[index], tags[index], properties[index]], {
-                            yPercent: 112,
-                            autoAlpha: 0.92,
-                            clipPath: "inset(100% 0 0% 0)",
-                        }, {
-                            yPercent: 0,
-                            autoAlpha: 1,
-                            clipPath: "inset(0% 0 0% 0)",
-                            duration: 0.5,
-                            stagger: 0.026,
-                            ease: motionEases.enter,
-                            immediateRender: false,
                         }, switchAt + 0.14);
                 });
 
@@ -405,6 +535,11 @@ export const ProjectSection = () => {
                     duration: 0.9,
                     ease: motionEases.settle,
                 }, 4.1);
+
+                return () => {
+                    contentTransitionTimeline?.kill();
+                    gsap.killTweensOf(allContentTargets);
+                };
             },
         );
 
@@ -416,6 +551,14 @@ export const ProjectSection = () => {
             <div ref={stageRef} className="relative h-screen w-full overflow-hidden bg-transparent">
                 <div data-project-bg-frame className="absolute inset-0 overflow-hidden ">
                     <div className="relative h-full w-full overflow-hidden">
+                        <div data-project-intro-bg className="absolute inset-0" aria-hidden="true">
+                            <img
+                                src={projectIntroImage}
+                                alt=""
+                                className="h-full w-full object-cover"
+                                loading="eager"
+                            />
+                        </div>
                         {projectShowcaseProjects.map((project, index) => (
                             <div
                                 key={project.id}
@@ -431,13 +574,16 @@ export const ProjectSection = () => {
                                 />
                             </div>
                         ))}
-                        <div className="absolute inset-0 bg-black/46"/>
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_56%_48%,transparent_0%,rgba(0,0,0,0.14)_36%,rgba(0,0,0,0.6)_100%)]"/>
+                        <div className="absolute inset-0 bg-black/26"/>
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_56%_48%,transparent_0%,rgba(0,0,0,0.05)_36%,rgba(0,0,0,0.4)_100%)]"/>
                     </div>
                 </div>
 
                 <div className="pointer-events-none absolute left-6 right-6 top-10 z-30 flex items-start justify-between gap-8 text-[24px] font-normal leading-none tracking-[-0.045em] text-white/94 md:left-10 md:right-10">
                     <div className="relative h-[1.08em] min-w-0 flex-1 overflow-hidden">
+                        <span data-project-intro-tags className="absolute left-0 top-0 block max-w-full whitespace-nowrap">
+                            {renderMetaItems(projectShowcaseIntro.tags)}
+                        </span>
                         {projectShowcaseProjects.map((project) => (
                             <span key={project.id} data-project-tags className="absolute left-0 top-0 block max-w-full whitespace-nowrap">
                                 {renderMetaItems(project.tags)}
@@ -445,6 +591,9 @@ export const ProjectSection = () => {
                         ))}
                     </div>
                     <div className="relative hidden h-[1.08em] min-w-[38vw] overflow-hidden text-right md:block">
+                        <span data-project-intro-properties className="absolute right-0 top-0 block whitespace-nowrap">
+                            {renderMetaItems(projectShowcaseIntro.properties)}
+                        </span>
                         {projectShowcaseProjects.map((project) => (
                             <span key={project.id} data-project-properties className="absolute right-0 top-0 block whitespace-nowrap">
                                 {renderMetaItems(project.properties)}
@@ -455,6 +604,9 @@ export const ProjectSection = () => {
 
                 <div data-project-center-group className="pointer-events-none absolute left-6 right-6 top-1/2 z-30 flex -translate-y-1/2 items-center gap-3 text-[52px] font-normal leading-none tracking-[-0.055em] md:left-10 md:right-10 md:gap-4">
                     <div data-project-index-wrap className="relative h-[1.06em] w-[82px] shrink-0 overflow-hidden">
+                        <span data-project-intro-index className="absolute left-0 top-0 block">
+                            {projectShowcaseIntro.index}
+                        </span>
                         {projectShowcaseProjects.map((project) => (
                             <span key={project.id} data-project-index className="absolute left-0 top-0 block">
                                 /{project.index}
@@ -462,7 +614,10 @@ export const ProjectSection = () => {
                         ))}
                     </div>
                     <div data-project-line className="h-px flex-1 bg-white/58"/>
-                    <div data-project-title-wrap className="relative h-[1.08em] min-w-[45vw] overflow-hidden text-right">
+                    <div data-project-title-wrap className="relative h-[1.08em] shrink-0 overflow-hidden text-right">
+                        <span data-project-intro-title className="absolute right-0 top-0 block whitespace-nowrap">
+                            {projectShowcaseIntro.title}
+                        </span>
                         {projectShowcaseProjects.map((project) => (
                             <span key={project.id} data-project-title className="absolute right-0 top-0 block whitespace-nowrap">
                                 {titleJoin(project.prefix, project.title)}
@@ -478,12 +633,12 @@ export const ProjectSection = () => {
                             data-project-card
                             data-cursor="open"
                             href={`/projects/${project.slug}`}
-                            className="group absolute left-1/2 top-1/2 block overflow-hidden bg-white/10 shadow-[0_2rem_5rem_rgba(0,0,0,0.36)] outline outline-1 outline-white/14"
+                            className="group absolute left-1/2 top-1/2 block overflow-hidden shadow-[0_2rem_5rem_rgba(0,0,0,0.36)] outline outline-1 outline-white/14"
                             aria-label={`Open project ${project.title}`}
                         >
                             <img
                                 data-project-card-secondary
-                                src={project.image}
+                                src={project.secondaryImage}
                                 alt=""
                                 aria-hidden="true"
                                 className="absolute inset-0 z-0 h-full w-full object-cover"
@@ -496,7 +651,6 @@ export const ProjectSection = () => {
                                 className="absolute inset-0 z-10 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                 loading="lazy"
                             />
-                            <span className="absolute inset-0 bg-black/10 transition-colors duration-500 group-hover:bg-black/0"/>
                         </a>
                     ))}
                 </div>

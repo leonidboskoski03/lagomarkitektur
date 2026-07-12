@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getProjectBySlug, projects } from "../data/projects";
 import { ProjectHero } from "../components/project/ProjectHero";
 import { ImageReveal } from "../components/ui/ImageReveal";
@@ -13,56 +13,36 @@ export function ProjectDetail() {
   if (!project) {
     return (
       <PageContainer className="pt-40 text-center">
-        <h1 className="font-display text-4xl mb-4">Projektet hittades inte</h1>
-        <Link
-          to="/projekt"
-          data-cursor=""
-          className="text-sm tracking-widest uppercase underline"
-        >
-          Tillbaka till projekt
+        <h1 className="mb-4 font-display text-4xl">Project not found</h1>
+        <Link to="/work" data-cursor="" className="text-sm uppercase tracking-widest underline">
+          Back to work
         </Link>
       </PageContainer>
     );
   }
 
-  const currentIndex = projects.findIndex((p) => p.slug === slug);
-  const nextProject =
-    currentIndex < projects.length - 1 ? projects[currentIndex + 1] : projects[0];
+  const currentIndex = projects.findIndex((item) => item.slug === slug);
+  const nextProject = currentIndex < projects.length - 1 ? projects[currentIndex + 1] : projects[0];
 
   return (
     <>
       <ProjectHero project={project} />
 
       <PageContainer ref={contentRef} className="section-space">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-20">
+        <div className="mb-20 grid grid-cols-1 gap-12 md:grid-cols-3">
           <div className="md:col-span-2">
-            <p className="text-base md:text-lg leading-relaxed text-text-primary">
+            <p className="text-base leading-relaxed text-text-primary md:text-lg">
               {project.description}
             </p>
           </div>
-          <div className="space-y-6">
-            <div>
-              <span className="text-xs tracking-widest uppercase text-text-muted block mb-1">
-                År
-              </span>
-              <span className="text-sm">{project.year}</span>
-            </div>
-            <div>
-              <span className="text-xs tracking-widest uppercase text-text-muted block mb-1">
-                Plats
-              </span>
-              <span className="text-sm">{project.location}</span>
-            </div>
-            <div>
-              <span className="text-xs tracking-widest uppercase text-text-muted block mb-1">
-                Kategori
-              </span>
-              <span className="text-sm">{project.category}</span>
-            </div>
+          <aside className="space-y-6">
+            <ProjectMeta label="Year" value={project.year} />
+            <ProjectMeta label="Location" value={project.location} />
+            <ProjectMeta label="Category" value={project.category} />
             {project.services.length > 0 && (
               <div>
-                <span className="text-xs tracking-widest uppercase text-text-muted block mb-2">
-                  Tjänster
+                <span className="mb-2 block text-xs uppercase tracking-widest text-text-muted">
+                  Services
                 </span>
                 <ul className="space-y-1">
                   {project.services.map((service) => (
@@ -73,18 +53,18 @@ export function ProjectDetail() {
                 </ul>
               </div>
             )}
-          </div>
+          </aside>
         </div>
 
         {project.gallery.length > 0 && (
           <div className="space-y-8 md:space-y-16">
-            {project.gallery.map((img, i) => (
-              <div key={i} className={i % 2 === 0 ? "md:col-span-2 md:col-start-2" : ""}>
+            {project.gallery.map((img, index) => (
+              <div key={img} className={index % 2 === 0 ? "md:col-span-2 md:col-start-2" : ""}>
                 <ImageReveal
                   src={img}
-                  alt={`${project.title} — bild ${i + 1}`}
-                  aspectRatio={i === 1 ? "16/9" : "4/3"}
-                  className={i % 2 === 0 ? "md:w-2/3 ml-auto" : "md:w-2/3"}
+                  alt={`${project.title} image ${index + 1}`}
+                  aspectRatio={index === 1 ? "16/9" : "4/3"}
+                  className={index % 2 === 0 ? "ml-auto md:w-2/3" : "md:w-2/3"}
                 />
               </div>
             ))}
@@ -92,9 +72,9 @@ export function ProjectDetail() {
         )}
 
         {project.credits && (
-          <div className="mt-20 pt-12 border-t border-border">
-            <span className="text-xs tracking-widest uppercase text-text-muted block mb-2">
-              Credits
+          <div className="mt-20 border-t border-border pt-12">
+            <span className="mb-2 block text-xs uppercase tracking-widest text-text-muted">
+              Scale
             </span>
             <p className="text-sm text-text-muted">{project.credits}</p>
           </div>
@@ -103,25 +83,36 @@ export function ProjectDetail() {
 
       <div className="border-t border-border">
         <Link
-          to={`/projekt/${nextProject.slug}`}
+          to={`/work/${nextProject.slug}`}
           data-cursor=""
-          className="group block section-space-sm hover:bg-surface/30 transition-colors"
+          className="group block section-space-sm transition-colors hover:bg-surface/30"
         >
           <PageContainer className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
             <div>
-              <span className="text-xs tracking-widest uppercase text-text-muted block mb-2">
-                Nästa projekt
+              <span className="mb-2 block text-xs uppercase tracking-widest text-text-muted">
+                Next project
               </span>
-              <h3 className="font-display text-2xl md:text-4xl text-text-primary group-hover:text-text-muted transition-colors">
+              <h3 className="font-display text-2xl text-text-primary transition-colors group-hover:text-text-muted md:text-4xl">
                 {nextProject.title}
               </h3>
             </div>
-            <span className="text-sm tracking-widest uppercase text-text-muted group-hover:text-text-primary transition-colors">
-              Visa →
+            <span className="text-sm uppercase tracking-widest text-text-muted transition-colors group-hover:text-text-primary">
+              View →
             </span>
           </PageContainer>
         </Link>
       </div>
     </>
+  );
+}
+
+function ProjectMeta({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <span className="mb-1 block text-xs uppercase tracking-widest text-text-muted">
+        {label}
+      </span>
+      <span className="text-sm">{value}</span>
+    </div>
   );
 }

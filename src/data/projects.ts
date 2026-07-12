@@ -1,14 +1,40 @@
 import type { Project } from "../types/project";
-import quietMidModernityHero from "../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/1.jpg";
-import quietMidModernityThumb from "../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/1.png";
-import sereneLuxeHero from "../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/1.png";
-import sereneLuxeThumb from "../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/night version/1.png";
-import gentlemanLoftHero from "../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/1.png";
-import gentlemanLoftThumb from "../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/2.png";
-import stoneframeHero from "../assets/LAGOM Arkitektur/4. Project - L-28 Stoneframe villa/Visualizations/1.png";
-import stoneframeThumb from "../assets/LAGOM Arkitektur/4. Project - L-28 Stoneframe villa/Visualizations/2.png";
-import aviatorHero from "../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/1.png";
-import aviatorThumb from "../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/2.png";
+
+const projectAssets = import.meta.glob<string>(
+  "../assets/LAGOM Arkitektur/**/*.{jpg,jpeg,png,webp}",
+  { eager: true, query: "?url", import: "default" },
+);
+
+function image(folder: string, path: string) {
+  const suffix = `${folder}/${path}`.replaceAll("\\", "/").toLowerCase();
+  const match = Object.entries(projectAssets).find(([assetPath]) =>
+    assetPath.replaceAll("\\", "/").toLowerCase().endsWith(suffix),
+  );
+
+  if (!match) {
+    throw new Error(`Missing project image: ${folder}/${path}`);
+  }
+
+  return match[1];
+}
+
+function gallery(folder: string, paths: string[]) {
+  return paths.map((path) => image(folder, path));
+}
+
+const folder = {
+  quiet: "1. Project - A_N - The quiet mid-modernity",
+  serene: "2. Project - Serene luxe residence",
+  gentleman: "3. Project - Gentleman’s Loft Cave",
+  stoneframe: "4. Project - L-28 Stoneframe villa",
+  aviator: "5. Project - Lounge bar AVIATOR 2.0",
+  archmood: "6. Project - ArchMood interior concept",
+  warm: "7. Project - Warm minimal open concept",
+  contrast: "8. Project - Contrast & Cohesion Interior",
+  oak: "9. Project - The Oak and Shadow cohesion",
+  child: "10. Project - Child’s mini creative space",
+  blueNest: "11. Project -  Blue Nest 4Y",
+} as const;
 
 export interface ProjectShowcaseItem {
   id: string;
@@ -20,292 +46,296 @@ export interface ProjectShowcaseItem {
   properties: string[];
   image: string;
   thumbnail: string;
+  secondaryImage: string;
 }
 
-export const projectShowcaseProjects: ProjectShowcaseItem[] = [
-  {
-    id: "01",
-    index: "01",
-    slug: "quiet-mid-modernity",
-    prefix: "A/N",
-    title: "The Quiet Mid-Modernity",
-    tags: ["Apartment", "Minimalism", "Natural", "Materials"],
-    properties: ["2023", "Malmö, Sweden", "Area: 78 sqm"],
-    image: quietMidModernityHero,
-    thumbnail: quietMidModernityThumb,
-  },
-  {
-    id: "02",
-    index: "02",
-    slug: "serene-luxe-residence",
-    prefix: "S/L",
-    title: "Serene Luxe Residence",
-    tags: ["Residence", "Soft luxury", "Warm stone", "Interior"],
-    properties: ["2024", "Skopje", "Area: 146 sqm"],
-    image: sereneLuxeHero,
-    thumbnail: sereneLuxeThumb,
-  },
-  {
-    id: "03",
-    index: "03",
-    slug: "gentlemans-loft-cave",
-    prefix: "G/L",
-    title: "Gentleman’s Loft Cave",
-    tags: ["Loft", "Private lounge", "Dark timber", "Atmosphere"],
-    properties: ["2024", "Urban residence", "Area: 112 sqm"],
-    image: gentlemanLoftHero,
-    thumbnail: gentlemanLoftThumb,
-  },
-  {
-    id: "04",
-    index: "04",
-    slug: "l-28-stoneframe-villa",
-    prefix: "L-28",
-    title: "Stoneframe Villa",
-    tags: ["Villa", "Architecture", "Stone", "Courtyard"],
-    properties: ["2024", "Residential", "Area: 240 sqm"],
-    image: stoneframeHero,
-    thumbnail: stoneframeThumb,
-  },
-  {
-    id: "05",
-    index: "05",
-    slug: "lounge-bar-aviator",
-    prefix: "AV",
-    title: "Lounge Bar Aviator 2.0",
-    tags: ["Hospitality", "Bar", "Moody", "Lighting"],
-    properties: ["2023", "Commercial", "Area: 185 sqm"],
-    image: aviatorHero,
-    thumbnail: aviatorThumb,
-  },
-];
+export const projectShowcaseIntro = {
+  index: "00",
+  title: "Selected work",
+  tags: ["Lagom Arkitektur", "Selected work", "Spatial portfolio"],
+  properties: ["Architecture", "Interiors", "2022-2026"],
+};
 
 export const projects: Project[] = [
   {
     id: "01",
-    title: "Villa Skärgård",
-    slug: "villa-skargard",
-    excerpt: "En modern sommarvilla på Stockholms södra skärgård med fokus på ljus, material och landskap.",
+    title: "A|N - The Quiet Mid-Modernity",
+    slug: "quiet-mid-modernity",
+    excerpt:
+      "A contemporary apartment in Malmo blending modern and mid-century influences with natural light, metal details, and warm wood accents.",
     description:
-      "Villa Skärgård ligger på en klippig udde i Stockholms södra skärgård. Huset är utformat som en serie sammanlänkade volymer som följer terrängens naturliga former. Stora glaspartier öppnar upp mot havet i söder medan träfasaden i termobehandlad furu smälter in i tallskogen. Interiören präglas av ljusa ytor, ekparkett och skräddarsydda detaljer i mässing och natursten.",
+      "Nestled in the heart of Malmo, Sweden, this contemporary apartment beautifully blends modern and mid-century modern design influences to create a stylish yet cozy living space. Its open layout maximizes natural light, with large windows that flood each room with sunlight, enhancing the sense of openness and tranquility. Wooden accents bring warmth to the environment, forming a harmonious contrast with the metal details found throughout the apartment.",
     year: "2024",
-    location: "Stockholms skärgård",
-    category: "Villor",
-    services: ["Arkitektur", "Inredning", "Bygglovshandlingar", "Projektledning"],
-    featuredImage: "/images/projects/project-01/hero.jpg",
-    gallery: [
-      "/images/projects/project-01/01.jpg",
-      "/images/projects/project-01/02.jpg",
-      "/images/projects/project-01/03.jpg",
-      "/images/projects/project-01/04.jpg",
-    ],
-    credits: "Foto: Johan Pihlström. Byggherre: Privat.",
+    location: "Malmo, Sweden",
+    category: "Residential",
+    services: ["Interior design", "Spatial planning", "Material concept"],
+    featuredImage: image(folder.quiet, "Pictures from the apartment - realized project/1.jpg"),
+    gallery: gallery(folder.quiet, [
+      "Pictures from the apartment - realized project/1.jpg",
+      "Pictures from the apartment - realized project/2.jpg",
+      "Pictures from the apartment - realized project/3.jpg",
+      "Pictures from the apartment - realized project/4.jpg",
+      "Visualizations/1.png",
+      "Visualizations/2.png",
+    ]),
+    credits: "Site size: 54 sqm",
     isFeatured: true,
   },
   {
     id: "02",
-    title: "Stadsvåning Östermalm",
-    slug: "stadsvaning-ostermalm",
-    excerpt: "Renovering och omgestaltning av en 1800-talsvåning på Östermalm med bevarade originaldetaljer.",
+    title: "Serene Luxe Residence",
+    slug: "serene-luxe-residence",
+    excerpt:
+      "A refined residential concept where open planning, natural materials, and layered lighting create calm everyday luxury.",
     description:
-      "En 1800-talsvåning på Östermalm har varsamt renoverats och omgestaltats med fokus på att bevara och framhäva de ursprungliga detaljerna. Stuckaturer, fiskbensparkett och kakelugnar har restaurerats samtidigt som en modern planlösning har skapats med öppna sällskapsytor. Ett nytt kök i valnöt och skiffer bildar våningens hjärta.",
-    year: "2023",
-    location: "Östermalm, Stockholm",
-    category: "Bostäder",
-    services: ["Arkitektur", "Inredning", "Restaurering", "Kök"],
-    featuredImage: "/images/projects/project-02/hero.jpg",
-    gallery: [
-      "/images/projects/project-02/01.jpg",
-      "/images/projects/project-02/02.jpg",
-      "/images/projects/project-02/03.jpg",
-    ],
-    credits: "Foto: Mikael Lundblad. Byggherre: Privat.",
+      "This project presents a refined Serene Modern residential concept where architecture, light, and materiality work together to create calm, elegant living environments. The open-plan layout connects living, dining, and kitchen areas into a continuous spatial experience, enhanced by large glazed openings that frame curated city-and-landscape views. A soft, natural palette of wood, stone, and textured surfaces is paired with layered architectural lighting to maintain warmth and clarity throughout the day.",
+    year: "2024",
+    location: "Shtip, N. Macedonia",
+    category: "Residential",
+    services: ["Interior concept", "Visualization", "Lighting concept"],
+    featuredImage: image(folder.serene, "Visualizations/day version/1.png"),
+    gallery: gallery(folder.serene, [
+      "Visualizations/day version/1.png",
+      "Visualizations/day version/2.png",
+      "Visualizations/day version/3.png",
+      "Visualizations/day version/4.png",
+      "Visualizations/night version/1.png",
+      "Visualizations/night version/2.png",
+    ]),
+    credits: "Site size: 75 sqm",
     isFeatured: true,
   },
   {
     id: "03",
-    title: "Kontorshuset Kvarnen",
-    slug: "kontorshuset-kvarnen",
-    excerpt: "Ombyggnad av ett äldre industrilager till moderna kontorslokaler i Södermalm.",
+    title: "Gentleman's Loft Cave",
+    slug: "gentlemans-loft-cave",
+    excerpt:
+      "A dark, tactile apartment interior balancing anthracite surfaces, cherry wood, orange upholstery, and collected furniture pieces.",
     description:
-      "Ett äldre industrilager på Södermalm har omvandlats till moderna kontorslokaler för en kreativ verksamhet. Den befintliga betongstommen har behållits och kompletterats med nya träelement. En ny takterrass har skapats med utsikt över Stockholm. Planlösningen är flexibel med möjlighet till både öppna landskap och avskilda rum.",
-    year: "2023",
-    location: "Södermalm, Stockholm",
-    category: "Kontor",
-    services: ["Arkitektur", "Ombyggnad", "Inredning"],
-    featuredImage: "/images/projects/project-03/hero.jpg",
-    gallery: [
-      "/images/projects/project-03/01.jpg",
-      "/images/projects/project-03/02.jpg",
-      "/images/projects/project-03/03.jpg",
-      "/images/projects/project-03/04.jpg",
-    ],
-    credits: "Foto: Åke E:son Lindman. Byggherre: Fastighets AB Kvarnen.",
+      "This apartment is conceived as a refined contemporary man cave, balancing a dark, smoky atmosphere with curated elegance. An anthracite microcement floor forms a continuous, monolithic base, setting a dramatic tone while contrasting intentionally with the warmth of the cherry wood kitchen and the bold orange upholstery of the sofa. The result is a space that feels masculine and intimate, yet polished, timeless, and aesthetically composed.",
+    year: "2022",
+    location: "Skopje, N. Macedonia",
+    category: "Residential",
+    services: ["Interior design", "Furniture curation", "Material concept"],
+    featuredImage: image(folder.gentleman, "Visualizations/1.png"),
+    gallery: gallery(folder.gentleman, [
+      "Visualizations/1.png",
+      "Visualizations/2.png",
+      "Visualizations/3.png",
+      "Visualizations/4.png",
+      "Visualizations/5.png",
+      "Visualizations/6.png",
+    ]),
+    credits: "Site size: 64 sqm",
     isFeatured: true,
   },
   {
     id: "04",
-    title: "Sommarbostad Gotland",
-    slug: "sommarbostad-gotland",
-    excerpt: "En fristående ateljé och gästhus på Gotland i kalksten och lärk.",
+    title: "L-28 Stoneframe Villa",
+    slug: "l-28-stoneframe-villa",
+    excerpt:
+      "A contemporary courtyard home framed by natural stone, plaster, warm wood, and private outdoor lounges.",
     description:
-      "På en öppen slätt på Gotland har vi ritat ett fristående ateljé- och gästhus i kalksten och lärk. Husets enkla volym och noggrant avvägda proportioner skapar en rofylld arbetsmiljö. Ett stort fönster i norr ger jämnt ljus för måleri och skulptur. Byggnaden smälter in i landskapet tack vare materialval i lokala toner.",
-    year: "2022",
-    location: "Gotland",
-    category: "Ateljéer",
-    services: ["Arkitektur", "Bygglovshandlingar"],
-    featuredImage: "/images/projects/project-04/hero.jpg",
-    gallery: [
-      "/images/projects/project-04/01.jpg",
-      "/images/projects/project-04/02.jpg",
-    ],
-    credits: "Foto: Johan Pihlström. Byggherre: Privat.",
-    isFeatured: false,
+      "L-28 Stoneframe Villa is a contemporary courtyard home that blends architectural clarity with everyday comfort. Clean horizontal volumes are framed by natural stone, plaster, and warm wood to create a timeless, welcoming identity. Large glazed openings connect interior spaces with private outdoor lounges, allowing light and landscape to shape the living experience. Integrated linear lighting emphasizes the architectural edges and adds atmosphere after sunset.",
+    year: "2025",
+    location: "Prilep, N. Macedonia",
+    category: "Residential",
+    services: ["Architecture", "Exterior concept", "Visualization"],
+    featuredImage: image(folder.stoneframe, "Visualizations/1.png"),
+    gallery: gallery(folder.stoneframe, [
+      "Visualizations/1.png",
+      "Visualizations/2.png",
+      "Visualizations/3.png",
+      "Visualizations/4.png",
+    ]),
+    credits: "Site size: 186 sqm",
+    isFeatured: true,
   },
   {
     id: "05",
-    title: "Radhus Lidingö",
-    slug: "radhus-lidingo",
-    excerpt: "Nybyggda radhus i suterräng med privata trädgårdar och gemensamhetsyta.",
+    title: "Lounge Bar Aviator 2.0",
+    slug: "lounge-bar-aviator",
+    excerpt:
+      "A contemporary hospitality interior shaped with warm wood, stone texture, soft light, and calm urban openness.",
     description:
-      "Ett radhusprojekt i suterräng på Lidingö med åtta enheter. Varje radhus har en privat trädgård och en gemensamhetsyta med växthus och odlingslotter. Fasaderna är klädda i obehandlad lärk som med tiden får en vacker silvrig patina. Planlösningarna är genomtänkta med god rumslighet och generösa förvaringslösningar.",
-    year: "2022",
-    location: "Lidingö",
-    category: "Bostäder",
-    services: ["Arkitektur", "Bygglovshandlingar", "Projektledning"],
-    featuredImage: "/images/projects/project-05/hero.jpg",
-    gallery: [
-      "/images/projects/project-05/01.jpg",
-      "/images/projects/project-05/02.jpg",
-      "/images/projects/project-05/03.jpg",
-    ],
-    credits: "Foto: Mikael Lundblad. Byggherre: Lidingö Bostads AB.",
+      "This contemporary restaurant interior is designed as a refined extension of the city mall, blending hospitality with architectural character. Warm wood, textured stone surfaces, and soft integrated lighting create an inviting atmosphere for everyday dining and social interaction. Carefully composed seating zones balance openness with comfort and privacy, while greenery softens the material palette and enhances the guest experience.",
+    year: "2023",
+    location: "Skopje, N. Macedonia",
+    category: "Hospitality",
+    services: ["Interior design", "Hospitality concept", "Visualization"],
+    featuredImage: image(folder.aviator, "Visualizations/1.png"),
+    gallery: gallery(folder.aviator, [
+      "Visualizations/1.png",
+      "Visualizations/2.png",
+      "Visualizations/3.png",
+      "Visualizations/4.png",
+      "Visualizations/5.png",
+      "Visualizations/6.png",
+    ]),
+    credits: "Site size: 140 sqm",
     isFeatured: true,
   },
   {
     id: "06",
-    title: "Restaurang Lux",
-    slug: "restaurang-lux",
-    excerpt: "Inredning och ljusdesign för en finare restaurang i Gamla Stan.",
+    title: "ArchMood Interior Concept",
+    slug: "archmood-interior-concept",
+    excerpt:
+      "A compact shared bedroom transformed into warm, functional zones for rest, grooming, reading, and daily rituals.",
     description:
-      "En intim restaurang i Gamla Stan har fått en ny inredning som balanserar historisk atmosfär med modern känsla. Väggarna är klädda i ljuddämpande ekpanel och belysningen är noggrant utformad för att skapa en varm och inbjudande stämning. Ett öppet kök med bardisk i oxiderad koppar är rummets blickfång.",
-    year: "2024",
-    location: "Gamla Stan, Stockholm",
-    category: "Restaurang",
-    services: ["Inredning", "Ljusdesign", "Kök"],
-    featuredImage: "/images/projects/project-06/hero.jpg",
-    gallery: [
-      "/images/projects/project-06/01.jpg",
-      "/images/projects/project-06/02.jpg",
-    ],
-    credits: "Foto: Åke E:son Lindman. Byggherre: Lux Gastronomi AB.",
+      "This compact room transformation was a challenge in both space optimization and aesthetic balance. Originally a very small and limited area, the goal was to reimagine it into a warm, functional, and stylish shared bedroom for two teenage girls. Two comfortable single beds, a dedicated make-up and grooming area, and a cozy reading corner give each person a personalized zone within a calm shared interior.",
+    year: "2025",
+    location: "Skopje, N. Macedonia",
+    category: "Residential",
+    services: ["Interior design", "Small-space planning", "Visualization"],
+    featuredImage: image(folder.archmood, "Visualizations/1.png"),
+    gallery: gallery(folder.archmood, [
+      "Visualizations/1.png",
+      "Visualizations/2.png",
+      "Visualizations/3.png",
+      "Visualizations/4.png",
+      "Visualizations/5.png",
+      "Visualizations/6.png",
+    ]),
+    credits: "Site size: 12 sqm",
     isFeatured: false,
   },
   {
     id: "07",
-    title: "Fritidshus Vättern",
-    slug: "fritidshus-vattern",
-    excerpt: "Modernt fritidshus vid Vätterns västra strand med fokus på utsikt och hållbarhet.",
+    title: "Warm Minimal Open Concept",
+    slug: "warm-minimal-open-concept",
+    excerpt:
+      "A compact apartment retreat where kitchen, dining, and lounge areas flow through soft geometry and neutral materiality.",
     description:
-      "Ett modernt fritidshus vid Vätterns västra strand ritat med fokus på utsikten över sjön och hållbara materialval. Huset är uppvärmt med bergvärme och har ett grönt tak med sedum. Stora skjutdörrar i glas öppnar upp hela söderväggen mot en trätrall som sträcker sig ut över ängen.",
-    year: "2021",
-    location: "Vättern",
-    category: "Villor",
-    services: ["Arkitektur", "Hållbarhetskonsult", "Bygglovshandlingar"],
-    featuredImage: "/images/projects/project-07/hero.jpg",
-    gallery: [
-      "/images/projects/project-07/01.jpg",
-      "/images/projects/project-07/02.jpg",
-      "/images/projects/project-07/03.jpg",
-    ],
-    credits: "Foto: Johan Pihlström. Byggherre: Privat.",
-    isFeatured: true,
+      "This apartment is conceived as a warm-modern retreat for two, where open planning and soft geometry create a continuous living experience. Kitchen, dining, and lounge areas flow naturally, enhanced by neutral palettes, wood textures, and stone finishes. Built-in storage and custom furniture optimize the compact footprint, while large openings and reflective surfaces amplify natural light and visual continuity throughout the home.",
+    year: "2024",
+    location: "Prilep, N. Macedonia",
+    category: "Residential",
+    services: ["Interior design", "Custom furniture", "Visualization"],
+    featuredImage: image(folder.warm, "Visualizations/1.png"),
+    gallery: gallery(folder.warm, [
+      "Visualizations/1.png",
+      "Visualizations/2.png",
+      "Visualizations/3.png",
+      "Visualizations/4.png",
+      "Visualizations/5.png",
+    ]),
+    credits: "Site size: 25 sqm",
+    isFeatured: false,
   },
   {
     id: "08",
-    title: "Butik Artilleri",
-    slug: "butik-artilleri",
-    excerpt: "Koncept och inredning för en designbutik i Vasastan.",
+    title: "Contrast & Cohesion Interior",
+    slug: "contrast-cohesion-interior",
+    excerpt:
+      "A serious, modern living and dining interior built around pepita pattern, black leather, brown leather, and artful wall composition.",
     description:
-      "En designbutik i Vasastan med inriktning på skandinavisk konst och konsthantverk. Inredningen är avskalad med vita kalkputsade väggar och ett golv av gjuten terrazzo. Butikens möbler är specialritade och tillverkade i samarbete med lokala snickerier. Belysningen är utformad för att framhäva produkterna.",
-    year: "2023",
-    location: "Vasastan, Stockholm",
-    category: "Kommersiellt",
-    services: ["Arkitektur", "Inredning", "Konceptutveckling"],
-    featuredImage: "/images/projects/project-08/hero.jpg",
-    gallery: [
-      "/images/projects/project-08/01.jpg",
-      "/images/projects/project-08/02.jpg",
-      "/images/projects/project-08/03.jpg",
-      "/images/projects/project-08/04.jpg",
-    ],
-    credits: "Foto: Mikael Lundblad. Byggherre: Artilleri AB.",
+      "At the request of the customers, this design helped define the direction for a living room and dining area with a more serious character and modern elements. Furniture material, color, and dining-room wall decoration carry the concept. The pepita pattern and black leather armchairs, combined with the brown leather sofa, create a matched contrast that gives the space depth and confidence.",
+    year: "2022",
+    location: "Skopje, N. Macedonia",
+    category: "Residential",
+    services: ["Interior design", "Material selection", "Visualization"],
+    featuredImage: image(folder.contrast, "Visualizations/1.png"),
+    gallery: gallery(folder.contrast, [
+      "Visualizations/1.png",
+      "Visualizations/2.png",
+      "Visualizations/3.png",
+      "Visualizations/4.png",
+      "Visualizations/5.png",
+    ]),
+    credits: "Site size: 45 sqm",
     isFeatured: false,
   },
   {
     id: "09",
-    title: "Skola Solbacken",
-    slug: "skola-solbacken",
-    excerpt: "Nybyggd förskola i Upplands Väsby med fokus på naturmaterial och utemiljö.",
+    title: "The Oak and Shadow Cohesion",
+    slug: "oak-shadow-cohesion",
+    excerpt:
+      "A contemporary apartment interior where warm oak, natural stone, matte black elements, and Nordic blue accents frame flexible living.",
     description:
-      "En nybyggd förskola i Upplands Väsby med fyra avdelningar. Byggnaden är utformad som en långsträckt volym i en våning med ett centralt torg som sammanbinder avdelningarna. Materialen är noga utvalda med fokus på hållbarhet: ek, kork, linoleum och lera. Utemiljön är integrerad med pedagogiken.",
-    year: "2022",
-    location: "Upplands Väsby",
-    category: "Utbildning",
-    services: ["Arkitektur", "Bygglovshandlingar", "Projektledning"],
-    featuredImage: "/images/projects/project-09/hero.jpg",
-    gallery: [
-      "/images/projects/project-09/01.jpg",
-      "/images/projects/project-09/02.jpg",
-      "/images/projects/project-09/03.jpg",
-    ],
-    credits: "Foto: Åke E:son Lindman. Byggherre: Upplands Väsby Kommun.",
-    isFeatured: false,
+      "This contemporary apartment interior is defined by material contrast, spatial flexibility, and refined architectural composition. Warm oak volumes and natural stone surfaces are framed by deep matte black elements, creating a layered dialogue between light and shadow throughout the home. A transformable living and dining area, dedicated bay-window office, and boutique-hotel bedroom build a calm, flexible residential experience.",
+    year: "2026",
+    location: "Bitola, N. Macedonia",
+    category: "Residential",
+    services: ["Interior design", "Joinery concept", "Visualization"],
+    featuredImage: image(folder.oak, "Visualizations/1.png"),
+    gallery: gallery(folder.oak, [
+      "Visualizations/1.png",
+      "Visualizations/2.png",
+      "Visualizations/3.png",
+      "Visualizations/4.png",
+      "Visualizations/5.png",
+      "Visualizations/6.png",
+    ]),
+    credits: "Site size: 60 sqm",
+    isFeatured: true,
   },
   {
     id: "10",
-    title: "Takvåning Gärdet",
-    slug: "takvaning-gardet",
-    excerpt: "Takvåning med terrass på Gärdet. Ljus, rymd och utsikt över Stockholm.",
+    title: "Child's Mini Creative Space",
+    slug: "childs-mini-creative-space",
+    excerpt:
+      "A child's room shaped as a small personal studio for study, drawing, rest, shared play, and independence.",
     description:
-      "En takvåning på Gärdet med en generös terrass som löper längs hela södra fasaden. Lägenheten har genomgått en total omgestaltning med nya ytskikt i kalksten, ek och linne. Köket är utformat med en stor ö i massiv ek och bänkskiva i Calacatta-marmor. Badrummet har golvvärme och en vägg i terrazzo.",
-    year: "2024",
-    location: "Gärdet, Stockholm",
-    category: "Bostäder",
-    services: ["Arkitektur", "Inredning", "Kök", "Badrum"],
-    featuredImage: "/images/projects/project-10/hero.jpg",
-    gallery: [
-      "/images/projects/project-10/01.jpg",
-      "/images/projects/project-10/02.jpg",
-    ],
-    credits: "Foto: Johan Pihlström. Byggherre: Privat.",
+      "This project transforms a room into a child's personal studio for creativity and comfort. Planned around a fixed wardrobe position, the interior unfolds into functional zones for studying, drawing, resting, and shared playtime. Warm materials, playful textures, and balanced proportions give the space architectural clarity while remaining inviting and soft. Natural light and calm colors frame daily activities, allowing the room to grow with the child.",
+    year: "2023",
+    location: "Prilep, N. Macedonia",
+    category: "Residential",
+    services: ["Interior design", "Children's room concept", "Visualization"],
+    featuredImage: image(folder.child, "Visualizations/1.png"),
+    gallery: gallery(folder.child, [
+      "Visualizations/1.png",
+      "Visualizations/2.png",
+      "Visualizations/3.png",
+      "Visualizations/4.png",
+      "Visualizations/5.png",
+    ]),
+    credits: "Site size: 12 sqm",
     isFeatured: false,
   },
   {
     id: "11",
-    title: "Paviljong Berga",
-    slug: "paviljong-berga",
-    excerpt: "En öppen paviljong i Berga naturreservat för undervisning och samling.",
+    title: "Blue Nest 4Y",
+    slug: "blue-nest-4y",
+    excerpt:
+      "A calm, playful kids interior blending Nordic minimalism, soft geometry, natural wood, and muted blue accents.",
     description:
-      "En öppen paviljong i Berga naturreservat som fungerar som samlingsplats för naturpedagogisk verksamhet. Paviljongen består av en stålstomme med ett tak av glas och solceller. Golvet är i obehandlad ek och sittplatser i betong är integrerade i konstruktionen. Byggnaden är helt självförsörjande på energi.",
-    year: "2021",
-    location: "Berga, Stockholm",
-    category: "Offentligt",
-    services: ["Arkitektur", "Hållbarhetskonsult", "Bygglovshandlingar"],
-    featuredImage: "/images/projects/project-11/hero.jpg",
-    gallery: [
-      "/images/projects/project-11/01.jpg",
-      "/images/projects/project-11/02.jpg",
-    ],
-    credits: "Foto: Mikael Lundblad. Byggherre: Stockholms Stad.",
+      "Project Blue Nest is a calm, playful, and architectural kids interior designed for a 4-year-old boy. The space blends Nordic minimalism with soft geometry, natural wood, and muted blue accents to create a balanced environment for sleep, play, and creativity. Clean lines, built-in storage, and sculpted forms transform the room into a small architectural landscape where function meets imagination.",
+    year: "2024",
+    location: "Skopje, N. Macedonia",
+    category: "Residential",
+    services: ["Interior design", "Children's room concept", "Visualization"],
+    featuredImage: image(folder.blueNest, "Visualizations/1.png"),
+    gallery: gallery(folder.blueNest, [
+      "Visualizations/1.png",
+      "Visualizations/2.png",
+      "Visualizations/3.png",
+      "Visualizations/4.png",
+      "Visualizations/5.png",
+    ]),
+    credits: "Site size: 11 sqm",
     isFeatured: false,
   },
 ];
 
+export const projectShowcaseProjects: ProjectShowcaseItem[] = projects.slice(0, 5).map((project) => ({
+  id: project.id,
+  index: project.id,
+  slug: project.slug,
+  prefix: project.title.split(" ")[0].replace("'", ""),
+  title: project.title.replace(/^.*? - /, ""),
+  tags: [project.category, project.services[0] ?? "Design", project.year, "Lagom"],
+  properties: [project.year, project.location, project.credits],
+  image: project.featuredImage,
+  thumbnail: project.gallery[1] ?? project.featuredImage,
+  secondaryImage: project.gallery[2] ?? project.featuredImage,
+}));
+
+export const projectCategories = Array.from(new Set(projects.map((project) => project.category)));
+
 export function getProjectBySlug(slug: string): Project | undefined {
-  return projects.find((p) => p.slug === slug);
+  return projects.find((project) => project.slug === slug);
 }
 
 export function getFeaturedProjects(): Project[] {
-  return projects.filter((p) => p.isFeatured);
+  return projects.filter((project) => project.isFeatured);
 }

@@ -5,7 +5,7 @@ import {motionEases} from "../../lib/motion";
 import {ClipMaskTextAnimation} from "../animation/ClipMaskTextAnimation";
 
 const menuLinks = [
-    {href: "/works", label: "Works"},
+    {href: "/work", label: "Work"},
     {href: "/studio", label: "Studio"},
     {href: "/process", label: "Process"},
     {href: "/contact", label: "Contact"},

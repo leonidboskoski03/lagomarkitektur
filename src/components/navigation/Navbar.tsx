@@ -14,7 +14,7 @@ import {ContactOverlay} from "../contact/ContactOverlay";
 gsap.registerPlugin(ScrollTrigger);
 
 const links = [
-    {href: "/works", label: "works"},
+    {href: "/work", label: "work"},
     {href: "/studio", label: "Studio"},
     {href: "/contact", label: "contact"},
     {href: "/process", label: "process"},

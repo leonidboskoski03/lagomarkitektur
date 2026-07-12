@@ -54,7 +54,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               {[
                 { href: "/", label: "Start" },
-                { href: "/projekt", label: "Projekt" },
+                { href: "/work", label: "Work" },
                 { href: "/om-oss", label: "Om oss" },
                 { href: "/kontakt", label: "Kontakt" },
               ].map((link) => (

@@ -108,7 +108,7 @@ export function Home() {
           <ProjectGrid projects={featured} />
           <div className="mt-16 text-center">
             <Link
-              to="/projekt"
+              to="/work"
               data-cursor=""
               className="inline-block text-sm tracking-widest uppercase border-b border-text-primary pb-1 hover:text-text-muted hover:border-text-muted transition-colors"
             >

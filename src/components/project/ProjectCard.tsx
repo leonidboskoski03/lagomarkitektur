@@ -27,7 +27,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <Link
-      to={`/projekt/${project.slug}`}
+      to={`/work/${project.slug}`}
       data-cursor=""
       className="group block"
       onMouseEnter={handleMouseEnter}
