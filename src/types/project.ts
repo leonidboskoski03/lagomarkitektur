@@ -9,6 +9,7 @@ export interface Project {
   category: string;
   services: string[];
   featuredImage: string;
+  thumbnailImage?: string;
   gallery: string[];
   credits: string;
   isFeatured: boolean;

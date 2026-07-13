@@ -10,6 +10,7 @@ import {MenuOverlay} from "./MenuOverlay";
 import {LogoMark} from "../branding/LogoMark";
 import {ClipMaskTextAnimation} from "../animation/ClipMaskTextAnimation";
 import {ContactOverlay} from "../contact/ContactOverlay";
+import {useLocation} from "react-router-dom";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -49,6 +50,8 @@ const handleMouseEnter = () => {
 };
 
 export function Navbar() {
+    const {pathname} = useLocation();
+    const hidePrimaryNav = pathname === "/work";
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isContactOpen, setIsContactOpen] = useState(false);
     const headerRef = useRef<HTMLElement | null>(null);
@@ -176,7 +179,14 @@ export function Navbar() {
 
     return (
       <>
-        <header ref={headerRef} className="fixed top-0 z-[100] h-[15vh] w-full overflow-hidden">
+        <header
+          ref={headerRef}
+          className={clsx(
+            "fixed top-0 z-[100] h-[15vh] w-full overflow-hidden",
+            hidePrimaryNav && "hidden",
+          )}
+          aria-hidden={hidePrimaryNav || undefined}
+        >
           <div ref={primaryNavContentRef} className="viewport-container flex h-full items-center justify-between will-change-transform">
             <div className="flex items-start justify-center gap-2 text-white">
                 <div className="overflow-hidden">
@@ -217,14 +227,19 @@ export function Navbar() {
         </header>
         <div
             ref={secondaryNavRef}
-            className="fixed top-5 right-[var(--spacing-viewport-gutter)] z-[100] flex items-center gap-1 p-2"
+            className={clsx(
+                "fixed top-5 right-[var(--spacing-viewport-gutter)] z-[100] flex items-center gap-1 p-2",
+                hidePrimaryNav && "!visible !transform-none !opacity-100 !pointer-events-auto",
+            )}
             role="navigation"
             aria-label="Secondary navigation"
         >
-            <GetInTouchButton variant="dark" onClick={(event) => {
-                contactButtonRef.current = event.currentTarget;
-                setIsContactOpen(true);
-            }} />
+            <div className={clsx(hidePrimaryNav && "hidden sm:block")}>
+                <GetInTouchButton variant="dark" onClick={(event) => {
+                    contactButtonRef.current = event.currentTarget;
+                    setIsContactOpen(true);
+                }} />
+            </div>
             <button
                 ref={menuButtonRef}
                 type="button"

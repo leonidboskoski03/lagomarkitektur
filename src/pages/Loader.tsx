@@ -334,6 +334,7 @@ export const Loader = () => {
     return (
         <div
             ref={containerRef}
+            data-lagom-loader
             className="fixed top-0 z-[1000] h-screen w-screen overflow-hidden"
             style={{ perspective: "800px", transformStyle: "preserve-3d" }}
         >

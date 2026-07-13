@@ -1,0 +1,355 @@
+import { default as __vite_glob_0_0 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/1.jpg?import&url";import { default as __vite_glob_0_1 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/10.jpg?import&url";import { default as __vite_glob_0_2 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/2.jpg?import&url";import { default as __vite_glob_0_3 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/3.jpg?import&url";import { default as __vite_glob_0_4 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/4.jpg?import&url";import { default as __vite_glob_0_5 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/5.jpg?import&url";import { default as __vite_glob_0_6 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/6.jpg?import&url";import { default as __vite_glob_0_7 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/9.jpg?import&url";import { default as __vite_glob_0_8 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/1.png?import&url";import { default as __vite_glob_0_9 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/10.png?import&url";import { default as __vite_glob_0_10 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/11.png?import&url";import { default as __vite_glob_0_11 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/12.png?import&url";import { default as __vite_glob_0_12 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/2.png?import&url";import { default as __vite_glob_0_13 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/3.png?import&url";import { default as __vite_glob_0_14 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/4.png?import&url";import { default as __vite_glob_0_15 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/5.png?import&url";import { default as __vite_glob_0_16 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/6.png?import&url";import { default as __vite_glob_0_17 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/7.png?import&url";import { default as __vite_glob_0_18 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/8.png?import&url";import { default as __vite_glob_0_19 } from "/src/assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/9.png?import&url";import { default as __vite_glob_0_20 } from "/src/assets/LAGOM Arkitektur/10. Project - Child’s mini creative space/Visualizations/1.png?import&url";import { default as __vite_glob_0_21 } from "/src/assets/LAGOM Arkitektur/10. Project - Child’s mini creative space/Visualizations/2.png?import&url";import { default as __vite_glob_0_22 } from "/src/assets/LAGOM Arkitektur/10. Project - Child’s mini creative space/Visualizations/3.png?import&url";import { default as __vite_glob_0_23 } from "/src/assets/LAGOM Arkitektur/10. Project - Child’s mini creative space/Visualizations/4.png?import&url";import { default as __vite_glob_0_24 } from "/src/assets/LAGOM Arkitektur/10. Project - Child’s mini creative space/Visualizations/5.png?import&url";import { default as __vite_glob_0_25 } from "/src/assets/LAGOM Arkitektur/11. Project -  Blue Nest 4Y/Visualizations/1.png?import&url";import { default as __vite_glob_0_26 } from "/src/assets/LAGOM Arkitektur/11. Project -  Blue Nest 4Y/Visualizations/2.png?import&url";import { default as __vite_glob_0_27 } from "/src/assets/LAGOM Arkitektur/11. Project -  Blue Nest 4Y/Visualizations/3.png?import&url";import { default as __vite_glob_0_28 } from "/src/assets/LAGOM Arkitektur/11. Project -  Blue Nest 4Y/Visualizations/4.png?import&url";import { default as __vite_glob_0_29 } from "/src/assets/LAGOM Arkitektur/11. Project -  Blue Nest 4Y/Visualizations/5.png?import&url";import { default as __vite_glob_0_30 } from "/src/assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/1.png?import&url";import { default as __vite_glob_0_31 } from "/src/assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/2.png?import&url";import { default as __vite_glob_0_32 } from "/src/assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/3.png?import&url";import { default as __vite_glob_0_33 } from "/src/assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/4.png?import&url";import { default as __vite_glob_0_34 } from "/src/assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/5.png?import&url";import { default as __vite_glob_0_35 } from "/src/assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/6.png?import&url";import { default as __vite_glob_0_36 } from "/src/assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/7.png?import&url";import { default as __vite_glob_0_37 } from "/src/assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/night version/1.png?import&url";import { default as __vite_glob_0_38 } from "/src/assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/night version/2.png?import&url";import { default as __vite_glob_0_39 } from "/src/assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/night version/3.png?import&url";import { default as __vite_glob_0_40 } from "/src/assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/night version/4.png?import&url";import { default as __vite_glob_0_41 } from "/src/assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/1.png?import&url";import { default as __vite_glob_0_42 } from "/src/assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/10.png?import&url";import { default as __vite_glob_0_43 } from "/src/assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/11.png?import&url";import { default as __vite_glob_0_44 } from "/src/assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/2.png?import&url";import { default as __vite_glob_0_45 } from "/src/assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/3.png?import&url";import { default as __vite_glob_0_46 } from "/src/assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/4.png?import&url";import { default as __vite_glob_0_47 } from "/src/assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/5.png?import&url";import { default as __vite_glob_0_48 } from "/src/assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/6.png?import&url";import { default as __vite_glob_0_49 } from "/src/assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/7.png?import&url";import { default as __vite_glob_0_50 } from "/src/assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/8.png?import&url";import { default as __vite_glob_0_51 } from "/src/assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/9.png?import&url";import { default as __vite_glob_0_52 } from "/src/assets/LAGOM Arkitektur/4. Project - L-28 Stoneframe villa/Visualizations/1.png?import&url";import { default as __vite_glob_0_53 } from "/src/assets/LAGOM Arkitektur/4. Project - L-28 Stoneframe villa/Visualizations/2.png?import&url";import { default as __vite_glob_0_54 } from "/src/assets/LAGOM Arkitektur/4. Project - L-28 Stoneframe villa/Visualizations/3.png?import&url";import { default as __vite_glob_0_55 } from "/src/assets/LAGOM Arkitektur/4. Project - L-28 Stoneframe villa/Visualizations/4.png?import&url";import { default as __vite_glob_0_56 } from "/src/assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/1.png?import&url";import { default as __vite_glob_0_57 } from "/src/assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/10.png?import&url";import { default as __vite_glob_0_58 } from "/src/assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/11.png?import&url";import { default as __vite_glob_0_59 } from "/src/assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/2.png?import&url";import { default as __vite_glob_0_60 } from "/src/assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/3.png?import&url";import { default as __vite_glob_0_61 } from "/src/assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/4.png?import&url";import { default as __vite_glob_0_62 } from "/src/assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/5.png?import&url";import { default as __vite_glob_0_63 } from "/src/assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/6.png?import&url";import { default as __vite_glob_0_64 } from "/src/assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/7.png?import&url";import { default as __vite_glob_0_65 } from "/src/assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/8.png?import&url";import { default as __vite_glob_0_66 } from "/src/assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/9.png?import&url";import { default as __vite_glob_0_67 } from "/src/assets/LAGOM Arkitektur/6. Project - ArchMood interior concept/Visualizations/1.png?import&url";import { default as __vite_glob_0_68 } from "/src/assets/LAGOM Arkitektur/6. Project - ArchMood interior concept/Visualizations/2.png?import&url";import { default as __vite_glob_0_69 } from "/src/assets/LAGOM Arkitektur/6. Project - ArchMood interior concept/Visualizations/3.png?import&url";import { default as __vite_glob_0_70 } from "/src/assets/LAGOM Arkitektur/6. Project - ArchMood interior concept/Visualizations/4.png?import&url";import { default as __vite_glob_0_71 } from "/src/assets/LAGOM Arkitektur/6. Project - ArchMood interior concept/Visualizations/5.png?import&url";import { default as __vite_glob_0_72 } from "/src/assets/LAGOM Arkitektur/6. Project - ArchMood interior concept/Visualizations/6.png?import&url";import { default as __vite_glob_0_73 } from "/src/assets/LAGOM Arkitektur/7. Project - Warm minimal open concept/Visualizations/1.png?import&url";import { default as __vite_glob_0_74 } from "/src/assets/LAGOM Arkitektur/7. Project - Warm minimal open concept/Visualizations/2.png?import&url";import { default as __vite_glob_0_75 } from "/src/assets/LAGOM Arkitektur/7. Project - Warm minimal open concept/Visualizations/3.png?import&url";import { default as __vite_glob_0_76 } from "/src/assets/LAGOM Arkitektur/7. Project - Warm minimal open concept/Visualizations/4.png?import&url";import { default as __vite_glob_0_77 } from "/src/assets/LAGOM Arkitektur/7. Project - Warm minimal open concept/Visualizations/5.png?import&url";import { default as __vite_glob_0_78 } from "/src/assets/LAGOM Arkitektur/8. Project - Contrast & Cohesion Interior/Visualizations/1.png?import&url";import { default as __vite_glob_0_79 } from "/src/assets/LAGOM Arkitektur/8. Project - Contrast & Cohesion Interior/Visualizations/2.png?import&url";import { default as __vite_glob_0_80 } from "/src/assets/LAGOM Arkitektur/8. Project - Contrast & Cohesion Interior/Visualizations/3.png?import&url";import { default as __vite_glob_0_81 } from "/src/assets/LAGOM Arkitektur/8. Project - Contrast & Cohesion Interior/Visualizations/4.png?import&url";import { default as __vite_glob_0_82 } from "/src/assets/LAGOM Arkitektur/8. Project - Contrast & Cohesion Interior/Visualizations/5.png?import&url";import { default as __vite_glob_0_83 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/1.png?import&url";import { default as __vite_glob_0_84 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/10.png?import&url";import { default as __vite_glob_0_85 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/11.png?import&url";import { default as __vite_glob_0_86 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/12.png?import&url";import { default as __vite_glob_0_87 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/13.png?import&url";import { default as __vite_glob_0_88 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/14.png?import&url";import { default as __vite_glob_0_89 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/15.png?import&url";import { default as __vite_glob_0_90 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/16.png?import&url";import { default as __vite_glob_0_91 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/17.png?import&url";import { default as __vite_glob_0_92 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/18.png?import&url";import { default as __vite_glob_0_93 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/19.png?import&url";import { default as __vite_glob_0_94 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/2.png?import&url";import { default as __vite_glob_0_95 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/20.png?import&url";import { default as __vite_glob_0_96 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/21.png?import&url";import { default as __vite_glob_0_97 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/22.png?import&url";import { default as __vite_glob_0_98 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/3.png?import&url";import { default as __vite_glob_0_99 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/4.png?import&url";import { default as __vite_glob_0_100 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/5.png?import&url";import { default as __vite_glob_0_101 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/6.png?import&url";import { default as __vite_glob_0_102 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/7.png?import&url";import { default as __vite_glob_0_103 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/8.png?import&url";import { default as __vite_glob_0_104 } from "/src/assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/9.png?import&url";import { default as __vite_glob_0_105 } from "/src/assets/LAGOM Arkitektur/viber_image_2023-11-12_14-41-18-196.jpg?import&url";const projectAssets = /* #__PURE__ */ Object.assign({"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/1.jpg": __vite_glob_0_0,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/10.jpg": __vite_glob_0_1,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/2.jpg": __vite_glob_0_2,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/3.jpg": __vite_glob_0_3,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/4.jpg": __vite_glob_0_4,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/5.jpg": __vite_glob_0_5,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/6.jpg": __vite_glob_0_6,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Pictures from the apartment - realized project/9.jpg": __vite_glob_0_7,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/1.png": __vite_glob_0_8,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/10.png": __vite_glob_0_9,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/11.png": __vite_glob_0_10,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/12.png": __vite_glob_0_11,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/2.png": __vite_glob_0_12,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/3.png": __vite_glob_0_13,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/4.png": __vite_glob_0_14,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/5.png": __vite_glob_0_15,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/6.png": __vite_glob_0_16,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/7.png": __vite_glob_0_17,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/8.png": __vite_glob_0_18,"../assets/LAGOM Arkitektur/1. Project - A_N - The quiet mid-modernity/Visualizations/9.png": __vite_glob_0_19,"../assets/LAGOM Arkitektur/10. Project - Child’s mini creative space/Visualizations/1.png": __vite_glob_0_20,"../assets/LAGOM Arkitektur/10. Project - Child’s mini creative space/Visualizations/2.png": __vite_glob_0_21,"../assets/LAGOM Arkitektur/10. Project - Child’s mini creative space/Visualizations/3.png": __vite_glob_0_22,"../assets/LAGOM Arkitektur/10. Project - Child’s mini creative space/Visualizations/4.png": __vite_glob_0_23,"../assets/LAGOM Arkitektur/10. Project - Child’s mini creative space/Visualizations/5.png": __vite_glob_0_24,"../assets/LAGOM Arkitektur/11. Project -  Blue Nest 4Y/Visualizations/1.png": __vite_glob_0_25,"../assets/LAGOM Arkitektur/11. Project -  Blue Nest 4Y/Visualizations/2.png": __vite_glob_0_26,"../assets/LAGOM Arkitektur/11. Project -  Blue Nest 4Y/Visualizations/3.png": __vite_glob_0_27,"../assets/LAGOM Arkitektur/11. Project -  Blue Nest 4Y/Visualizations/4.png": __vite_glob_0_28,"../assets/LAGOM Arkitektur/11. Project -  Blue Nest 4Y/Visualizations/5.png": __vite_glob_0_29,"../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/1.png": __vite_glob_0_30,"../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/2.png": __vite_glob_0_31,"../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/3.png": __vite_glob_0_32,"../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/4.png": __vite_glob_0_33,"../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/5.png": __vite_glob_0_34,"../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/6.png": __vite_glob_0_35,"../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/day version/7.png": __vite_glob_0_36,"../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/night version/1.png": __vite_glob_0_37,"../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/night version/2.png": __vite_glob_0_38,"../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/night version/3.png": __vite_glob_0_39,"../assets/LAGOM Arkitektur/2. Project - Serene luxe residence/Visualizations/night version/4.png": __vite_glob_0_40,"../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/1.png": __vite_glob_0_41,"../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/10.png": __vite_glob_0_42,"../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/11.png": __vite_glob_0_43,"../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/2.png": __vite_glob_0_44,"../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/3.png": __vite_glob_0_45,"../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/4.png": __vite_glob_0_46,"../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/5.png": __vite_glob_0_47,"../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/6.png": __vite_glob_0_48,"../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/7.png": __vite_glob_0_49,"../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/8.png": __vite_glob_0_50,"../assets/LAGOM Arkitektur/3. Project - Gentleman’s Loft Cave/Visualizations/9.png": __vite_glob_0_51,"../assets/LAGOM Arkitektur/4. Project - L-28 Stoneframe villa/Visualizations/1.png": __vite_glob_0_52,"../assets/LAGOM Arkitektur/4. Project - L-28 Stoneframe villa/Visualizations/2.png": __vite_glob_0_53,"../assets/LAGOM Arkitektur/4. Project - L-28 Stoneframe villa/Visualizations/3.png": __vite_glob_0_54,"../assets/LAGOM Arkitektur/4. Project - L-28 Stoneframe villa/Visualizations/4.png": __vite_glob_0_55,"../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/1.png": __vite_glob_0_56,"../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/10.png": __vite_glob_0_57,"../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/11.png": __vite_glob_0_58,"../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/2.png": __vite_glob_0_59,"../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/3.png": __vite_glob_0_60,"../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/4.png": __vite_glob_0_61,"../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/5.png": __vite_glob_0_62,"../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/6.png": __vite_glob_0_63,"../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/7.png": __vite_glob_0_64,"../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/8.png": __vite_glob_0_65,"../assets/LAGOM Arkitektur/5. Project - Lounge bar AVIATOR 2.0/Visualizations/9.png": __vite_glob_0_66,"../assets/LAGOM Arkitektur/6. Project - ArchMood interior concept/Visualizations/1.png": __vite_glob_0_67,"../assets/LAGOM Arkitektur/6. Project - ArchMood interior concept/Visualizations/2.png": __vite_glob_0_68,"../assets/LAGOM Arkitektur/6. Project - ArchMood interior concept/Visualizations/3.png": __vite_glob_0_69,"../assets/LAGOM Arkitektur/6. Project - ArchMood interior concept/Visualizations/4.png": __vite_glob_0_70,"../assets/LAGOM Arkitektur/6. Project - ArchMood interior concept/Visualizations/5.png": __vite_glob_0_71,"../assets/LAGOM Arkitektur/6. Project - ArchMood interior concept/Visualizations/6.png": __vite_glob_0_72,"../assets/LAGOM Arkitektur/7. Project - Warm minimal open concept/Visualizations/1.png": __vite_glob_0_73,"../assets/LAGOM Arkitektur/7. Project - Warm minimal open concept/Visualizations/2.png": __vite_glob_0_74,"../assets/LAGOM Arkitektur/7. Project - Warm minimal open concept/Visualizations/3.png": __vite_glob_0_75,"../assets/LAGOM Arkitektur/7. Project - Warm minimal open concept/Visualizations/4.png": __vite_glob_0_76,"../assets/LAGOM Arkitektur/7. Project - Warm minimal open concept/Visualizations/5.png": __vite_glob_0_77,"../assets/LAGOM Arkitektur/8. Project - Contrast & Cohesion Interior/Visualizations/1.png": __vite_glob_0_78,"../assets/LAGOM Arkitektur/8. Project - Contrast & Cohesion Interior/Visualizations/2.png": __vite_glob_0_79,"../assets/LAGOM Arkitektur/8. Project - Contrast & Cohesion Interior/Visualizations/3.png": __vite_glob_0_80,"../assets/LAGOM Arkitektur/8. Project - Contrast & Cohesion Interior/Visualizations/4.png": __vite_glob_0_81,"../assets/LAGOM Arkitektur/8. Project - Contrast & Cohesion Interior/Visualizations/5.png": __vite_glob_0_82,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/1.png": __vite_glob_0_83,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/10.png": __vite_glob_0_84,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/11.png": __vite_glob_0_85,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/12.png": __vite_glob_0_86,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/13.png": __vite_glob_0_87,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/14.png": __vite_glob_0_88,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/15.png": __vite_glob_0_89,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/16.png": __vite_glob_0_90,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/17.png": __vite_glob_0_91,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/18.png": __vite_glob_0_92,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/19.png": __vite_glob_0_93,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/2.png": __vite_glob_0_94,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/20.png": __vite_glob_0_95,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/21.png": __vite_glob_0_96,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/22.png": __vite_glob_0_97,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/3.png": __vite_glob_0_98,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/4.png": __vite_glob_0_99,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/5.png": __vite_glob_0_100,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/6.png": __vite_glob_0_101,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/7.png": __vite_glob_0_102,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/8.png": __vite_glob_0_103,"../assets/LAGOM Arkitektur/9. Project - The Oak and Shadow cohesion/Visualizations/9.png": __vite_glob_0_104,"../assets/LAGOM Arkitektur/viber_image_2023-11-12_14-41-18-196.jpg": __vite_glob_0_105
+
+
+
+});
+function image(folder, path) {
+	const suffix = `${folder}/${path}`.replaceAll("\\", "/").toLowerCase();
+	const match = Object.entries(projectAssets).find(([assetPath]) => assetPath.replaceAll("\\", "/").toLowerCase().endsWith(suffix));
+	if (!match) {
+		throw new Error(`Missing project image: ${folder}/${path}`);
+	}
+	return match[1];
+}
+function gallery(folder, paths) {
+	return paths.map((path) => image(folder, path));
+}
+const folder = {
+	quiet: "1. Project - A_N - The quiet mid-modernity",
+	serene: "2. Project - Serene luxe residence",
+	gentleman: "3. Project - Gentleman’s Loft Cave",
+	stoneframe: "4. Project - L-28 Stoneframe villa",
+	aviator: "5. Project - Lounge bar AVIATOR 2.0",
+	archmood: "6. Project - ArchMood interior concept",
+	warm: "7. Project - Warm minimal open concept",
+	contrast: "8. Project - Contrast & Cohesion Interior",
+	oak: "9. Project - The Oak and Shadow cohesion",
+	child: "10. Project - Child’s mini creative space",
+	blueNest: "11. Project -  Blue Nest 4Y"
+};
+export const projectShowcaseIntro = {
+	index: "00",
+	title: "Selected work",
+	tags: [
+		"Lagom Arkitektur",
+		"Selected work",
+		"Spatial portfolio"
+	],
+	properties: [
+		"Architecture",
+		"Interiors",
+		"2022-2026"
+	]
+};
+export const projects = [
+	{
+		id: "01",
+		title: "A|N - The Quiet Mid-Modernity",
+		slug: "quiet-mid-modernity",
+		excerpt: "A contemporary apartment in Malmo blending modern and mid-century influences with natural light, metal details, and warm wood accents.",
+		description: "Nestled in the heart of Malmo, Sweden, this contemporary apartment beautifully blends modern and mid-century modern design influences to create a stylish yet cozy living space. Its open layout maximizes natural light, with large windows that flood each room with sunlight, enhancing the sense of openness and tranquility. Wooden accents bring warmth to the environment, forming a harmonious contrast with the metal details found throughout the apartment.",
+		year: "2024",
+		location: "Malmo, Sweden",
+		category: "Residential",
+		services: [
+			"Interior design",
+			"Spatial planning",
+			"Material concept"
+		],
+		featuredImage: image(folder.quiet, "Pictures from the apartment - realized project/1.jpg"),
+		gallery: gallery(folder.quiet, [
+			"Pictures from the apartment - realized project/1.jpg",
+			"Pictures from the apartment - realized project/2.jpg",
+			"Pictures from the apartment - realized project/3.jpg",
+			"Pictures from the apartment - realized project/4.jpg",
+			"Visualizations/1.png",
+			"Visualizations/2.png"
+		]),
+		credits: "Site size: 54 sqm",
+		isFeatured: true
+	},
+	{
+		id: "02",
+		title: "Serene Luxe Residence",
+		slug: "serene-luxe-residence",
+		excerpt: "A refined residential concept where open planning, natural materials, and layered lighting create calm everyday luxury.",
+		description: "This project presents a refined Serene Modern residential concept where architecture, light, and materiality work together to create calm, elegant living environments. The open-plan layout connects living, dining, and kitchen areas into a continuous spatial experience, enhanced by large glazed openings that frame curated city-and-landscape views. A soft, natural palette of wood, stone, and textured surfaces is paired with layered architectural lighting to maintain warmth and clarity throughout the day.",
+		year: "2024",
+		location: "Shtip, N. Macedonia",
+		category: "Residential",
+		services: [
+			"Interior concept",
+			"Visualization",
+			"Lighting concept"
+		],
+		featuredImage: image(folder.serene, "Visualizations/day version/1.png"),
+		gallery: gallery(folder.serene, [
+			"Visualizations/day version/1.png",
+			"Visualizations/day version/2.png",
+			"Visualizations/day version/3.png",
+			"Visualizations/day version/4.png",
+			"Visualizations/night version/1.png",
+			"Visualizations/night version/2.png"
+		]),
+		credits: "Site size: 75 sqm",
+		isFeatured: true
+	},
+	{
+		id: "03",
+		title: "Gentleman's Loft Cave",
+		slug: "gentlemans-loft-cave",
+		excerpt: "A dark, tactile apartment interior balancing anthracite surfaces, cherry wood, orange upholstery, and collected furniture pieces.",
+		description: "This apartment is conceived as a refined contemporary man cave, balancing a dark, smoky atmosphere with curated elegance. An anthracite microcement floor forms a continuous, monolithic base, setting a dramatic tone while contrasting intentionally with the warmth of the cherry wood kitchen and the bold orange upholstery of the sofa. The result is a space that feels masculine and intimate, yet polished, timeless, and aesthetically composed.",
+		year: "2022",
+		location: "Skopje, N. Macedonia",
+		category: "Residential",
+		services: [
+			"Interior design",
+			"Furniture curation",
+			"Material concept"
+		],
+		featuredImage: image(folder.gentleman, "Visualizations/1.png"),
+		gallery: gallery(folder.gentleman, [
+			"Visualizations/1.png",
+			"Visualizations/2.png",
+			"Visualizations/3.png",
+			"Visualizations/4.png",
+			"Visualizations/5.png",
+			"Visualizations/6.png"
+		]),
+		credits: "Site size: 64 sqm",
+		isFeatured: true
+	},
+	{
+		id: "04",
+		title: "L-28 Stoneframe Villa",
+		slug: "l-28-stoneframe-villa",
+		excerpt: "A contemporary courtyard home framed by natural stone, plaster, warm wood, and private outdoor lounges.",
+		description: "L-28 Stoneframe Villa is a contemporary courtyard home that blends architectural clarity with everyday comfort. Clean horizontal volumes are framed by natural stone, plaster, and warm wood to create a timeless, welcoming identity. Large glazed openings connect interior spaces with private outdoor lounges, allowing light and landscape to shape the living experience. Integrated linear lighting emphasizes the architectural edges and adds atmosphere after sunset.",
+		year: "2025",
+		location: "Prilep, N. Macedonia",
+		category: "Residential",
+		services: [
+			"Architecture",
+			"Exterior concept",
+			"Visualization"
+		],
+		featuredImage: image(folder.stoneframe, "Visualizations/1.png"),
+		gallery: gallery(folder.stoneframe, [
+			"Visualizations/1.png",
+			"Visualizations/2.png",
+			"Visualizations/3.png",
+			"Visualizations/4.png"
+		]),
+		credits: "Site size: 186 sqm",
+		isFeatured: true
+	},
+	{
+		id: "05",
+		title: "Lounge Bar Aviator 2.0",
+		slug: "lounge-bar-aviator",
+		excerpt: "A contemporary hospitality interior shaped with warm wood, stone texture, soft light, and calm urban openness.",
+		description: "This contemporary restaurant interior is designed as a refined extension of the city mall, blending hospitality with architectural character. Warm wood, textured stone surfaces, and soft integrated lighting create an inviting atmosphere for everyday dining and social interaction. Carefully composed seating zones balance openness with comfort and privacy, while greenery softens the material palette and enhances the guest experience.",
+		year: "2023",
+		location: "Skopje, N. Macedonia",
+		category: "Hospitality",
+		services: [
+			"Interior design",
+			"Hospitality concept",
+			"Visualization"
+		],
+		featuredImage: image(folder.aviator, "Visualizations/1.png"),
+		gallery: gallery(folder.aviator, [
+			"Visualizations/1.png",
+			"Visualizations/2.png",
+			"Visualizations/3.png",
+			"Visualizations/4.png",
+			"Visualizations/5.png",
+			"Visualizations/6.png"
+		]),
+		credits: "Site size: 140 sqm",
+		isFeatured: true
+	},
+	{
+		id: "06",
+		title: "ArchMood Interior Concept",
+		slug: "archmood-interior-concept",
+		excerpt: "A compact shared bedroom transformed into warm, functional zones for rest, grooming, reading, and daily rituals.",
+		description: "This compact room transformation was a challenge in both space optimization and aesthetic balance. Originally a very small and limited area, the goal was to reimagine it into a warm, functional, and stylish shared bedroom for two teenage girls. Two comfortable single beds, a dedicated make-up and grooming area, and a cozy reading corner give each person a personalized zone within a calm shared interior.",
+		year: "2025",
+		location: "Skopje, N. Macedonia",
+		category: "Residential",
+		services: [
+			"Interior design",
+			"Small-space planning",
+			"Visualization"
+		],
+		featuredImage: image(folder.archmood, "Visualizations/1.png"),
+		gallery: gallery(folder.archmood, [
+			"Visualizations/1.png",
+			"Visualizations/2.png",
+			"Visualizations/3.png",
+			"Visualizations/4.png",
+			"Visualizations/5.png",
+			"Visualizations/6.png"
+		]),
+		credits: "Site size: 12 sqm",
+		isFeatured: false
+	},
+	{
+		id: "07",
+		title: "Warm Minimal Open Concept",
+		slug: "warm-minimal-open-concept",
+		excerpt: "A compact apartment retreat where kitchen, dining, and lounge areas flow through soft geometry and neutral materiality.",
+		description: "This apartment is conceived as a warm-modern retreat for two, where open planning and soft geometry create a continuous living experience. Kitchen, dining, and lounge areas flow naturally, enhanced by neutral palettes, wood textures, and stone finishes. Built-in storage and custom furniture optimize the compact footprint, while large openings and reflective surfaces amplify natural light and visual continuity throughout the home.",
+		year: "2024",
+		location: "Prilep, N. Macedonia",
+		category: "Residential",
+		services: [
+			"Interior design",
+			"Custom furniture",
+			"Visualization"
+		],
+		featuredImage: image(folder.warm, "Visualizations/1.png"),
+		gallery: gallery(folder.warm, [
+			"Visualizations/1.png",
+			"Visualizations/2.png",
+			"Visualizations/3.png",
+			"Visualizations/4.png",
+			"Visualizations/5.png"
+		]),
+		credits: "Site size: 25 sqm",
+		isFeatured: false
+	},
+	{
+		id: "08",
+		title: "Contrast & Cohesion Interior",
+		slug: "contrast-cohesion-interior",
+		excerpt: "A serious, modern living and dining interior built around pepita pattern, black leather, brown leather, and artful wall composition.",
+		description: "At the request of the customers, this design helped define the direction for a living room and dining area with a more serious character and modern elements. Furniture material, color, and dining-room wall decoration carry the concept. The pepita pattern and black leather armchairs, combined with the brown leather sofa, create a matched contrast that gives the space depth and confidence.",
+		year: "2022",
+		location: "Skopje, N. Macedonia",
+		category: "Residential",
+		services: [
+			"Interior design",
+			"Material selection",
+			"Visualization"
+		],
+		featuredImage: image(folder.contrast, "Visualizations/1.png"),
+		gallery: gallery(folder.contrast, [
+			"Visualizations/1.png",
+			"Visualizations/2.png",
+			"Visualizations/3.png",
+			"Visualizations/4.png",
+			"Visualizations/5.png"
+		]),
+		credits: "Site size: 45 sqm",
+		isFeatured: false
+	},
+	{
+		id: "09",
+		title: "The Oak and Shadow Cohesion",
+		slug: "oak-shadow-cohesion",
+		excerpt: "A contemporary apartment interior where warm oak, natural stone, matte black elements, and Nordic blue accents frame flexible living.",
+		description: "This contemporary apartment interior is defined by material contrast, spatial flexibility, and refined architectural composition. Warm oak volumes and natural stone surfaces are framed by deep matte black elements, creating a layered dialogue between light and shadow throughout the home. A transformable living and dining area, dedicated bay-window office, and boutique-hotel bedroom build a calm, flexible residential experience.",
+		year: "2026",
+		location: "Bitola, N. Macedonia",
+		category: "Residential",
+		services: [
+			"Interior design",
+			"Joinery concept",
+			"Visualization"
+		],
+		featuredImage: image(folder.oak, "Visualizations/1.png"),
+		gallery: gallery(folder.oak, [
+			"Visualizations/1.png",
+			"Visualizations/2.png",
+			"Visualizations/3.png",
+			"Visualizations/4.png",
+			"Visualizations/5.png",
+			"Visualizations/6.png"
+		]),
+		credits: "Site size: 60 sqm",
+		isFeatured: true
+	},
+	{
+		id: "10",
+		title: "Child's Mini Creative Space",
+		slug: "childs-mini-creative-space",
+		excerpt: "A child's room shaped as a small personal studio for study, drawing, rest, shared play, and independence.",
+		description: "This project transforms a room into a child's personal studio for creativity and comfort. Planned around a fixed wardrobe position, the interior unfolds into functional zones for studying, drawing, resting, and shared playtime. Warm materials, playful textures, and balanced proportions give the space architectural clarity while remaining inviting and soft. Natural light and calm colors frame daily activities, allowing the room to grow with the child.",
+		year: "2023",
+		location: "Prilep, N. Macedonia",
+		category: "Residential",
+		services: [
+			"Interior design",
+			"Children's room concept",
+			"Visualization"
+		],
+		featuredImage: image(folder.child, "Visualizations/1.png"),
+		gallery: gallery(folder.child, [
+			"Visualizations/1.png",
+			"Visualizations/2.png",
+			"Visualizations/3.png",
+			"Visualizations/4.png",
+			"Visualizations/5.png"
+		]),
+		credits: "Site size: 12 sqm",
+		isFeatured: false
+	},
+	{
+		id: "11",
+		title: "Blue Nest 4Y",
+		slug: "blue-nest-4y",
+		excerpt: "A calm, playful kids interior blending Nordic minimalism, soft geometry, natural wood, and muted blue accents.",
+		description: "Project Blue Nest is a calm, playful, and architectural kids interior designed for a 4-year-old boy. The space blends Nordic minimalism with soft geometry, natural wood, and muted blue accents to create a balanced environment for sleep, play, and creativity. Clean lines, built-in storage, and sculpted forms transform the room into a small architectural landscape where function meets imagination.",
+		year: "2024",
+		location: "Skopje, N. Macedonia",
+		category: "Residential",
+		services: [
+			"Interior design",
+			"Children's room concept",
+			"Visualization"
+		],
+		featuredImage: image(folder.blueNest, "Visualizations/1.png"),
+		gallery: gallery(folder.blueNest, [
+			"Visualizations/1.png",
+			"Visualizations/2.png",
+			"Visualizations/3.png",
+			"Visualizations/4.png",
+			"Visualizations/5.png"
+		]),
+		credits: "Site size: 11 sqm",
+		isFeatured: false
+	}
+];
+export const projectShowcaseProjects = projects.slice(0, 5).map((project) => ({
+	id: project.id,
+	index: project.id,
+	slug: project.slug,
+	prefix: project.title.split(" ")[0].replace("'", ""),
+	title: project.title.replace(/^.*? - /, ""),
+	tags: [
+		project.category,
+		project.services[0] ?? "Design",
+		project.year,
+		"Lagom"
+	],
+	properties: [
+		project.year,
+		project.location,
+		project.credits
+	],
+	image: project.featuredImage,
+	thumbnail: project.gallery[1] ?? project.featuredImage,
+	secondaryImage: project.gallery[2] ?? project.featuredImage
+}));
+export const projectCategories = Array.from(new Set(projects.map((project) => project.category)));
+export function getProjectBySlug(slug) {
+	return projects.find((project) => project.slug === slug);
+}
+export function getFeaturedProjects() {
+	return projects.filter((project) => project.isFeatured);
+}
+
+//# sourceMappingURL=data:application/json;base64,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LFFBQVE7RUFBVSxRQUFRLFNBQVMsTUFBTTtFQUFVLFFBQVE7RUFBTTtDQUFPO0NBQy9FLFlBQVk7RUFBQyxRQUFRO0VBQU0sUUFBUTtFQUFVLFFBQVE7Q0FBTztDQUM1RCxPQUFPLFFBQVE7Q0FDZixXQUFXLFFBQVEsUUFBUSxNQUFNLFFBQVE7Q0FDekMsZ0JBQWdCLFFBQVEsUUFBUSxNQUFNLFFBQVE7QUFDaEQsRUFBRTtBQUVGLE9BQU8sTUFBTSxvQkFBb0IsTUFBTSxLQUFLLElBQUksSUFBSSxTQUFTLEtBQUssWUFBWSxRQUFRLFFBQVEsQ0FBQyxDQUFDO0FBRWhHLE9BQU8sU0FBUyxpQkFBaUIsTUFBbUM7Q0FDbEUsT0FBTyxTQUFTLE1BQU0sWUFBWSxRQUFRLFNBQVMsSUFBSTtBQUN6RDtBQUVBLE9BQU8sU0FBUyxzQkFBaUM7Q0FDL0MsT0FBTyxTQUFTLFFBQVEsWUFBWSxRQUFRLFVBQVU7QUFDeEQiLCJuYW1lcyI6W10sInNvdXJjZXMiOlsicHJvamVjdHMudHMiXSwidmVyc2lvbiI6Mywic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHR5cGUgeyBQcm9qZWN0IH0gZnJvbSBcIi4uL3R5cGVzL3Byb2plY3RcIjtcblxuY29uc3QgcHJvamVjdEFzc2V0cyA9IGltcG9ydC5tZXRhLmdsb2I8c3RyaW5nPihcbiAgXCIuLi9hc3NldHMvTEFHT00gQXJraXRla3R1ci8qKi8qLntqcGcsanBlZyxwbmcsd2VicH1cIixcbiAgeyBlYWdlcjogdHJ1ZSwgcXVlcnk6IFwiP3VybFwiLCBpbXBvcnQ6IFwiZGVmYXVsdFwiIH0sXG4pO1xuXG5mdW5jdGlvbiBpbWFnZShmb2xkZXI6IHN0cmluZywgcGF0aDogc3RyaW5nKSB7XG4gIGNvbnN0IHN1ZmZpeCA9IGAke2ZvbGRlcn0vJHtwYXRofWAucmVwbGFjZUFsbChcIlxcXFxcIiwgXCIvXCIpLnRvTG93ZXJDYXNlKCk7XG4gIGNvbnN0IG1hdGNoID0gT2JqZWN0LmVudHJpZXMocHJvamVjdEFzc2V0cykuZmluZCgoW2Fzc2V0UGF0aF0pID0+XG4gICAgYXNzZXRQYXRoLnJlcGxhY2VBbGwoXCJcXFxcXCIsIFwiL1wiKS50b0xvd2VyQ2FzZSgpLmVuZHNXaXRoKHN1ZmZpeCksXG4gICk7XG5cbiAgaWYgKCFtYXRjaCkge1xuICAgIHRocm93IG5ldyBFcnJvcihgTWlzc2luZyBwcm9qZWN0IGltYWdlOiAke2ZvbGRlcn0vJHtwYXRofWApO1xuICB9XG5cbiAgcmV0dXJuIG1hdGNoWzFdO1xufVxuXG5mdW5jdGlvbiBnYWxsZXJ5KGZvbGRlcjogc3RyaW5nLCBwYXRoczogc3RyaW5nW10pIHtcbiAgcmV0dXJuIHBhdGhzLm1hcCgocGF0aCkgPT4gaW1hZ2UoZm9sZGVyLCBwYXRoKSk7XG59XG5cbmNvbnN0IGZvbGRlciA9IHtcbiAgcXVpZXQ6IFwiMS4gUHJvamVjdCAtIEFfTiAtIFRoZSBxdWlldCBtaWQtbW9kZXJuaXR5XCIsXG4gIHNlcmVuZTogXCIyLiBQcm9qZWN0IC0gU2VyZW5lIGx1eGUgcmVzaWRlbmNlXCIsXG4gIGdlbnRsZW1hbjogXCIzLiBQcm9qZWN0IC0gR2VudGxlbWFu4oCZcyBMb2Z0IENhdmVcIixcbiAgc3RvbmVmcmFtZTogXCI0LiBQcm9qZWN0IC0gTC0yOCBTdG9uZWZyYW1lIHZpbGxhXCIsXG4gIGF2aWF0b3I6IFwiNS4gUHJvamVjdCAtIExvdW5nZSBiYXIgQVZJQVRPUiAyLjBcIixcbiAgYXJjaG1vb2Q6IFwiNi4gUHJvamVjdCAtIEFyY2hNb29kIGludGVyaW9yIGNvbmNlcHRcIixcbiAgd2FybTogXCI3LiBQcm9qZWN0IC0gV2FybSBtaW5pbWFsIG9wZW4gY29uY2VwdFwiLFxuICBjb250cmFzdDogXCI4LiBQcm9qZWN0IC0gQ29udHJhc3QgJiBDb2hlc2lvbiBJbnRlcmlvclwiLFxuICBvYWs6IFwiOS4gUHJvamVjdCAtIFRoZSBPYWsgYW5kIFNoYWRvdyBjb2hlc2lvblwiLFxuICBjaGlsZDogXCIxMC4gUHJvamVjdCAtIENoaWxk4oCZcyBtaW5pIGNyZWF0aXZlIHNwYWNlXCIsXG4gIGJsdWVOZXN0OiBcIjExLiBQcm9qZWN0IC0gIEJsdWUgTmVzdCA0WVwiLFxufSBhcyBjb25zdDtcblxuZXhwb3J0IGludGVyZmFjZSBQcm9qZWN0U2hvd2Nhc2VJdGVtIHtcbiAgaWQ6IHN0cmluZztcbiAgaW5kZXg6IHN0cmluZztcbiAgc2x1Zzogc3RyaW5nO1xuICBwcmVmaXg6IHN0cmluZztcbiAgdGl0bGU6IHN0cmluZztcbiAgdGFnczogc3RyaW5nW107XG4gIHByb3BlcnRpZXM6IHN0cmluZ1tdO1xuICBpbWFnZTogc3RyaW5nO1xuICB0aHVtYm5haWw6IHN0cmluZztcbiAgc2Vjb25kYXJ5SW1hZ2U6IHN0cmluZztcbn1cblxuZXhwb3J0IGNvbnN0IHByb2plY3RTaG93Y2FzZUludHJvID0ge1xuICBpbmRleDogXCIwMFwiLFxuICB0aXRsZTogXCJTZWxlY3RlZCB3b3JrXCIsXG4gIHRhZ3M6IFtcIkxhZ29tIEFya2l0ZWt0dXJcIiwgXCJTZWxlY3RlZCB3b3JrXCIsIFwiU3BhdGlhbCBwb3J0Zm9saW9cIl0sXG4gIHByb3BlcnRpZXM6IFtcIkFyY2hpdGVjdHVyZVwiLCBcIkludGVyaW9yc1wiLCBcIjIwMjItMjAyNlwiXSxcbn07XG5cbmV4cG9ydCBjb25zdCBwcm9qZWN0czogUHJvamVjdFtdID0gW1xuICB7XG4gICAgaWQ6IFwiMDFcIixcbiAgICB0aXRsZTogXCJBfE4gLSBUaGUgUXVpZXQgTWlkLU1vZGVybml0eVwiLFxuICAgIHNsdWc6IFwicXVpZXQtbWlkLW1vZGVybml0eVwiLFxuICAgIGV4Y2VycHQ6XG4gICAgICBcIkEgY29udGVtcG9yYXJ5IGFwYXJ0bWVudCBpbiBNYWxtbyBibGVuZGluZyBtb2Rlcm4gYW5kIG1pZC1jZW50dXJ5IGluZmx1ZW5jZXMgd2l0aCBuYXR1cmFsIGxpZ2h0LCBtZXRhbCBkZXRhaWxzLCBhbmQgd2FybSB3b29kIGFjY2VudHMuXCIsXG4gICAgZGVzY3JpcHRpb246XG4gICAgICBcIk5lc3RsZWQgaW4gdGhlIGhlYXJ0IG9mIE1hbG1vLCBTd2VkZW4sIHRoaXMgY29udGVtcG9yYXJ5IGFwYXJ0bWVudCBiZWF1dGlmdWxseSBibGVuZHMgbW9kZXJuIGFuZCBtaWQtY2VudHVyeSBtb2Rlcm4gZGVzaWduIGluZmx1ZW5jZXMgdG8gY3JlYXRlIGEgc3R5bGlzaCB5ZXQgY296eSBsaXZpbmcgc3BhY2UuIEl0cyBvcGVuIGxheW91dCBtYXhpbWl6ZXMgbmF0dXJhbCBsaWdodCwgd2l0aCBsYXJnZSB3aW5kb3dzIHRoYXQgZmxvb2QgZWFjaCByb29tIHdpdGggc3VubGlnaHQsIGVuaGFuY2luZyB0aGUgc2Vuc2Ugb2Ygb3Blbm5lc3MgYW5kIHRyYW5xdWlsaXR5LiBXb29kZW4gYWNjZW50cyBicmluZyB3YXJtdGggdG8gdGhlIGVudmlyb25tZW50LCBmb3JtaW5nIGEgaGFybW9uaW91cyBjb250cmFzdCB3aXRoIHRoZSBtZXRhbCBkZXRhaWxzIGZvdW5kIHRocm91Z2hvdXQgdGhlIGFwYXJ0bWVudC5cIixcbiAgICB5ZWFyOiBcIjIwMjRcIixcbiAgICBsb2NhdGlvbjogXCJNYWxtbywgU3dlZGVuXCIsXG4gICAgY2F0ZWdvcnk6IFwiUmVzaWRlbnRpYWxcIixcbiAgICBzZXJ2aWNlczogW1wiSW50ZXJpb3IgZGVzaWduXCIsIFwiU3BhdGlhbCBwbGFubmluZ1wiLCBcIk1hdGVyaWFsIGNvbmNlcHRcIl0sXG4gICAgZmVhdHVyZWRJbWFnZTogaW1hZ2UoZm9sZGVyLnF1aWV0LCBcIlBpY3R1cmVzIGZyb20gdGhlIGFwYXJ0bWVudCAtIHJlYWxpemVkIHByb2plY3QvMS5qcGdcIiksXG4gICAgZ2FsbGVyeTogZ2FsbGVyeShmb2xkZXIucXVpZXQsIFtcbiAgICAgIFwiUGljdHVyZXMgZnJvbSB0aGUgYXBhcnRtZW50IC0gcmVhbGl6ZWQgcHJvamVjdC8xLmpwZ1wiLFxuICAgICAgXCJQaWN0dXJlcyBmcm9tIHRoZSBhcGFydG1lbnQgLSByZWFsaXplZCBwcm9qZWN0LzIuanBnXCIsXG4gICAgICBcIlBpY3R1cmVzIGZyb20gdGhlIGFwYXJ0bWVudCAtIHJlYWxpemVkIHByb2plY3QvMy5qcGdcIixcbiAgICAgIFwiUGljdHVyZXMgZnJvbSB0aGUgYXBhcnRtZW50IC0gcmVhbGl6ZWQgcHJvamVjdC80LmpwZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy8xLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy8yLnBuZ1wiLFxuICAgIF0pLFxuICAgIGNyZWRpdHM6IFwiU2l0ZSBzaXplOiA1NCBzcW1cIixcbiAgICBpc0ZlYXR1cmVkOiB0cnVlLFxuICB9LFxuICB7XG4gICAgaWQ6IFwiMDJcIixcbiAgICB0aXRsZTogXCJTZXJlbmUgTHV4ZSBSZXNpZGVuY2VcIixcbiAgICBzbHVnOiBcInNlcmVuZS1sdXhlLXJlc2lkZW5jZVwiLFxuICAgIGV4Y2VycHQ6XG4gICAgICBcIkEgcmVmaW5lZCByZXNpZGVudGlhbCBjb25jZXB0IHdoZXJlIG9wZW4gcGxhbm5pbmcsIG5hdHVyYWwgbWF0ZXJpYWxzLCBhbmQgbGF5ZXJlZCBsaWdodGluZyBjcmVhdGUgY2FsbSBldmVyeWRheSBsdXh1cnkuXCIsXG4gICAgZGVzY3JpcHRpb246XG4gICAgICBcIlRoaXMgcHJvamVjdCBwcmVzZW50cyBhIHJlZmluZWQgU2VyZW5lIE1vZGVybiByZXNpZGVudGlhbCBjb25jZXB0IHdoZXJlIGFyY2hpdGVjdHVyZSwgbGlnaHQsIGFuZCBtYXRlcmlhbGl0eSB3b3JrIHRvZ2V0aGVyIHRvIGNyZWF0ZSBjYWxtLCBlbGVnYW50IGxpdmluZyBlbnZpcm9ubWVudHMuIFRoZSBvcGVuLXBsYW4gbGF5b3V0IGNvbm5lY3RzIGxpdmluZywgZGluaW5nLCBhbmQga2l0Y2hlbiBhcmVhcyBpbnRvIGEgY29udGludW91cyBzcGF0aWFsIGV4cGVyaWVuY2UsIGVuaGFuY2VkIGJ5IGxhcmdlIGdsYXplZCBvcGVuaW5ncyB0aGF0IGZyYW1lIGN1cmF0ZWQgY2l0eS1hbmQtbGFuZHNjYXBlIHZpZXdzLiBBIHNvZnQsIG5hdHVyYWwgcGFsZXR0ZSBvZiB3b29kLCBzdG9uZSwgYW5kIHRleHR1cmVkIHN1cmZhY2VzIGlzIHBhaXJlZCB3aXRoIGxheWVyZWQgYXJjaGl0ZWN0dXJhbCBsaWdodGluZyB0byBtYWludGFpbiB3YXJtdGggYW5kIGNsYXJpdHkgdGhyb3VnaG91dCB0aGUgZGF5LlwiLFxuICAgIHllYXI6IFwiMjAyNFwiLFxuICAgIGxvY2F0aW9uOiBcIlNodGlwLCBOLiBNYWNlZG9uaWFcIixcbiAgICBjYXRlZ29yeTogXCJSZXNpZGVudGlhbFwiLFxuICAgIHNlcnZpY2VzOiBbXCJJbnRlcmlvciBjb25jZXB0XCIsIFwiVmlzdWFsaXphdGlvblwiLCBcIkxpZ2h0aW5nIGNvbmNlcHRcIl0sXG4gICAgZmVhdHVyZWRJbWFnZTogaW1hZ2UoZm9sZGVyLnNlcmVuZSwgXCJWaXN1YWxpemF0aW9ucy9kYXkgdmVyc2lvbi8xLnBuZ1wiKSxcbiAgICBnYWxsZXJ5OiBnYWxsZXJ5KGZvbGRlci5zZXJlbmUsIFtcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvZGF5IHZlcnNpb24vMS5wbmdcIixcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvZGF5IHZlcnNpb24vMi5wbmdcIixcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvZGF5IHZlcnNpb24vMy5wbmdcIixcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvZGF5IHZlcnNpb24vNC5wbmdcIixcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvbmlnaHQgdmVyc2lvbi8xLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy9uaWdodCB2ZXJzaW9uLzIucG5nXCIsXG4gICAgXSksXG4gICAgY3JlZGl0czogXCJTaXRlIHNpemU6IDc1IHNxbVwiLFxuICAgIGlzRmVhdHVyZWQ6IHRydWUsXG4gIH0sXG4gIHtcbiAgICBpZDogXCIwM1wiLFxuICAgIHRpdGxlOiBcIkdlbnRsZW1hbidzIExvZnQgQ2F2ZVwiLFxuICAgIHNsdWc6IFwiZ2VudGxlbWFucy1sb2Z0LWNhdmVcIixcbiAgICBleGNlcnB0OlxuICAgICAgXCJBIGRhcmssIHRhY3RpbGUgYXBhcnRtZW50IGludGVyaW9yIGJhbGFuY2luZyBhbnRocmFjaXRlIHN1cmZhY2VzLCBjaGVycnkgd29vZCwgb3JhbmdlIHVwaG9sc3RlcnksIGFuZCBjb2xsZWN0ZWQgZnVybml0dXJlIHBpZWNlcy5cIixcbiAgICBkZXNjcmlwdGlvbjpcbiAgICAgIFwiVGhpcyBhcGFydG1lbnQgaXMgY29uY2VpdmVkIGFzIGEgcmVmaW5lZCBjb250ZW1wb3JhcnkgbWFuIGNhdmUsIGJhbGFuY2luZyBhIGRhcmssIHNtb2t5IGF0bW9zcGhlcmUgd2l0aCBjdXJhdGVkIGVsZWdhbmNlLiBBbiBhbnRocmFjaXRlIG1pY3JvY2VtZW50IGZsb29yIGZvcm1zIGEgY29udGludW91cywgbW9ub2xpdGhpYyBiYXNlLCBzZXR0aW5nIGEgZHJhbWF0aWMgdG9uZSB3aGlsZSBjb250cmFzdGluZyBpbnRlbnRpb25hbGx5IHdpdGggdGhlIHdhcm10aCBvZiB0aGUgY2hlcnJ5IHdvb2Qga2l0Y2hlbiBhbmQgdGhlIGJvbGQgb3JhbmdlIHVwaG9sc3Rlcnkgb2YgdGhlIHNvZmEuIFRoZSByZXN1bHQgaXMgYSBzcGFjZSB0aGF0IGZlZWxzIG1hc2N1bGluZSBhbmQgaW50aW1hdGUsIHlldCBwb2xpc2hlZCwgdGltZWxlc3MsIGFuZCBhZXN0aGV0aWNhbGx5IGNvbXBvc2VkLlwiLFxuICAgIHllYXI6IFwiMjAyMlwiLFxuICAgIGxvY2F0aW9uOiBcIlNrb3BqZSwgTi4gTWFjZWRvbmlhXCIsXG4gICAgY2F0ZWdvcnk6IFwiUmVzaWRlbnRpYWxcIixcbiAgICBzZXJ2aWNlczogW1wiSW50ZXJpb3IgZGVzaWduXCIsIFwiRnVybml0dXJlIGN1cmF0aW9uXCIsIFwiTWF0ZXJpYWwgY29uY2VwdFwiXSxcbiAgICBmZWF0dXJlZEltYWdlOiBpbWFnZShmb2xkZXIuZ2VudGxlbWFuLCBcIlZpc3VhbGl6YXRpb25zLzEucG5nXCIpLFxuICAgIGdhbGxlcnk6IGdhbGxlcnkoZm9sZGVyLmdlbnRsZW1hbiwgW1xuICAgICAgXCJWaXN1YWxpemF0aW9ucy8xLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy8yLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy8zLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy80LnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy81LnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy82LnBuZ1wiLFxuICAgIF0pLFxuICAgIGNyZWRpdHM6IFwiU2l0ZSBzaXplOiA2NCBzcW1cIixcbiAgICBpc0ZlYXR1cmVkOiB0cnVlLFxuICB9LFxuICB7XG4gICAgaWQ6IFwiMDRcIixcbiAgICB0aXRsZTogXCJMLTI4IFN0b25lZnJhbWUgVmlsbGFcIixcbiAgICBzbHVnOiBcImwtMjgtc3RvbmVmcmFtZS12aWxsYVwiLFxuICAgIGV4Y2VycHQ6XG4gICAgICBcIkEgY29udGVtcG9yYXJ5IGNvdXJ0eWFyZCBob21lIGZyYW1lZCBieSBuYXR1cmFsIHN0b25lLCBwbGFzdGVyLCB3YXJtIHdvb2QsIGFuZCBwcml2YXRlIG91dGRvb3IgbG91bmdlcy5cIixcbiAgICBkZXNjcmlwdGlvbjpcbiAgICAgIFwiTC0yOCBTdG9uZWZyYW1lIFZpbGxhIGlzIGEgY29udGVtcG9yYXJ5IGNvdXJ0eWFyZCBob21lIHRoYXQgYmxlbmRzIGFyY2hpdGVjdHVyYWwgY2xhcml0eSB3aXRoIGV2ZXJ5ZGF5IGNvbWZvcnQuIENsZWFuIGhvcml6b250YWwgdm9sdW1lcyBhcmUgZnJhbWVkIGJ5IG5hdHVyYWwgc3RvbmUsIHBsYXN0ZXIsIGFuZCB3YXJtIHdvb2QgdG8gY3JlYXRlIGEgdGltZWxlc3MsIHdlbGNvbWluZyBpZGVudGl0eS4gTGFyZ2UgZ2xhemVkIG9wZW5pbmdzIGNvbm5lY3QgaW50ZXJpb3Igc3BhY2VzIHdpdGggcHJpdmF0ZSBvdXRkb29yIGxvdW5nZXMsIGFsbG93aW5nIGxpZ2h0IGFuZCBsYW5kc2NhcGUgdG8gc2hhcGUgdGhlIGxpdmluZyBleHBlcmllbmNlLiBJbnRlZ3JhdGVkIGxpbmVhciBsaWdodGluZyBlbXBoYXNpemVzIHRoZSBhcmNoaXRlY3R1cmFsIGVkZ2VzIGFuZCBhZGRzIGF0bW9zcGhlcmUgYWZ0ZXIgc3Vuc2V0LlwiLFxuICAgIHllYXI6IFwiMjAyNVwiLFxuICAgIGxvY2F0aW9uOiBcIlByaWxlcCwgTi4gTWFjZWRvbmlhXCIsXG4gICAgY2F0ZWdvcnk6IFwiUmVzaWRlbnRpYWxcIixcbiAgICBzZXJ2aWNlczogW1wiQXJjaGl0ZWN0dXJlXCIsIFwiRXh0ZXJpb3IgY29uY2VwdFwiLCBcIlZpc3VhbGl6YXRpb25cIl0sXG4gICAgZmVhdHVyZWRJbWFnZTogaW1hZ2UoZm9sZGVyLnN0b25lZnJhbWUsIFwiVmlzdWFsaXphdGlvbnMvMS5wbmdcIiksXG4gICAgZ2FsbGVyeTogZ2FsbGVyeShmb2xkZXIuc3RvbmVmcmFtZSwgW1xuICAgICAgXCJWaXN1YWxpemF0aW9ucy8xLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy8yLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy8zLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy80LnBuZ1wiLFxuICAgIF0pLFxuICAgIGNyZWRpdHM6IFwiU2l0ZSBzaXplOiAxODYgc3FtXCIsXG4gICAgaXNGZWF0dXJlZDogdHJ1ZSxcbiAgfSxcbiAge1xuICAgIGlkOiBcIjA1XCIsXG4gICAgdGl0bGU6IFwiTG91bmdlIEJhciBBdmlhdG9yIDIuMFwiLFxuICAgIHNsdWc6IFwibG91bmdlLWJhci1hdmlhdG9yXCIsXG4gICAgZXhjZXJwdDpcbiAgICAgIFwiQSBjb250ZW1wb3JhcnkgaG9zcGl0YWxpdHkgaW50ZXJpb3Igc2hhcGVkIHdpdGggd2FybSB3b29kLCBzdG9uZSB0ZXh0dXJlLCBzb2Z0IGxpZ2h0LCBhbmQgY2FsbSB1cmJhbiBvcGVubmVzcy5cIixcbiAgICBkZXNjcmlwdGlvbjpcbiAgICAgIFwiVGhpcyBjb250ZW1wb3JhcnkgcmVzdGF1cmFudCBpbnRlcmlvciBpcyBkZXNpZ25lZCBhcyBhIHJlZmluZWQgZXh0ZW5zaW9uIG9mIHRoZSBjaXR5IG1hbGwsIGJsZW5kaW5nIGhvc3BpdGFsaXR5IHdpdGggYXJjaGl0ZWN0dXJhbCBjaGFyYWN0ZXIuIFdhcm0gd29vZCwgdGV4dHVyZWQgc3RvbmUgc3VyZmFjZXMsIGFuZCBzb2Z0IGludGVncmF0ZWQgbGlnaHRpbmcgY3JlYXRlIGFuIGludml0aW5nIGF0bW9zcGhlcmUgZm9yIGV2ZXJ5ZGF5IGRpbmluZyBhbmQgc29jaWFsIGludGVyYWN0aW9uLiBDYXJlZnVsbHkgY29tcG9zZWQgc2VhdGluZyB6b25lcyBiYWxhbmNlIG9wZW5uZXNzIHdpdGggY29tZm9ydCBhbmQgcHJpdmFjeSwgd2hpbGUgZ3JlZW5lcnkgc29mdGVucyB0aGUgbWF0ZXJpYWwgcGFsZXR0ZSBhbmQgZW5oYW5jZXMgdGhlIGd1ZXN0IGV4cGVyaWVuY2UuXCIsXG4gICAgeWVhcjogXCIyMDIzXCIsXG4gICAgbG9jYXRpb246IFwiU2tvcGplLCBOLiBNYWNlZG9uaWFcIixcbiAgICBjYXRlZ29yeTogXCJIb3NwaXRhbGl0eVwiLFxuICAgIHNlcnZpY2VzOiBbXCJJbnRlcmlvciBkZXNpZ25cIiwgXCJIb3NwaXRhbGl0eSBjb25jZXB0XCIsIFwiVmlzdWFsaXphdGlvblwiXSxcbiAgICBmZWF0dXJlZEltYWdlOiBpbWFnZShmb2xkZXIuYXZpYXRvciwgXCJWaXN1YWxpemF0aW9ucy8xLnBuZ1wiKSxcbiAgICBnYWxsZXJ5OiBnYWxsZXJ5KGZvbGRlci5hdmlhdG9yLCBbXG4gICAgICBcIlZpc3VhbGl6YXRpb25zLzEucG5nXCIsXG4gICAgICBcIlZpc3VhbGl6YXRpb25zLzIucG5nXCIsXG4gICAgICBcIlZpc3VhbGl6YXRpb25zLzMucG5nXCIsXG4gICAgICBcIlZpc3VhbGl6YXRpb25zLzQucG5nXCIsXG4gICAgICBcIlZpc3VhbGl6YXRpb25zLzUucG5nXCIsXG4gICAgICBcIlZpc3VhbGl6YXRpb25zLzYucG5nXCIsXG4gICAgXSksXG4gICAgY3JlZGl0czogXCJTaXRlIHNpemU6IDE0MCBzcW1cIixcbiAgICBpc0ZlYXR1cmVkOiB0cnVlLFxuICB9LFxuICB7XG4gICAgaWQ6IFwiMDZcIixcbiAgICB0aXRsZTogXCJBcmNoTW9vZCBJbnRlcmlvciBDb25jZXB0XCIsXG4gICAgc2x1ZzogXCJhcmNobW9vZC1pbnRlcmlvci1jb25jZXB0XCIsXG4gICAgZXhjZXJwdDpcbiAgICAgIFwiQSBjb21wYWN0IHNoYXJlZCBiZWRyb29tIHRyYW5zZm9ybWVkIGludG8gd2FybSwgZnVuY3Rpb25hbCB6b25lcyBmb3IgcmVzdCwgZ3Jvb21pbmcsIHJlYWRpbmcsIGFuZCBkYWlseSByaXR1YWxzLlwiLFxuICAgIGRlc2NyaXB0aW9uOlxuICAgICAgXCJUaGlzIGNvbXBhY3Qgcm9vbSB0cmFuc2Zvcm1hdGlvbiB3YXMgYSBjaGFsbGVuZ2UgaW4gYm90aCBzcGFjZSBvcHRpbWl6YXRpb24gYW5kIGFlc3RoZXRpYyBiYWxhbmNlLiBPcmlnaW5hbGx5IGEgdmVyeSBzbWFsbCBhbmQgbGltaXRlZCBhcmVhLCB0aGUgZ29hbCB3YXMgdG8gcmVpbWFnaW5lIGl0IGludG8gYSB3YXJtLCBmdW5jdGlvbmFsLCBhbmQgc3R5bGlzaCBzaGFyZWQgYmVkcm9vbSBmb3IgdHdvIHRlZW5hZ2UgZ2lybHMuIFR3byBjb21mb3J0YWJsZSBzaW5nbGUgYmVkcywgYSBkZWRpY2F0ZWQgbWFrZS11cCBhbmQgZ3Jvb21pbmcgYXJlYSwgYW5kIGEgY296eSByZWFkaW5nIGNvcm5lciBnaXZlIGVhY2ggcGVyc29uIGEgcGVyc29uYWxpemVkIHpvbmUgd2l0aGluIGEgY2FsbSBzaGFyZWQgaW50ZXJpb3IuXCIsXG4gICAgeWVhcjogXCIyMDI1XCIsXG4gICAgbG9jYXRpb246IFwiU2tvcGplLCBOLiBNYWNlZG9uaWFcIixcbiAgICBjYXRlZ29yeTogXCJSZXNpZGVudGlhbFwiLFxuICAgIHNlcnZpY2VzOiBbXCJJbnRlcmlvciBkZXNpZ25cIiwgXCJTbWFsbC1zcGFjZSBwbGFubmluZ1wiLCBcIlZpc3VhbGl6YXRpb25cIl0sXG4gICAgZmVhdHVyZWRJbWFnZTogaW1hZ2UoZm9sZGVyLmFyY2htb29kLCBcIlZpc3VhbGl6YXRpb25zLzEucG5nXCIpLFxuICAgIGdhbGxlcnk6IGdhbGxlcnkoZm9sZGVyLmFyY2htb29kLCBbXG4gICAgICBcIlZpc3VhbGl6YXRpb25zLzEucG5nXCIsXG4gICAgICBcIlZpc3VhbGl6YXRpb25zLzIucG5nXCIsXG4gICAgICBcIlZpc3VhbGl6YXRpb25zLzMucG5nXCIsXG4gICAgICBcIlZpc3VhbGl6YXRpb25zLzQucG5nXCIsXG4gICAgICBcIlZpc3VhbGl6YXRpb25zLzUucG5nXCIsXG4gICAgICBcIlZpc3VhbGl6YXRpb25zLzYucG5nXCIsXG4gICAgXSksXG4gICAgY3JlZGl0czogXCJTaXRlIHNpemU6IDEyIHNxbVwiLFxuICAgIGlzRmVhdHVyZWQ6IGZhbHNlLFxuICB9LFxuICB7XG4gICAgaWQ6IFwiMDdcIixcbiAgICB0aXRsZTogXCJXYXJtIE1pbmltYWwgT3BlbiBDb25jZXB0XCIsXG4gICAgc2x1ZzogXCJ3YXJtLW1pbmltYWwtb3Blbi1jb25jZXB0XCIsXG4gICAgZXhjZXJwdDpcbiAgICAgIFwiQSBjb21wYWN0IGFwYXJ0bWVudCByZXRyZWF0IHdoZXJlIGtpdGNoZW4sIGRpbmluZywgYW5kIGxvdW5nZSBhcmVhcyBmbG93IHRocm91Z2ggc29mdCBnZW9tZXRyeSBhbmQgbmV1dHJhbCBtYXRlcmlhbGl0eS5cIixcbiAgICBkZXNjcmlwdGlvbjpcbiAgICAgIFwiVGhpcyBhcGFydG1lbnQgaXMgY29uY2VpdmVkIGFzIGEgd2FybS1tb2Rlcm4gcmV0cmVhdCBmb3IgdHdvLCB3aGVyZSBvcGVuIHBsYW5uaW5nIGFuZCBzb2Z0IGdlb21ldHJ5IGNyZWF0ZSBhIGNvbnRpbnVvdXMgbGl2aW5nIGV4cGVyaWVuY2UuIEtpdGNoZW4sIGRpbmluZywgYW5kIGxvdW5nZSBhcmVhcyBmbG93IG5hdHVyYWxseSwgZW5oYW5jZWQgYnkgbmV1dHJhbCBwYWxldHRlcywgd29vZCB0ZXh0dXJlcywgYW5kIHN0b25lIGZpbmlzaGVzLiBCdWlsdC1pbiBzdG9yYWdlIGFuZCBjdXN0b20gZnVybml0dXJlIG9wdGltaXplIHRoZSBjb21wYWN0IGZvb3RwcmludCwgd2hpbGUgbGFyZ2Ugb3BlbmluZ3MgYW5kIHJlZmxlY3RpdmUgc3VyZmFjZXMgYW1wbGlmeSBuYXR1cmFsIGxpZ2h0IGFuZCB2aXN1YWwgY29udGludWl0eSB0aHJvdWdob3V0IHRoZSBob21lLlwiLFxuICAgIHllYXI6IFwiMjAyNFwiLFxuICAgIGxvY2F0aW9uOiBcIlByaWxlcCwgTi4gTWFjZWRvbmlhXCIsXG4gICAgY2F0ZWdvcnk6IFwiUmVzaWRlbnRpYWxcIixcbiAgICBzZXJ2aWNlczogW1wiSW50ZXJpb3IgZGVzaWduXCIsIFwiQ3VzdG9tIGZ1cm5pdHVyZVwiLCBcIlZpc3VhbGl6YXRpb25cIl0sXG4gICAgZmVhdHVyZWRJbWFnZTogaW1hZ2UoZm9sZGVyLndhcm0sIFwiVmlzdWFsaXphdGlvbnMvMS5wbmdcIiksXG4gICAgZ2FsbGVyeTogZ2FsbGVyeShmb2xkZXIud2FybSwgW1xuICAgICAgXCJWaXN1YWxpemF0aW9ucy8xLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy8yLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy8zLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy80LnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy81LnBuZ1wiLFxuICAgIF0pLFxuICAgIGNyZWRpdHM6IFwiU2l0ZSBzaXplOiAyNSBzcW1cIixcbiAgICBpc0ZlYXR1cmVkOiBmYWxzZSxcbiAgfSxcbiAge1xuICAgIGlkOiBcIjA4XCIsXG4gICAgdGl0bGU6IFwiQ29udHJhc3QgJiBDb2hlc2lvbiBJbnRlcmlvclwiLFxuICAgIHNsdWc6IFwiY29udHJhc3QtY29oZXNpb24taW50ZXJpb3JcIixcbiAgICBleGNlcnB0OlxuICAgICAgXCJBIHNlcmlvdXMsIG1vZGVybiBsaXZpbmcgYW5kIGRpbmluZyBpbnRlcmlvciBidWlsdCBhcm91bmQgcGVwaXRhIHBhdHRlcm4sIGJsYWNrIGxlYXRoZXIsIGJyb3duIGxlYXRoZXIsIGFuZCBhcnRmdWwgd2FsbCBjb21wb3NpdGlvbi5cIixcbiAgICBkZXNjcmlwdGlvbjpcbiAgICAgIFwiQXQgdGhlIHJlcXVlc3Qgb2YgdGhlIGN1c3RvbWVycywgdGhpcyBkZXNpZ24gaGVscGVkIGRlZmluZSB0aGUgZGlyZWN0aW9uIGZvciBhIGxpdmluZyByb29tIGFuZCBkaW5pbmcgYXJlYSB3aXRoIGEgbW9yZSBzZXJpb3VzIGNoYXJhY3RlciBhbmQgbW9kZXJuIGVsZW1lbnRzLiBGdXJuaXR1cmUgbWF0ZXJpYWwsIGNvbG9yLCBhbmQgZGluaW5nLXJvb20gd2FsbCBkZWNvcmF0aW9uIGNhcnJ5IHRoZSBjb25jZXB0LiBUaGUgcGVwaXRhIHBhdHRlcm4gYW5kIGJsYWNrIGxlYXRoZXIgYXJtY2hhaXJzLCBjb21iaW5lZCB3aXRoIHRoZSBicm93biBsZWF0aGVyIHNvZmEsIGNyZWF0ZSBhIG1hdGNoZWQgY29udHJhc3QgdGhhdCBnaXZlcyB0aGUgc3BhY2UgZGVwdGggYW5kIGNvbmZpZGVuY2UuXCIsXG4gICAgeWVhcjogXCIyMDIyXCIsXG4gICAgbG9jYXRpb246IFwiU2tvcGplLCBOLiBNYWNlZG9uaWFcIixcbiAgICBjYXRlZ29yeTogXCJSZXNpZGVudGlhbFwiLFxuICAgIHNlcnZpY2VzOiBbXCJJbnRlcmlvciBkZXNpZ25cIiwgXCJNYXRlcmlhbCBzZWxlY3Rpb25cIiwgXCJWaXN1YWxpemF0aW9uXCJdLFxuICAgIGZlYXR1cmVkSW1hZ2U6IGltYWdlKGZvbGRlci5jb250cmFzdCwgXCJWaXN1YWxpemF0aW9ucy8xLnBuZ1wiKSxcbiAgICBnYWxsZXJ5OiBnYWxsZXJ5KGZvbGRlci5jb250cmFzdCwgW1xuICAgICAgXCJWaXN1YWxpemF0aW9ucy8xLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy8yLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy8zLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy80LnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy81LnBuZ1wiLFxuICAgIF0pLFxuICAgIGNyZWRpdHM6IFwiU2l0ZSBzaXplOiA0NSBzcW1cIixcbiAgICBpc0ZlYXR1cmVkOiBmYWxzZSxcbiAgfSxcbiAge1xuICAgIGlkOiBcIjA5XCIsXG4gICAgdGl0bGU6IFwiVGhlIE9hayBhbmQgU2hhZG93IENvaGVzaW9uXCIsXG4gICAgc2x1ZzogXCJvYWstc2hhZG93LWNvaGVzaW9uXCIsXG4gICAgZXhjZXJwdDpcbiAgICAgIFwiQSBjb250ZW1wb3JhcnkgYXBhcnRtZW50IGludGVyaW9yIHdoZXJlIHdhcm0gb2FrLCBuYXR1cmFsIHN0b25lLCBtYXR0ZSBibGFjayBlbGVtZW50cywgYW5kIE5vcmRpYyBibHVlIGFjY2VudHMgZnJhbWUgZmxleGlibGUgbGl2aW5nLlwiLFxuICAgIGRlc2NyaXB0aW9uOlxuICAgICAgXCJUaGlzIGNvbnRlbXBvcmFyeSBhcGFydG1lbnQgaW50ZXJpb3IgaXMgZGVmaW5lZCBieSBtYXRlcmlhbCBjb250cmFzdCwgc3BhdGlhbCBmbGV4aWJpbGl0eSwgYW5kIHJlZmluZWQgYXJjaGl0ZWN0dXJhbCBjb21wb3NpdGlvbi4gV2FybSBvYWsgdm9sdW1lcyBhbmQgbmF0dXJhbCBzdG9uZSBzdXJmYWNlcyBhcmUgZnJhbWVkIGJ5IGRlZXAgbWF0dGUgYmxhY2sgZWxlbWVudHMsIGNyZWF0aW5nIGEgbGF5ZXJlZCBkaWFsb2d1ZSBiZXR3ZWVuIGxpZ2h0IGFuZCBzaGFkb3cgdGhyb3VnaG91dCB0aGUgaG9tZS4gQSB0cmFuc2Zvcm1hYmxlIGxpdmluZyBhbmQgZGluaW5nIGFyZWEsIGRlZGljYXRlZCBiYXktd2luZG93IG9mZmljZSwgYW5kIGJvdXRpcXVlLWhvdGVsIGJlZHJvb20gYnVpbGQgYSBjYWxtLCBmbGV4aWJsZSByZXNpZGVudGlhbCBleHBlcmllbmNlLlwiLFxuICAgIHllYXI6IFwiMjAyNlwiLFxuICAgIGxvY2F0aW9uOiBcIkJpdG9sYSwgTi4gTWFjZWRvbmlhXCIsXG4gICAgY2F0ZWdvcnk6IFwiUmVzaWRlbnRpYWxcIixcbiAgICBzZXJ2aWNlczogW1wiSW50ZXJpb3IgZGVzaWduXCIsIFwiSm9pbmVyeSBjb25jZXB0XCIsIFwiVmlzdWFsaXphdGlvblwiXSxcbiAgICBmZWF0dXJlZEltYWdlOiBpbWFnZShmb2xkZXIub2FrLCBcIlZpc3VhbGl6YXRpb25zLzEucG5nXCIpLFxuICAgIGdhbGxlcnk6IGdhbGxlcnkoZm9sZGVyLm9haywgW1xuICAgICAgXCJWaXN1YWxpemF0aW9ucy8xLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy8yLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy8zLnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy80LnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy81LnBuZ1wiLFxuICAgICAgXCJWaXN1YWxpemF0aW9ucy82LnBuZ1wiLFxuICAgIF0pLFxuICAgIGNyZWRpdHM6IFwiU2l0ZSBzaXplOiA2MCBzcW1cIixcbiAgICBpc0ZlYXR1cmVkOiB0cnVlLFxuICB9LFxuICB7XG4gICAgaWQ6IFwiMTBcIixcbiAgICB0aXRsZTogXCJDaGlsZCdzIE1pbmkgQ3JlYXRpdmUgU3BhY2VcIixcbiAgICBzbHVnOiBcImNoaWxkcy1taW5pLWNyZWF0aXZlLXNwYWNlXCIsXG4gICAgZXhjZXJwdDpcbiAgICAgIFwiQSBjaGlsZCdzIHJvb20gc2hhcGVkIGFzIGEgc21hbGwgcGVyc29uYWwgc3R1ZGlvIGZvciBzdHVkeSwgZHJhd2luZywgcmVzdCwgc2hhcmVkIHBsYXksIGFuZCBpbmRlcGVuZGVuY2UuXCIsXG4gICAgZGVzY3JpcHRpb246XG4gICAgICBcIlRoaXMgcHJvamVjdCB0cmFuc2Zvcm1zIGEgcm9vbSBpbnRvIGEgY2hpbGQncyBwZXJzb25hbCBzdHVkaW8gZm9yIGNyZWF0aXZpdHkgYW5kIGNvbWZvcnQuIFBsYW5uZWQgYXJvdW5kIGEgZml4ZWQgd2FyZHJvYmUgcG9zaXRpb24sIHRoZSBpbnRlcmlvciB1bmZvbGRzIGludG8gZnVuY3Rpb25hbCB6b25lcyBmb3Igc3R1ZHlpbmcsIGRyYXdpbmcsIHJlc3RpbmcsIGFuZCBzaGFyZWQgcGxheXRpbWUuIFdhcm0gbWF0ZXJpYWxzLCBwbGF5ZnVsIHRleHR1cmVzLCBhbmQgYmFsYW5jZWQgcHJvcG9ydGlvbnMgZ2l2ZSB0aGUgc3BhY2UgYXJjaGl0ZWN0dXJhbCBjbGFyaXR5IHdoaWxlIHJlbWFpbmluZyBpbnZpdGluZyBhbmQgc29mdC4gTmF0dXJhbCBsaWdodCBhbmQgY2FsbSBjb2xvcnMgZnJhbWUgZGFpbHkgYWN0aXZpdGllcywgYWxsb3dpbmcgdGhlIHJvb20gdG8gZ3JvdyB3aXRoIHRoZSBjaGlsZC5cIixcbiAgICB5ZWFyOiBcIjIwMjNcIixcbiAgICBsb2NhdGlvbjogXCJQcmlsZXAsIE4uIE1hY2Vkb25pYVwiLFxuICAgIGNhdGVnb3J5OiBcIlJlc2lkZW50aWFsXCIsXG4gICAgc2VydmljZXM6IFtcIkludGVyaW9yIGRlc2lnblwiLCBcIkNoaWxkcmVuJ3Mgcm9vbSBjb25jZXB0XCIsIFwiVmlzdWFsaXphdGlvblwiXSxcbiAgICBmZWF0dXJlZEltYWdlOiBpbWFnZShmb2xkZXIuY2hpbGQsIFwiVmlzdWFsaXphdGlvbnMvMS5wbmdcIiksXG4gICAgZ2FsbGVyeTogZ2FsbGVyeShmb2xkZXIuY2hpbGQsIFtcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvMS5wbmdcIixcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvMi5wbmdcIixcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvMy5wbmdcIixcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvNC5wbmdcIixcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvNS5wbmdcIixcbiAgICBdKSxcbiAgICBjcmVkaXRzOiBcIlNpdGUgc2l6ZTogMTIgc3FtXCIsXG4gICAgaXNGZWF0dXJlZDogZmFsc2UsXG4gIH0sXG4gIHtcbiAgICBpZDogXCIxMVwiLFxuICAgIHRpdGxlOiBcIkJsdWUgTmVzdCA0WVwiLFxuICAgIHNsdWc6IFwiYmx1ZS1uZXN0LTR5XCIsXG4gICAgZXhjZXJwdDpcbiAgICAgIFwiQSBjYWxtLCBwbGF5ZnVsIGtpZHMgaW50ZXJpb3IgYmxlbmRpbmcgTm9yZGljIG1pbmltYWxpc20sIHNvZnQgZ2VvbWV0cnksIG5hdHVyYWwgd29vZCwgYW5kIG11dGVkIGJsdWUgYWNjZW50cy5cIixcbiAgICBkZXNjcmlwdGlvbjpcbiAgICAgIFwiUHJvamVjdCBCbHVlIE5lc3QgaXMgYSBjYWxtLCBwbGF5ZnVsLCBhbmQgYXJjaGl0ZWN0dXJhbCBraWRzIGludGVyaW9yIGRlc2lnbmVkIGZvciBhIDQteWVhci1vbGQgYm95LiBUaGUgc3BhY2UgYmxlbmRzIE5vcmRpYyBtaW5pbWFsaXNtIHdpdGggc29mdCBnZW9tZXRyeSwgbmF0dXJhbCB3b29kLCBhbmQgbXV0ZWQgYmx1ZSBhY2NlbnRzIHRvIGNyZWF0ZSBhIGJhbGFuY2VkIGVudmlyb25tZW50IGZvciBzbGVlcCwgcGxheSwgYW5kIGNyZWF0aXZpdHkuIENsZWFuIGxpbmVzLCBidWlsdC1pbiBzdG9yYWdlLCBhbmQgc2N1bHB0ZWQgZm9ybXMgdHJhbnNmb3JtIHRoZSByb29tIGludG8gYSBzbWFsbCBhcmNoaXRlY3R1cmFsIGxhbmRzY2FwZSB3aGVyZSBmdW5jdGlvbiBtZWV0cyBpbWFnaW5hdGlvbi5cIixcbiAgICB5ZWFyOiBcIjIwMjRcIixcbiAgICBsb2NhdGlvbjogXCJTa29wamUsIE4uIE1hY2Vkb25pYVwiLFxuICAgIGNhdGVnb3J5OiBcIlJlc2lkZW50aWFsXCIsXG4gICAgc2VydmljZXM6IFtcIkludGVyaW9yIGRlc2lnblwiLCBcIkNoaWxkcmVuJ3Mgcm9vbSBjb25jZXB0XCIsIFwiVmlzdWFsaXphdGlvblwiXSxcbiAgICBmZWF0dXJlZEltYWdlOiBpbWFnZShmb2xkZXIuYmx1ZU5lc3QsIFwiVmlzdWFsaXphdGlvbnMvMS5wbmdcIiksXG4gICAgZ2FsbGVyeTogZ2FsbGVyeShmb2xkZXIuYmx1ZU5lc3QsIFtcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvMS5wbmdcIixcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvMi5wbmdcIixcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvMy5wbmdcIixcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvNC5wbmdcIixcbiAgICAgIFwiVmlzdWFsaXphdGlvbnMvNS5wbmdcIixcbiAgICBdKSxcbiAgICBjcmVkaXRzOiBcIlNpdGUgc2l6ZTogMTEgc3FtXCIsXG4gICAgaXNGZWF0dXJlZDogZmFsc2UsXG4gIH0sXG5dO1xuXG5leHBvcnQgY29uc3QgcHJvamVjdFNob3djYXNlUHJvamVjdHM6IFByb2plY3RTaG93Y2FzZUl0ZW1bXSA9IHByb2plY3RzLnNsaWNlKDAsIDUpLm1hcCgocHJvamVjdCkgPT4gKHtcbiAgaWQ6IHByb2plY3QuaWQsXG4gIGluZGV4OiBwcm9qZWN0LmlkLFxuICBzbHVnOiBwcm9qZWN0LnNsdWcsXG4gIHByZWZpeDogcHJvamVjdC50aXRsZS5zcGxpdChcIiBcIilbMF0ucmVwbGFjZShcIidcIiwgXCJcIiksXG4gIHRpdGxlOiBwcm9qZWN0LnRpdGxlLnJlcGxhY2UoL14uKj8gLSAvLCBcIlwiKSxcbiAgdGFnczogW3Byb2plY3QuY2F0ZWdvcnksIHByb2plY3Quc2VydmljZXNbMF0gPz8gXCJEZXNpZ25cIiwgcHJvamVjdC55ZWFyLCBcIkxhZ29tXCJdLFxuICBwcm9wZXJ0aWVzOiBbcHJvamVjdC55ZWFyLCBwcm9qZWN0LmxvY2F0aW9uLCBwcm9qZWN0LmNyZWRpdHNdLFxuICBpbWFnZTogcHJvamVjdC5mZWF0dXJlZEltYWdlLFxuICB0aHVtYm5haWw6IHByb2plY3QuZ2FsbGVyeVsxXSA/PyBwcm9qZWN0LmZlYXR1cmVkSW1hZ2UsXG4gIHNlY29uZGFyeUltYWdlOiBwcm9qZWN0LmdhbGxlcnlbMl0gPz8gcHJvamVjdC5mZWF0dXJlZEltYWdlLFxufSkpO1xuXG5leHBvcnQgY29uc3QgcHJvamVjdENhdGVnb3JpZXMgPSBBcnJheS5mcm9tKG5ldyBTZXQocHJvamVjdHMubWFwKChwcm9qZWN0KSA9PiBwcm9qZWN0LmNhdGVnb3J5KSkpO1xuXG5leHBvcnQgZnVuY3Rpb24gZ2V0UHJvamVjdEJ5U2x1ZyhzbHVnOiBzdHJpbmcpOiBQcm9qZWN0IHwgdW5kZWZpbmVkIHtcbiAgcmV0dXJuIHByb2plY3RzLmZpbmQoKHByb2plY3QpID0+IHByb2plY3Quc2x1ZyA9PT0gc2x1Zyk7XG59XG5cbmV4cG9ydCBmdW5jdGlvbiBnZXRGZWF0dXJlZFByb2plY3RzKCk6IFByb2plY3RbXSB7XG4gIHJldHVybiBwcm9qZWN0cy5maWx0ZXIoKHByb2plY3QpID0+IHByb2plY3QuaXNGZWF0dXJlZCk7XG59XG4iXX0=

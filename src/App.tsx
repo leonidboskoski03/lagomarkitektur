@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes, useLocation} from "react-router-dom";
 import {Navbar} from "./components/navigation/Navbar.tsx";
 import {Hero} from "./pages/Hero.tsx";
 import {AboutIntro} from "./pages/AboutIntro.tsx";
@@ -15,6 +15,11 @@ import gsap from "gsap";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {Loader} from "./pages/Loader.tsx";
 import {CustomCursor} from "./components/interaction/CustomCursor.tsx";
+
+function HomepageLoader() {
+    const {pathname} = useLocation();
+    return pathname === "/" ? <Loader/> : null;
+}
 
 function App() {
     useEffect(() => {
@@ -51,7 +56,7 @@ function App() {
         <BrowserRouter>
             <main className={"min-h-screen bg-bg"}>
                 <CustomCursor/>
-                <Loader/>
+                <HomepageLoader/>
                 <Navbar/>
                 <Routes>
                     <Route

@@ -70,6 +70,7 @@ export const projects: Project[] = [
     category: "Residential",
     services: ["Interior design", "Spatial planning", "Material concept"],
     featuredImage: image(folder.quiet, "Pictures from the apartment - realized project/1.jpg"),
+    thumbnailImage: image(folder.quiet, "Pictures from the apartment - realized project/3.jpg"),
     gallery: gallery(folder.quiet, [
       "Pictures from the apartment - realized project/1.jpg",
       "Pictures from the apartment - realized project/2.jpg",
@@ -258,6 +259,7 @@ export const projects: Project[] = [
     category: "Residential",
     services: ["Interior design", "Joinery concept", "Visualization"],
     featuredImage: image(folder.oak, "Visualizations/1.png"),
+    thumbnailImage: image(folder.oak, "Visualizations/22.png"),
     gallery: gallery(folder.oak, [
       "Visualizations/1.png",
       "Visualizations/2.png",

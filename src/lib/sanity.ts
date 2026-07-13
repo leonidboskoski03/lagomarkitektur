@@ -18,8 +18,47 @@ export const sanityClient = createClient({
 const builder = imageUrlBuilder(sanityClient);
 
 export function sanityImageUrl(source: SanityImageSource) {
-  return builder.image(source).auto("format").fit("max");
+  return builder.image(source);
 }
+
+export const workProjectListQuery = `*[_type == "project" && isPublished != false] | order(orderRank asc, year desc) {
+  _id,
+  title,
+  "slug": slug.current,
+  category,
+  siteSize,
+  year,
+  featuredImage {
+    alt,
+    caption,
+    asset-> {
+      _id,
+      url,
+      metadata {
+        dimensions {
+          width,
+          height,
+          aspectRatio
+        }
+      }
+    }
+  },
+  thumbnailImage {
+    alt,
+    caption,
+    asset-> {
+      _id,
+      url,
+      metadata {
+        dimensions {
+          width,
+          height,
+          aspectRatio
+        }
+      }
+    }
+  }
+}`;
 
 export const projectListQuery = `*[_type == "project"] | order(orderRank asc, year desc) {
   _id,
