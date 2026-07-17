@@ -68,14 +68,26 @@ export function Navbar() {
     useGSAP((_context, contextSafe) => {
         const navItems = navItemRefs.current.filter(Boolean);
         const animatedItems = [logoMarkRef.current, logoTextRef.current, ...navItems, buttonRef.current].filter(Boolean);
+        const workLogo = hidePrimaryNav
+            ? document.querySelector<HTMLElement>("[data-work-logo]")
+            : null;
+        const secondaryNavTargets = [secondaryNavRef.current, workLogo].filter(Boolean);
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
         if (!reduceMotion) gsap.set(animatedItems, { yPercent: 115 });
-        gsap.set(secondaryNavRef.current, {
-            y: -24,
-            autoAlpha: 0,
-            pointerEvents: "none",
-        });
+        gsap.set(secondaryNavTargets, hidePrimaryNav
+            ? {
+                yPercent: 0,
+                clipPath: "inset(0% 0% 0% 0%)",
+                autoAlpha: 1,
+                pointerEvents: "auto",
+            }
+            : {
+                yPercent: -125,
+                clipPath: "inset(0% 0% 100% 0%)",
+                autoAlpha: 0,
+                pointerEvents: "none",
+            });
 
         const revealNavbar = contextSafe!(() => {
             if (reduceMotion) return;
@@ -120,22 +132,24 @@ export function Navbar() {
         });
 
         const showSecondaryNavbar = contextSafe!(() => {
-            gsap.to(secondaryNavRef.current, {
-                y: 0,
+            gsap.to(secondaryNavTargets, {
+                yPercent: 0,
+                clipPath: "inset(0% 0% 0% 0%)",
                 autoAlpha: 1,
                 pointerEvents: "auto",
-                duration: reduceMotion ? 0 : 0.64,
+                duration: reduceMotion ? 0 : 0.72,
                 ease: motionEases.enter,
                 overwrite: "auto",
             });
         });
 
         const hideSecondaryNavbar = contextSafe!(() => {
-            gsap.to(secondaryNavRef.current, {
-                y: -24,
+            gsap.to(secondaryNavTargets, {
+                yPercent: -125,
+                clipPath: "inset(0% 0% 100% 0%)",
                 autoAlpha: 0,
                 pointerEvents: "none",
-                duration: reduceMotion ? 0 : 0.48,
+                duration: reduceMotion ? 0 : 0.62,
                 ease: motionEases.depart,
                 overwrite: "auto",
             });
@@ -149,13 +163,28 @@ export function Navbar() {
             onLeaveBack: showNavbar,
         });
 
-        ScrollTrigger.create({
-            start: () => window.innerHeight * 0.92,
-            end: "max",
-            invalidateOnRefresh: true,
-            onEnter: showSecondaryNavbar,
-            onLeaveBack: hideSecondaryNavbar,
-        });
+        if (hidePrimaryNav) {
+            const workProjects = document.querySelector<HTMLElement>("[data-work-projects]");
+
+            if (workProjects) {
+                ScrollTrigger.create({
+                    trigger: workProjects,
+                    start: "top 12%",
+                    end: "max",
+                    invalidateOnRefresh: true,
+                    onEnter: hideSecondaryNavbar,
+                    onLeaveBack: showSecondaryNavbar,
+                });
+            }
+        } else {
+            ScrollTrigger.create({
+                start: () => window.innerHeight * 0.92,
+                end: "max",
+                invalidateOnRefresh: true,
+                onEnter: showSecondaryNavbar,
+                onLeaveBack: hideSecondaryNavbar,
+            });
+        }
 
         const projectSection = document.querySelector("[data-project-section]");
 
@@ -173,9 +202,14 @@ export function Navbar() {
             });
         }
 
-        window.addEventListener(NAVBAR_REVEAL_EVENT, revealNavbar, { once: true });
+        const loader = document.querySelector<HTMLElement>("[data-lagom-loader]");
+        const loaderIsHidden = !loader || window.getComputedStyle(loader).display === "none";
+
+        if (loaderIsHidden) revealNavbar();
+        else window.addEventListener(NAVBAR_REVEAL_EVENT, revealNavbar, { once: true });
+
         return () => window.removeEventListener(NAVBAR_REVEAL_EVENT, revealNavbar);
-    }, { scope: headerRef });
+    }, { scope: headerRef, dependencies: [pathname], revertOnUpdate: true });
 
     return (
       <>
@@ -228,8 +262,7 @@ export function Navbar() {
         <div
             ref={secondaryNavRef}
             className={clsx(
-                "fixed top-5 right-[var(--spacing-viewport-gutter)] z-[100] flex items-center gap-1 p-2",
-                hidePrimaryNav && "!visible !transform-none !opacity-100 !pointer-events-auto",
+                "fixed top-5 right-[var(--spacing-viewport-gutter)] z-[100] flex items-center gap-1 p-2 will-change-[transform,clip-path,opacity]",
             )}
             role="navigation"
             aria-label="Secondary navigation"

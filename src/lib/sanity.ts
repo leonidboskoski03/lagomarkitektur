@@ -1,5 +1,5 @@
 import { createClient } from "@sanity/client";
-import imageUrlBuilder from "@sanity/image-url";
+import { createImageUrlBuilder } from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url";
 
 export const sanityProjectId = import.meta.env.VITE_SANITY_PROJECT_ID as string | undefined;
@@ -15,7 +15,7 @@ export const sanityClient = createClient({
   perspective: "published",
 });
 
-const builder = imageUrlBuilder(sanityClient);
+const builder = createImageUrlBuilder(sanityClient);
 
 export function sanityImageUrl(source: SanityImageSource) {
   return builder.image(source);
@@ -44,6 +44,21 @@ export const workProjectListQuery = `*[_type == "project" && isPublished != fals
     }
   },
   thumbnailImage {
+    alt,
+    caption,
+    asset-> {
+      _id,
+      url,
+      metadata {
+        dimensions {
+          width,
+          height,
+          aspectRatio
+        }
+      }
+    }
+  },
+  gallery[] {
     alt,
     caption,
     asset-> {

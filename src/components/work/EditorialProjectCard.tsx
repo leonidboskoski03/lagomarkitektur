@@ -60,7 +60,7 @@ export function EditorialProjectCard({
       onBlurCapture={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) onDeactivate();
       }}
-      className="w-full will-change-[opacity,transform] md:w-[min(100%,46vw,52rem,calc(64vh*var(--editorial-aspect)))]"
+      className="w-full will-change-[clip-path,transform] md:w-[min(100%,46vw,52rem,calc(64vh*var(--editorial-aspect)))]"
       style={{ "--editorial-aspect": project.image.aspectRatio } as CSSProperties}
     >
       <Link

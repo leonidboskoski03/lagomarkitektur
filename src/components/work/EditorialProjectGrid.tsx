@@ -70,6 +70,7 @@ function composeEditorialRows(projects: WorkProjectItem[]) {
 export function EditorialProjectGrid({ projects }: EditorialProjectGridProps) {
   const gridRef = useRef<HTMLElement | null>(null);
   const hasFocusedProjectRef = useRef(false);
+  const lastFocusedSlugRef = useRef<string | null>(null);
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const rows = useMemo(() => composeEditorialRows(projects), [projects]);
 
@@ -135,21 +136,92 @@ export function EditorialProjectGrid({ projects }: EditorialProjectGridProps) {
     const cards = gsap.utils.toArray<HTMLElement>("[data-editorial-project]", gridRef.current);
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (reduceMotion || !hasFocusedProjectRef.current) return;
+    if (!hasFocusedProjectRef.current) return;
 
-    gsap.to(cards, {
-      opacity: (_index, card) => {
-        if (!activeSlug) return 1;
-        return (card as HTMLElement).dataset.projectSlug === activeSlug ? 1 : 0.12;
-      },
-      duration: activeSlug ? 0.46 : 0.58,
-      ease: motionEases.settle,
-      overwrite: "auto",
+    if (reduceMotion) {
+      gsap.set(cards, { clipPath: "inset(0% 0% 0% 0%)", pointerEvents: "auto" });
+      return;
+    }
+
+    const focusSlug = activeSlug || lastFocusedSlugRef.current;
+    const focusCard = cards.find((card) => card.dataset.projectSlug === focusSlug);
+    const focusRect = focusCard?.getBoundingClientRect();
+    const focusCenter = focusRect
+      ? { x: focusRect.left + focusRect.width / 2, y: focusRect.top + focusRect.height / 2 }
+      : { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    const siblingCards = cards.filter((card) => card !== focusCard);
+    const visibleSiblingCards = siblingCards
+      .filter((card) => {
+        const rect = card.getBoundingClientRect();
+        const visibleWidth = Math.min(rect.right, window.innerWidth) - Math.max(rect.left, 0);
+        const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+        return visibleWidth > 1 && visibleHeight > 1;
+      })
+      .sort((first, second) => {
+        const firstRect = first.getBoundingClientRect();
+        const secondRect = second.getBoundingClientRect();
+        const isFirstInFocusRow = focusRect
+          ? firstRect.top < focusRect.bottom && firstRect.bottom > focusRect.top
+          : false;
+        const isSecondInFocusRow = focusRect
+          ? secondRect.top < focusRect.bottom && secondRect.bottom > focusRect.top
+          : false;
+
+        if (isFirstInFocusRow !== isSecondInFocusRow) {
+          return isFirstInFocusRow ? -1 : 1;
+        }
+
+        const firstDistance = Math.hypot(
+          firstRect.left + firstRect.width / 2 - focusCenter.x,
+          firstRect.top + firstRect.height / 2 - focusCenter.y,
+        );
+        const secondDistance = Math.hypot(
+          secondRect.left + secondRect.width / 2 - focusCenter.x,
+          secondRect.top + secondRect.height / 2 - focusCenter.y,
+        );
+        return firstDistance - secondDistance;
+      });
+    const visibleCards = new Set(visibleSiblingCards);
+    const offscreenSiblingCards = siblingCards.filter((card) => !visibleCards.has(card));
+
+    cards.forEach((card) => {
+      const isFocused = !activeSlug || card.dataset.projectSlug === activeSlug;
+      gsap.set(card, { pointerEvents: isFocused ? "auto" : "none" });
+    });
+
+    const targetClipPath = activeSlug ? "inset(0% 0% 100% 0%)" : "inset(0% 0% 0% 0%)";
+    const duration = activeSlug ? 0.72 : 0.84;
+    const ease = activeSlug ? motionEases.reveal : motionEases.settle;
+    const timeline = gsap.timeline({ defaults: { overwrite: "auto" } });
+
+    if (focusCard) {
+      timeline.to(focusCard, {
+        clipPath: "inset(0% 0% 0% 0%)",
+        duration: activeSlug ? 0.36 : duration,
+        ease,
+      }, 0);
+    }
+
+    if (offscreenSiblingCards.length > 0) {
+      timeline.to(offscreenSiblingCards, {
+        clipPath: targetClipPath,
+        duration,
+        ease,
+      }, 0);
+    }
+
+    visibleSiblingCards.forEach((card, index) => {
+      timeline.to(card, {
+        clipPath: targetClipPath,
+        duration,
+        ease,
+      }, index * 0.045);
     });
   }, { scope: gridRef, dependencies: [activeSlug] });
 
   const activateProject = (slug: string) => {
     hasFocusedProjectRef.current = true;
+    lastFocusedSlugRef.current = slug;
     setActiveSlug(slug);
   };
 
