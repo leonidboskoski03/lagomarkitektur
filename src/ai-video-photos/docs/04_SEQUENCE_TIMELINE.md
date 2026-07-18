@@ -45,10 +45,10 @@ Only when the seven states feel like one film should intermediate frames be deri
 | S04 | K03→K04 alias | Former vertical unfold | None; exact frame reuse | 0 s | 0 fps | Omitted by approved simplification |
 | S05 | K03/K04→K05 | Enter drawing | Camera push + dephysicalization | 11 s approved split master | 12 fps | Approved — S05 v003 registered micro-blend; candidate and approved files byte-identical; six-frame v002 superseded for line softening |
 | S06 | K05→K06 | Plan to perspective | Camera tilt/translation | 5 s | 8 fps | Not started |
-| S07 | K06→K06.5→K06.625→K06.75→K07 | Structure grows | Camera, then walls/openings | K06.625 v002 under review | 15 fps | S07A approved. S07B1 v001 rejected. Proposed repair: camera-only K06.5→K06.625, then locked-camera shell growth K06.625→K06.75. S07B2 remains blocked. |
+| S07 | K06→K06.5→K06.625→K06.75→K07 | Structure grows | Camera, walls/openings, then object relief | Four approved 5 s parts | 15 fps | Approved — S07A v001, S07B1A v002, S07B1B v001 and S07B2 v001 are locked; S07B2 SHA-256 `593A0397B18F2D29D4788EB61EF19D45D620BC55C3C899958315528E84032526`. |
 | S08 | K07→K08 | Clay model completes | Fixed elements/furniture | 5 s | 12 fps | Boundary frames approved; ready for later test |
-| S09 | K08→K09 | Material grows | Surface materials | 5 s | 15 fps | High-risk test |
-| S10 | K09→K10 | Atmosphere completes | Finish/light | 5 s | 8 fps | Not started |
+| S09 | K08→K09 | Material grows | Surface materials | 5 s | 15 fps | Approved — v001 locked byte-for-byte; organic surface-bound material growth; SHA-256 `06C8C63F32CF21081BE61416D691085469896B5A450A83069A2A2CD3C51F26E2` |
+| S10 | K09→K10 | Atmosphere completes | Finish/light | 5 s | 8 fps | v001 generated; subtle courtyard-directed camera settle and final finish/daylight refinement; under user review |
 | S11 | K10→K11 | Rotate/orbit into the courtyard and build the exterior model | 90° camera orbit + rightward translation + partial descent + envelope assembly | 5 s | 12 fps | Boundary frames approved; motion not started |
 | S12 | K11→K12 | Landscape and scale resolve | Continued camera descent + site/material/detail refinement | 5 s | 12 fps | Boundary frames approved; motion not started |
 | S13 | K12→K13 | Exterior resolution | Final camera settle + handoff into approved real render | 5 s | 6 fps | Boundary frames approved; motion not started |

@@ -31,9 +31,11 @@ export const workProjectListQuery = `*[_type == "project" && isPublished != fals
   featuredImage {
     alt,
     caption,
-    asset-> {
+    crop,
+    hotspot,
+    asset,
+    "assetData": asset-> {
       _id,
-      url,
       metadata {
         dimensions {
           width,
@@ -46,9 +48,11 @@ export const workProjectListQuery = `*[_type == "project" && isPublished != fals
   thumbnailImage {
     alt,
     caption,
-    asset-> {
+    crop,
+    hotspot,
+    asset,
+    "assetData": asset-> {
       _id,
-      url,
       metadata {
         dimensions {
           width,
@@ -61,9 +65,28 @@ export const workProjectListQuery = `*[_type == "project" && isPublished != fals
   gallery[] {
     alt,
     caption,
-    asset-> {
+    crop,
+    hotspot,
+    asset,
+    "assetData": asset-> {
       _id,
-      url,
+      metadata {
+        dimensions {
+          width,
+          height,
+          aspectRatio
+        }
+      }
+    }
+  },
+  workGallery[] {
+    alt,
+    caption,
+    crop,
+    hotspot,
+    asset,
+    "assetData": asset-> {
+      _id,
       metadata {
         dimensions {
           width,

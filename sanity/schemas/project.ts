@@ -163,6 +163,15 @@ export const project = defineType({
       validation: (rule) => rule.min(1).warning("Add at least one gallery image when possible."),
     }),
     defineField({
+      name: "workGallery",
+      title: "Atlas view images",
+      type: "array",
+      description: "Optional. Select up to five priority images for the draggable Atlas view. Reuse original assets; the website creates optimized AVIF/WebP variants automatically. Any remaining positions are filled from the main image and project gallery.",
+      group: "images",
+      of: [defineArrayMember({ type: "projectImage" })],
+      validation: (rule) => rule.max(5).warning("The Atlas view displays no more than five images per project."),
+    }),
+    defineField({
       name: "credits",
       title: "Credits / notes",
       type: "array",

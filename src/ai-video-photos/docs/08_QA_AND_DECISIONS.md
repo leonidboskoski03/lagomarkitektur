@@ -717,6 +717,77 @@ This document records material decisions and owns cross-phase approval. Sequence
 - Initial QA: open courtyard preserved; no false raised right/bottom perimeter; furniture and site graphics remain flat; wall height is visibly earlier than K06.75; composition is camera-matched to K06.75.
 - Follow-up: approve or reject K06.625 v002. Do not generate paid motion until this boundary is approved.
 
+### D073 — Approve K06.625 v002 and reject S07B1A v001
+
+- Date: 2026-07-17.
+- Status: K06.625 v002 approved and byte-locked; S07B1A v001 rejected after boundary QA; S07B1B not generated.
+- K06.625 evidence: candidate and approved PNG copies are identical at 1680 x 945, RGB24, SHA-256 `5FE6B7477F2C0AD8C72177E55BC148DA3DB5F4C98BEE4B7BCEA2CF75F726D437`.
+- S07B1A evidence: generation ID `AZ0tnPoU8Ls0OG445gfphkQsRmwBcyNKP2QLBPX3neUIpkl8lvxwSKWp8lvXOdfvzC6VUqJh`; 40 credits; H.264, 1920 x 1080, 24 fps, 121 frames, 5.041667 seconds; SHA-256 `E391B846B3897260CD7C9DF8F28D5785A0CBE38DC021A93BDA1972CAA752FAF2`.
+- Boundary evidence: first-frame-to-K06.5 SSIM `0.674807`; last-frame-to-K06.625 SSIM `0.705149`; contact sheet, comparison and forward/reverse review are stored under `review/S07B1A_v001/`.
+- Rejection reason: motion is smooth, but Kling does not reach approved K06.625. It ends on a narrower K06.5-derived top-down composition with incompatible plan detail and framing.
+- Decision: stop before S07B1B. Preserve the 40-credit candidate and do not retry or switch models automatically.
+- Follow-up: choose deterministic/local camera registration or explicitly authorize a revised strict first/tail model retry.
+
+### D074 — Generate S07B1A v002 with strict first/tail Kling 3.0
+
+- Date: 2026-07-17.
+- Status: approved and byte-locked; S07B1B subsequently generated after explicit approval.
+- Authorization: the user explicitly approved one revised S07B1A attempt using the recommended strict first/tail approach.
+- Evidence: generation ID `AdQd1LYspqi0pDuTx4-aOkuN6YlbLEic451NXMeCfgJ9A1t1xHXX8crwRFGfVkfYK4I33W4l`; 40 credits; H.264, 1920 x 1080, 24 fps, 121 frames, 5.041667 seconds; SHA-256 `F3D028E86B8F97C621C6BE3C491708E79BE4FD7E69D50FB3E5C52CA063C0F435`.
+- Model/settings: `kling-video-v3_0`; K06.5 bound as `first_image`; K06.625 v002 bound as `tail_image`; 5 seconds; 1080p; one output; audio off; multi-shot off.
+- Boundary evidence: first-frame-to-K06.5 SSIM `0.977998`; last-frame-to-K06.625 SSIM `0.959761`; contact sheet, comparison and forward/reverse review are stored under `review/S07B1A_v002/`.
+- Initial QA: the clip performs a continuous camera-only crane/pullback/tilt, keeps the courtyard open and avoids an obvious shell-growth event. The tail is materially closer to K06.625 than rejected v001 (`0.959761` versus `0.705149`).
+- Approval: the user approved S07B1A v002 on 2026-07-17. Candidate and approved copies are byte-identical with SHA-256 `F3D028E86B8F97C621C6BE3C491708E79BE4FD7E69D50FB3E5C52CA063C0F435`.
+- Follow-up: use the exact approved tail/K06.625 boundary for S07B1B.
+
+### D075 — Approve S07B1A v002 and generate S07B1B v001
+
+- Date: 2026-07-17.
+- Status: S07B1A v002 and S07B1B v001 approved and byte-locked; S07B2 subsequently generated after explicit approval.
+- Authorization: the user explicitly approved S07B1A and requested the next phase.
+- S07B1B evidence: generation ID `AccjVHSW3FnnWqAGWOHFfVv04WuBBd1wWx98uGqcIoyO2mTK3GT1UFv3-bNjFLzIXJ5Cqose`; 40 credits; H.264, 1920 x 1080, 24 fps, 121 frames, 5.041667 seconds; SHA-256 `616A7F9D8AC81B8AD9050276B1050444A875A9F35D12B31C7FA704B81AB87142`.
+- Model/settings: `kling-video-v3_0`; approved K06.625 v002 bound as `first_image`; approved K06.75 v001 bound as `tail_image`; 5 seconds; 1080p; one output; audio off; multi-shot off.
+- Boundary evidence: first-frame-to-K06.625 SSIM `0.968087`; last-frame-to-K06.75 SSIM `0.963329`; review assets are stored under `review/S07B1B_v001/`.
+- Initial QA: the camera remains visually locked, wall height progresses toward the approved full shell, furniture/site graphics remain flat, and the open right courtyard is retained without a false perimeter. Growth is weighted toward the second half but remains smooth in the sampled frames.
+- Approval: the user approved S07B1B v001 on 2026-07-17. Candidate and approved copies are byte-identical with SHA-256 `616A7F9D8AC81B8AD9050276B1050444A875A9F35D12B31C7FA704B81AB87142`.
+- Follow-up: use the exact approved K06.75 boundary for S07B2.
+
+### D076 — Approve S07B1B v001 and generate S07B2 v001
+
+- Date: 2026-07-17.
+- Status: S07B1B v001 and S07B2 v001 approved and byte-locked; S07 complete; S09 v001 subsequently generated after explicit approval.
+- Authorization: the user explicitly approved S07B1B and requested the next phase.
+- S07B2 evidence: generation ID `AafWf05hXOPDEQGj0IZwK29G2lDoOs8iIr3c8yVvBsxYqdwLqlo16oWEpcZJejzyioTeI5dL`; 40 credits; H.264, 1920 x 1080, 24 fps, 121 frames, 5.041667 seconds; SHA-256 `593A0397B18F2D29D4788EB61EF19D45D620BC55C3C899958315528E84032526`.
+- Model/settings: `kling-video-v3_0`; approved K06.75 v001 bound as `first_image`; approved K07 v030 bound as `tail_image`; 5 seconds; 1080p; one output; audio off; multi-shot off.
+- Boundary evidence: first-frame-to-K06.75 SSIM `0.959460`; last-frame-to-K07 SSIM `0.960555`; review assets are stored under `review/S07B2_v001/`.
+- Initial QA: camera/framing and the completed shell remain visually stable; furniture, built-ins, fixtures, plants and terrace elements gain white-clay relief from registered locations; the open courtyard and entry remain intact without a false perimeter.
+- Decision: the user approved S07B2 v001 on 2026-07-17. Candidate and approved copies are byte-identical with SHA-256 `593A0397B18F2D29D4788EB61EF19D45D620BC55C3C899958315528E84032526`.
+- Follow-up: S09 high-risk material-growth test unblocked.
+
+### D077 — Approve S07B2 v001 and generate S09 v001
+
+- Date: 2026-07-17.
+- Status: S07 and S09 approved and closed; S10 v001 subsequently generated after explicit approval.
+- Authorization: the user explicitly locked the completed S07 phase and requested the K09 state phase.
+- S09 evidence: generation ID `Ac7hkiITQyZwj66m8qgDEjVXUw9_gDyY52IDZItNv2FQhObwjzj0frbEpdTO-amNuxIH1bGr`; 40 credits; H.264, 1920 x 1080, 24 fps, 121 frames, 5.041667 seconds; SHA-256 `06C8C63F32CF21081BE61416D691085469896B5A450A83069A2A2CD3C51F26E2`.
+- Model/settings: `kling-video-v3_0`; approved K08 bound as `first_image`; approved K09 bound as `tail_image`; 5 seconds; 1080p; one output; audio off; multi-shot off.
+- Boundary evidence: normalized first-frame-to-K08 SSIM `0.971139`; normalized last-frame-to-K09 SSIM `0.965366`; review assets are stored under `review/S09_v001/`.
+- Initial QA: camera/framing and architectural geometry remain visually stable while material and color spread progressively across existing surfaces. The exact tail coverage is reached without an obvious cut.
+- Decision: the user approved S09 v001 on 2026-07-17. Candidate and approved copies are byte-identical with SHA-256 `06C8C63F32CF21081BE61416D691085469896B5A450A83069A2A2CD3C51F26E2`.
+- Follow-up: S10 unblocked.
+
+### D078 — Approve S09 v001 and generate S10 v001
+
+- Date: 2026-07-17.
+- Status: S09 approved and byte-locked; S10 v001 candidate complete and awaiting explicit user review.
+- Authorization: the user explicitly approved S09 and requested continuation into the next phases.
+- S10 evidence: generation ID `AaD_TQQ1Jk2OluEJHjvvF3pJ03BDjak-JvR_hk94w5rej_G4W8IDOBchNCCI87y5LsCs1je3`; 40 credits; H.264, 1920 x 1080, 24 fps, 121 frames, 5.041667 seconds; SHA-256 `3912FFF1B3AD030D4960F15B39EC240C46A3A1B756A5533585981D2C40F22DEA`.
+- Model/settings: `kling-video-v3_0`; approved K09 bound as `first_image`; approved K10 bound as `tail_image`; 5 seconds; 1080p; one output; audio off; multi-shot off.
+- Boundary evidence: normalized first-frame-to-K09 SSIM `0.962633`; normalized last-frame-to-K10 SSIM `0.960206`; review assets are stored under `review/S10_v001/`.
+- Initial QA: architecture and object placement remain stable; the camera change is restrained; finish, glazing and daylight resolve without a visible cut or dramatic exposure event.
+- Decision: preserve as an immutable review candidate; do not approve or retry automatically.
+- Follow-up: user reviews normal and forward/reverse playback.
+
 ## Gate 2 — Geometry and camera
 
 - [ ] Plan cleaned/vectorized.
@@ -730,9 +801,9 @@ This document records material decisions and owns cross-phase approval. Sequence
 
 - [x] S03/S04 paper registration passes.
 - [x] S05 dephysicalization passes.
-- [ ] S07 structure growth passes.
-- [ ] S09 material front passes.
-- [ ] All four scrub forward and backward cleanly.
+- [x] S07 structure growth passes.
+- [x] S09 material front passes.
+- [x] All four scrub forward and backward cleanly.
 
 ## Gate 4 — Keyframes
 

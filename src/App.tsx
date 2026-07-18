@@ -40,14 +40,16 @@ function App() {
         };
         window.addEventListener("lagom:scroll-lock", handleScrollLock);
 
-        const raf = (time: number) => {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
+        const updateLenis = (time: number) => {
+            lenis.raf(time * 1000);
         };
-        requestAnimationFrame(raf);
+
+        gsap.ticker.add(updateLenis);
+        gsap.ticker.lagSmoothing(0);
 
         return () => {
             window.removeEventListener("lagom:scroll-lock", handleScrollLock);
+            gsap.ticker.remove(updateLenis);
             lenis.destroy();
         };
     }, []);

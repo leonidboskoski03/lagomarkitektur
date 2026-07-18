@@ -4,6 +4,7 @@ import gsap from "gsap";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {services} from "../data/services";
 import {motionEases} from "../lib/motion";
+import {ArchitecturalProcessStory} from "../components/services/ArchitecturalProcessStory";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -42,11 +43,16 @@ export const ServicesSection = () => {
     ));
     const showAccordion = useCallback(() => setMode("accordion"), []);
 
-    if (mode === "accordion") {
-        return <ServicesAccordion initialActiveIndex={services.length - 1}/>;
-    }
-
-    return <ServicesScrollIntro onComplete={showAccordion}/>;
+    return (
+        <>
+            {mode === "accordion" ? (
+                <ServicesAccordion initialActiveIndex={services.length - 1}/>
+            ) : (
+                <ServicesScrollIntro onComplete={showAccordion}/>
+            )}
+            <ArchitecturalProcessStory/>
+        </>
+    );
 };
 
 const ServicesScrollIntro = ({onComplete}: ServicesScrollIntroProps) => {
@@ -74,6 +80,7 @@ const ServicesScrollIntro = ({onComplete}: ServicesScrollIntroProps) => {
         matchMedia.add(
             {
                 desktop: "(min-width: 768px)",
+                mobile: "(max-width: 767px)",
                 reduceMotion: "(prefers-reduced-motion: reduce)",
             },
             (context) => {
@@ -428,6 +435,7 @@ const ServicesAccordion = ({initialActiveIndex = services.length - 1}: ServicesA
         matchMedia.add(
             {
                 desktop: "(min-width: 768px)",
+                mobile: "(max-width: 767px)",
                 reduceMotion: "(prefers-reduced-motion: reduce)",
             },
             (context) => {

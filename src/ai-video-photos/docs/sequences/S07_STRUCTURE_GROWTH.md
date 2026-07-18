@@ -2,7 +2,7 @@
 
 ## Status
 
-**State:** S07A v001 approved; K06.625 v002 under review; K06.75 v001 approved; S07B and S07B1 v001 rejected; S07B2 blocked  
+**State:** Approved — S07A v001, S07B1A v002, S07B1B v001 and S07B2 v001 locked; superseded/rejected tests preserved  
 **Owner:** LAGOM Arkitektur / Codex  
 **Last update:** 2026-07-17  
 **Sequence map:** [04_SEQUENCE_TIMELINE.md](../04_SEQUENCE_TIMELINE.md)
@@ -118,11 +118,11 @@ Exterior/structural walls rise vertically from their exact black footprints firs
 
 ## Approval
 
-- Approved candidate: None.
-- Approved filename: Pending.
-- Approval date: Pending.
-- Notes: Do not approve automatically.
-- Next sequence unblocked: S09 high-risk material-growth test after S07 passes.
+- Approved candidates: S07A v001, S07B1A v002, S07B1B v001 and S07B2 v001.
+- Final approved part: `../../production/kling-clips/S07-structure-growth/approved/S07B2_v001_locked-camera-furniture-relief_kling.mp4`.
+- Approval date: 2026-07-17.
+- Notes: S07B2 candidate and approved copies are byte-identical with SHA-256 `593A0397B18F2D29D4788EB61EF19D45D620BC55C3C899958315528E84032526`.
+- Next sequence unblocked: S09 high-risk material-growth test.
 
 ## Blocker, if any
 
@@ -206,4 +206,62 @@ The approved K06 and K07 states ask Kling to solve too many simultaneous changes
 - v002 change from v001: lower only architectural wall/frame height to a clearer early construction state; preserve all other content.
 - Initial QA: exact K06.75-style camera/framing retained; room footprints and openings remain stable; furniture/site elements remain flat; right courtyard remains open; no false raised perimeter.
 - Comparison: `../../production/keyframes/K06-625-camera-matched-low-walls/review/K06-5_to_K06-625-v001-v002_to_K06-75_contact-sheet.png`.
-- Proposed split after approval: S07B1A K06.5→K06.625 camera-only; S07B1B K06.625→K06.75 locked-camera shell growth. Do not submit either clip before approval.
+- Approval: approved by the user on 2026-07-17; candidate and approved copies are byte-identical.
+- Proposed split: S07B1A K06.5→K06.625 camera-only; S07B1B K06.625→K06.75 locked-camera shell growth.
+
+## S07B1A v001 production record
+
+- Generation ID: `AZ0tnPoU8Ls0OG445gfphkQsRmwBcyNKP2QLBPX3neUIpkl8lvxwSKWp8lvXOdfvzC6VUqJh`.
+- Credits used: 40.
+- Candidate: `../../production/kling-clips/S07-structure-growth/candidates/S07B1A_v001_camera-only-to-K06-625_kling.mp4`.
+- SHA-256: `E391B846B3897260CD7C9DF8F28D5785A0CBE38DC021A93BDA1972CAA752FAF2`.
+- Technical: H.264, 1920 x 1080, 24 fps, 121 frames, 5.041667 seconds.
+- Settings: Kling 3.0 Omni; start/end images; 5 seconds; 16:9; 1080p; one output; audio off; multi-shot off.
+- Prompt intent: camera-only crane upward, pullback and gentle tilt from approved K06.5 to approved K06.625; freeze all geometry, low-wall heights and flat elements.
+- Boundary SSIM after normalization: first frame versus K06.5 `0.674807`; last frame versus K06.625 `0.705149`.
+- Strength: smooth continuous camera motion, stable exposure, open courtyard retained, no false right/bottom perimeter.
+- Rejection: the clip finishes on a narrowed top-down K06.5-derived composition instead of approved K06.625; plan content and framing therefore cannot hand off cleanly to the locked-camera wall-growth clip.
+- Review evidence: `../../production/kling-clips/S07-structure-growth/review/S07B1A_v001/`.
+- Decision: reject and preserve. Do not submit S07B1B from this incorrect endpoint.
+
+## S07B1A v002 production record
+
+- Generation ID: `AdQd1LYspqi0pDuTx4-aOkuN6YlbLEic451NXMeCfgJ9A1t1xHXX8crwRFGfVkfYK4I33W4l`.
+- Credits used: 40.
+- Candidate: `../../production/kling-clips/S07-structure-growth/candidates/S07B1A_v002_strict-first-tail-camera-only_kling.mp4`.
+- SHA-256: `F3D028E86B8F97C621C6BE3C491708E79BE4FD7E69D50FB3E5C52CA063C0F435`.
+- Technical: H.264, 1920 x 1080, 24 fps, 121 frames, 5.041667 seconds.
+- Settings: `kling-video-v3_0`; approved K06.5 as dedicated `first_image`; approved K06.625 v002 as dedicated `tail_image`; 5 seconds; 1080p; one output; audio off; multi-shot off.
+- Prompt intent: one camera-only crane upward, slight pullback and gentle tilt; freeze model geometry, low-wall heights, openings, flat furniture/site graphics and the open right courtyard; preserve both exact endpoints.
+- Boundary SSIM after normalization: first frame versus K06.5 `0.977998`; last frame versus K06.625 `0.959761`.
+- Initial QA: one continuous camera move; no obvious wall-growth event; furniture/site graphics remain flat; open right courtyard remains intact; both endpoints are materially closer than v001.
+- Review evidence: `../../production/kling-clips/S07-structure-growth/review/S07B1A_v002/`.
+- Approval: approved by the user on 2026-07-17 and copied byte-for-byte to `../../production/kling-clips/S07-structure-growth/approved/S07B1A_v002_strict-first-tail-camera-only_kling.mp4`; candidate and approved SHA-256 are both `F3D028E86B8F97C621C6BE3C491708E79BE4FD7E69D50FB3E5C52CA063C0F435`.
+
+## S07B1B v001 production record
+
+- Generation ID: `AccjVHSW3FnnWqAGWOHFfVv04WuBBd1wWx98uGqcIoyO2mTK3GT1UFv3-bNjFLzIXJ5Cqose`.
+- Credits used: 40.
+- Candidate: `../../production/kling-clips/S07-structure-growth/candidates/S07B1B_v001_locked-camera-shell-growth_kling.mp4`.
+- SHA-256: `616A7F9D8AC81B8AD9050276B1050444A875A9F35D12B31C7FA704B81AB87142`.
+- Technical: H.264, 1920 x 1080, 24 fps, 121 frames, 5.041667 seconds.
+- Settings: `kling-video-v3_0`; approved K06.625 v002 as dedicated `first_image`; approved K06.75 v001 as dedicated `tail_image`; 5 seconds; 1080p; one output; audio off; multi-shot off.
+- Prompt intent: completely lock camera/framing and raise only existing low walls vertically into the full-height shell; preserve all footprints/openings, flat furniture/site graphics and the open right courtyard.
+- Boundary SSIM after normalization: first frame versus K06.625 `0.968087`; last frame versus K06.75 `0.963329`.
+- Initial QA: camera remains visually fixed; walls rise smoothly and most visible growth occurs in the second half; furniture/site graphics remain flat; open courtyard remains intact; no false right/bottom perimeter is visible.
+- Review evidence: `../../production/kling-clips/S07-structure-growth/review/S07B1B_v001/`.
+- Approval: approved by the user on 2026-07-17 and copied byte-for-byte to `../../production/kling-clips/S07-structure-growth/approved/S07B1B_v001_locked-camera-shell-growth_kling.mp4`; candidate and approved SHA-256 are both `616A7F9D8AC81B8AD9050276B1050444A875A9F35D12B31C7FA704B81AB87142`.
+
+## S07B2 v001 production record
+
+- Generation ID: `AafWf05hXOPDEQGj0IZwK29G2lDoOs8iIr3c8yVvBsxYqdwLqlo16oWEpcZJejzyioTeI5dL`.
+- Credits used: 40.
+- Candidate: `../../production/kling-clips/S07-structure-growth/candidates/S07B2_v001_locked-camera-furniture-relief_kling.mp4`.
+- SHA-256: `593A0397B18F2D29D4788EB61EF19D45D620BC55C3C899958315528E84032526`.
+- Technical: H.264, 1920 x 1080, 24 fps, 121 frames, 5.041667 seconds.
+- Settings: `kling-video-v3_0`; approved K06.75 v001 as dedicated `first_image`; approved K07 v030 as dedicated `tail_image`; 5 seconds; 1080p; one output; audio off; multi-shot off.
+- Prompt intent: lock camera, framing and completed wall shell; raise only registered furniture, built-ins, fixtures, plants, terrace seating and small landscape elements from their exact footprints into restrained white-clay relief.
+- Boundary SSIM after normalization: first frame versus K06.75 `0.959460`; last frame versus K07 `0.960555`.
+- Initial QA: camera and shell remain visually stable; registered objects gain relief progressively without obvious relocation; open right courtyard and house entry remain intact; no false perimeter is visible.
+- Review evidence: `../../production/kling-clips/S07-structure-growth/review/S07B2_v001/`, including the complete S07 four-part playback.
+- Decision: approved by the user on 2026-07-17 and copied byte-for-byte to `../../production/kling-clips/S07-structure-growth/approved/S07B2_v001_locked-camera-furniture-relief_kling.mp4`.

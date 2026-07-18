@@ -6,10 +6,10 @@ The original [production plan](../AI_VIDEO_PROCESS_PRODUCTION_PLAN.md) is preser
 
 ## Current position
 
-**Phase:** 3 — High-risk motion tests  
-**Current objective:** Review K06.625 v002 as the camera-matched low-wall bridge between approved K06.5 and approved K06.75.  
-**Next production action:** Approve or reject K06.625 v002. After approval, test K06.5-to-K06.625 as camera-only motion, then K06.625-to-K06.75 as locked-camera shell growth.  
-**Do not start yet:** Full Kling batch production, composite/master export, or WebP extraction.
+**Phase:** 5 — Kling production  
+**Current objective:** Review S10 v001, the subtle finish/light and atmosphere transition from approved K09 to approved K10.  
+**Next production action:** User reviews S10 v001 at normal speed and in forward/reverse playback. Do not approve or retry automatically.  
+**Do not start yet:** Composite/master export or WebP extraction.
 
 ## Source-of-truth documents
 
@@ -56,9 +56,9 @@ Record every answer in [08_QA_AND_DECISIONS.md](./08_QA_AND_DECISIONS.md).
 | 0. Source lock | Partially complete | Architectural unknowns either supplied or explicitly accepted |
 | 1. Visual-language test | Complete | K00 v008 mineral-composite composition approved |
 | 2. Geometry and camera master | Complete for motion prototype | Approved visual boundaries and camera path; CAD/elevation limitations remain documented |
-| 3. High-risk motion tests | **Active** | S03, S05, S07, and S09 scrub cleanly |
+| 3. High-risk motion tests | Complete | S03, S05, S07, and S09 scrub cleanly |
 | 4. Final keyframes | Complete | K00–K13 approved; K04 is an exact K03 alias |
-| 5. Kling production | Not started | S01–S13 approved with exact boundaries |
+| 5. Kling production | **Active** | S01–S13 approved with exact boundaries |
 | 6. Composite and grade | Not started | One clean master is approved |
 | 7. Web delivery | Not started | Desktop, mobile, and reduced-motion QA pass |
 
@@ -74,7 +74,7 @@ Record every answer in [08_QA_AND_DECISIONS.md](./08_QA_AND_DECISIONS.md).
 | K05 — flat plan world | Approved — v002 | Exact start boundary for K06 |
 | K06 — spatial tilt | Approved — v002 | Exact courtyard-side camera boundary for K07 |
 | K06.5 — low-wall intermediate | Approved — v001 | Exact S07A end / S07B1 start boundary |
-| K06.625 — camera-matched low walls | Candidate — v002 | Uses K06.75 camera/framing with the earlier low-wall state; requires approval before motion |
+| K06.625 — camera-matched low walls | Approved — v002 | Candidate and approved files are byte-identical; exact S07B1A end / S07B1B start boundary |
 | K06.75 — full shell, flat furniture | Approved — v001 | Exact S07B1 end / future S07B2 start boundary; candidate and approved files are identical |
 | K07 — raised wireframe | Approved — v030 | User-supplied clean white-clay frame; proportional canvas normalization only |
 | K08 — white clay model | Approved — v001 | Exact approved source boundary for K09; candidate and approved files are identical |
@@ -101,5 +101,5 @@ Record every answer in [08_QA_AND_DECISIONS.md](./08_QA_AND_DECISIONS.md).
 3. Preserve superseded S05 v001 and the locally rendered hybrid tests unchanged.
 4. Preserve approved `S05_v003_registered-microblend.mp4` and its review evidence unchanged.
 5. Replace the over-wide S07 boundary pair with an approved K06.5 walls-only intermediate; generate no retry until that boundary is reviewed.
-6. Test S07A and S07B independently, then repeat the high-risk-test workflow for S09.
-7. Begin full sequence production only after the high-risk motion grammar passes.
+6. S07 and S09 are approved and closed; the high-risk motion grammar passes.
+7. Review S10 v001 before any retry or later sequence production.

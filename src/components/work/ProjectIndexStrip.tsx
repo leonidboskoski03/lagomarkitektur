@@ -23,7 +23,7 @@ export function ProjectIndexStrip({ projectId, images }: ProjectIndexStripProps)
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let overflow = 0;
-    let wheelX = 0;
+    let targetX = 0;
 
     const draggable = Draggable.create(track, {
       trigger: viewport,
@@ -38,49 +38,73 @@ export function ProjectIndexStrip({ projectId, images }: ProjectIndexStripProps)
       dragClickables: false,
       allowNativeTouchScrolling: false,
       allowContextMenu: true,
-      cursor: "grab",
+      cursor: "default",
       activeCursor: "grabbing",
       onPress: () => {
-        gsap.killTweensOf(track);
-        wheelX = Number(gsap.getProperty(track, "x")) || 0;
+        // Keep quickTo reusable. Killing every track tween here also kills the
+        // wheel controller, so horizontal wheel input cannot resume after a drag.
+        glideTo.tween?.pause();
+        draggable.tween?.kill();
+        targetX = Number(gsap.getProperty(track, "x")) || 0;
         viewport.setAttribute("data-strip-dragging", "true");
       },
       onDrag: () => {
-        wheelX = draggable.x;
+        targetX = draggable.x;
       },
       onThrowUpdate: () => {
-        wheelX = draggable.x;
+        targetX = draggable.x;
       },
       onRelease: () => viewport.removeAttribute("data-strip-dragging"),
       onThrowComplete: () => {
-        wheelX = draggable.x;
+        targetX = draggable.x;
         viewport.removeAttribute("data-strip-dragging");
       },
     })[0];
 
     const glideTo = gsap.quickTo(track, "x", {
-      duration: reduceMotion ? 0 : 0.72,
-      ease: "power3.out",
+      duration: reduceMotion ? 0 : 0.88,
+      ease: "power4.out",
       onUpdate: () => draggable.update(),
     });
 
     const measure = () => {
       overflow = Math.max(0, track.scrollWidth - viewport.clientWidth);
       const currentX = Number(gsap.getProperty(track, "x")) || 0;
-      wheelX = gsap.utils.clamp(-overflow, 0, currentX);
-      gsap.set(track, { x: wheelX });
+      targetX = gsap.utils.clamp(-overflow, 0, currentX);
+      gsap.set(track, { x: targetX });
       draggable.applyBounds({ minX: -overflow, maxX: 0 });
       draggable.update();
     };
 
     const handleWheel = (event: WheelEvent) => {
-      const isHorizontalGesture = Math.abs(event.deltaX) > Math.abs(event.deltaY);
-      const delta = isHorizontalGesture ? event.deltaX : event.shiftKey ? event.deltaY : 0;
-      if (!delta || overflow <= 0) return;
+      if (overflow <= 0 || draggable.isDragging) return;
+
+      const rawDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY)
+        ? event.deltaX
+        : event.deltaY;
+      if (!rawDelta) return;
+
+      const deltaScale = event.deltaMode === WheelEvent.DOM_DELTA_LINE
+        ? 18
+        : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
+          ? viewport.clientWidth
+          : 1;
+      const delta = gsap.utils.clamp(-140, 140, rawDelta * deltaScale);
+      const currentX = Number(gsap.getProperty(track, "x")) || 0;
+
+      if (draggable.tween?.isActive()) {
+        draggable.tween.kill();
+        targetX = currentX;
+      }
+
+      const nextX = gsap.utils.clamp(-overflow, 0, targetX - delta);
+      const isAtBoundary = Math.abs(nextX - targetX) < 0.1
+        && Math.abs(currentX - nextX) < 0.5;
+      if (isAtBoundary) return;
 
       event.preventDefault();
-      wheelX = gsap.utils.clamp(-overflow, 0, wheelX - delta);
-      glideTo(wheelX);
+      targetX = nextX;
+      glideTo(targetX);
     };
 
     gsap.set(track, { x: 0 });
@@ -106,18 +130,23 @@ export function ProjectIndexStrip({ projectId, images }: ProjectIndexStripProps)
       data-cursor="Drag"
       role="group"
       aria-label="Drag to explore project images"
-      className="relative z-[1] block min-w-0 touch-none overflow-hidden cursor-grab data-[strip-dragging=true]:cursor-grabbing"
+      className="relative z-[1] block min-w-0 touch-none overflow-hidden data-[strip-dragging=true]:cursor-grabbing"
     >
       <span ref={trackRef} className="flex w-max items-end gap-3 will-change-transform">
         {images.map((image, imageIndex) => (
           <span
             key={`${projectId}-${image.url}-${imageIndex}`}
+            data-mode-project={imageIndex === 0 ? projectId : undefined}
+            data-mode-project-image={imageIndex === 0 ? "" : undefined}
+            data-transition-image={`${projectId}:gallery:${imageIndex}`}
             className="block w-[clamp(10rem,15vw,15rem)] shrink-0 overflow-hidden bg-black"
             style={{ aspectRatio: image.aspectRatio }}
           >
             <img
               data-index-image
-              src={image.url}
+              src={image.previewUrl || image.url}
+              srcSet={image.previewSrcSet || image.srcSet}
+              sizes={image.previewSizes || image.sizes}
               alt=""
               width={image.width}
               height={image.height}

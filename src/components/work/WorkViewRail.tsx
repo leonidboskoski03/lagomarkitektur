@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useCallback, useEffect, useRef, useState, type FocusEvent } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -6,9 +6,6 @@ import { motionEases } from "../../lib/motion";
 import { workViewModes, type WorkViewMode } from "./workView";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const VIEW_BUTTON_WIDTH = 76;
-const VIEW_BUTTON_HEIGHT = 44;
 
 interface WorkViewRailProps {
   activeMode: WorkViewMode;
@@ -18,7 +15,7 @@ interface WorkViewRailProps {
 function ViewIcon({ mode }: { mode: WorkViewMode }) {
   if (mode === "composition") {
     return (
-      <svg data-view-icon viewBox="0 0 24 24" aria-hidden="true" className="h-[1.125rem] w-[1.125rem]">
+      <svg data-view-icon viewBox="0 0 24 24" aria-hidden="true" className="h-[0.95rem] w-[0.95rem]">
         <rect data-icon-part x="3.5" y="4" width="8" height="6" fill="currentColor" />
         <rect data-icon-part x="12.5" y="14" width="8" height="6" fill="currentColor" />
       </svg>
@@ -27,35 +24,36 @@ function ViewIcon({ mode }: { mode: WorkViewMode }) {
 
   if (mode === "index") {
     return (
-      <svg data-view-icon viewBox="0 0 24 24" aria-hidden="true" className="h-[1.125rem] w-[1.125rem]">
-        <path data-icon-part d="M4 5.5h16" fill="none" stroke="currentColor" strokeWidth="1.7" />
-        <path data-icon-part d="M4 12h16" fill="none" stroke="currentColor" strokeWidth="1.7" />
-        <path data-icon-part d="M4 18.5h16" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <svg data-view-icon viewBox="0 0 24 24" aria-hidden="true" className="h-[0.95rem] w-[0.95rem]">
+        <path data-icon-part d="M4 5.5h16" fill="none" stroke="currentColor" strokeWidth="1.65" />
+        <path data-icon-part d="M4 12h16" fill="none" stroke="currentColor" strokeWidth="1.65" />
+        <path data-icon-part d="M4 18.5h16" fill="none" stroke="currentColor" strokeWidth="1.65" />
       </svg>
     );
   }
 
   return (
-    <svg data-view-icon viewBox="0 0 24 24" aria-hidden="true" className="h-[1.125rem] w-[1.125rem]">
+    <svg data-view-icon viewBox="0 0 24 24" aria-hidden="true" className="h-[0.95rem] w-[0.95rem]">
       <path
         data-icon-part
         d="M9 4H4v5M15 4h5v5M20 15v5h-5M9 20H4v-5"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.7"
+        strokeWidth="1.65"
       />
-      <circle data-icon-core cx="12" cy="12" r="1.5" fill="currentColor" />
+      <circle data-icon-core cx="12" cy="12" r="1.35" fill="currentColor" />
     </svg>
   );
 }
 
-interface WorkViewButtonProps {
+interface ViewOptionProps {
   mode: (typeof workViewModes)[number];
-  isActive: boolean;
+  active: boolean;
+  expanded: boolean;
   onSelect: () => void;
 }
 
-function WorkViewButton({ mode, isActive, onSelect }: WorkViewButtonProps) {
+function ViewOption({ mode, active, expanded, onSelect }: ViewOptionProps) {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   useGSAP((_context, contextSafe) => {
@@ -63,170 +61,223 @@ function WorkViewButton({ mode, isActive, onSelect }: WorkViewButtonProps) {
     const icon = button?.querySelector<SVGElement>("[data-view-icon]");
     const parts = gsap.utils.toArray<SVGElement>("[data-icon-part]", button);
     const core = button?.querySelector<SVGElement>("[data-icon-core]");
-    const label = button?.querySelector<HTMLElement>("[data-view-label]");
+    if (!button || !icon) return;
+
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!button || !icon || !label) return;
-
-    const animateIn = contextSafe!(() => {
-      if (reduceMotion) {
-        gsap.set(label, { autoAlpha: 1, x: 2 });
-        return;
-      }
-
-      const timeline = gsap.timeline({ defaults: { overwrite: "auto" } });
-      timeline.to(icon, {
+    const enter = contextSafe!(() => {
+      if (!button.closest('[data-expanded="true"]') || reduceMotion) return;
+      gsap.to(icon, {
         scale: 1.12,
-        duration: 0.78,
-        ease: motionEases.settle,
-        transformOrigin: "50% 50%",
-      }, 0);
-      timeline.to(label, {
-        x: 2,
-        autoAlpha: 1,
-        letterSpacing: "0.17em",
-        duration: 0.72,
-        ease: motionEases.settle,
-      }, 0.06);
-
-      if (mode.id === "composition") {
-        timeline.to(parts, {
-          x: (index) => index === 0 ? 1.3 : -1.3,
-          y: (index) => index === 0 ? 1.1 : -1.1,
-          duration: 0.86,
-          ease: motionEases.settle,
-        }, 0);
-      } else if (mode.id === "index") {
-        timeline.to(parts, {
-          x: (index) => index === 1 ? 2 : index === 0 ? -1.2 : 1.2,
-          duration: 0.86,
-          ease: motionEases.settle,
-        }, 0);
-      } else {
-        timeline.to(parts, {
-          rotation: 8,
-          scale: 1.08,
-          duration: 0.9,
-          ease: motionEases.settle,
-          transformOrigin: "50% 50%",
-        }, 0);
-        if (core) {
-          timeline.to(core, {
-            scale: 1.65,
-            duration: 0.9,
-            ease: motionEases.settle,
-            transformOrigin: "50% 50%",
-          }, 0);
-        }
-      }
-    });
-
-    const animateOut = contextSafe!(() => {
-      gsap.to(label, {
-        x: 0,
-        autoAlpha: 1,
-        letterSpacing: "0.13em",
-        duration: reduceMotion ? 0 : 0.68,
+        duration: 0.62,
         ease: motionEases.settle,
         overwrite: "auto",
+        transformOrigin: "50% 50%",
       });
+      gsap.to(parts, {
+        x: mode.id === "index" ? (index) => index === 1 ? 1.3 : index === 0 ? -0.55 : 0.55 : 0,
+        rotation: mode.id === "field" ? 5 : 0,
+        duration: 0.66,
+        ease: motionEases.settle,
+        overwrite: "auto",
+        transformOrigin: "50% 50%",
+      });
+      if (core) {
+        gsap.to(core, {
+          scale: 1.5,
+          duration: 0.66,
+          ease: motionEases.settle,
+          overwrite: "auto",
+          transformOrigin: "50% 50%",
+        });
+      }
+    });
+    const leave = contextSafe!(() => {
       gsap.to([icon, ...parts, ...(core ? [core] : [])], {
         x: 0,
-        y: 0,
         scale: 1,
         rotation: 0,
-        duration: reduceMotion ? 0 : 0.72,
+        duration: reduceMotion ? 0 : 0.54,
         ease: motionEases.settle,
         overwrite: "auto",
       });
     });
-
-    const animatePress = contextSafe!(() => {
+    const press = contextSafe!(() => {
       if (reduceMotion) return;
       gsap.timeline({ defaults: { overwrite: "auto" } })
-        .to(icon, { scale: 0.82, duration: 0.15, ease: motionEases.depart })
-        .to(icon, { scale: 1.12, duration: 0.62, ease: motionEases.settle });
+        .to(icon, { scale: 0.76, duration: 0.11, ease: motionEases.depart })
+        .to(icon, { scale: 1, duration: 0.48, ease: motionEases.settle });
     });
 
-    button.addEventListener("pointerenter", animateIn);
-    button.addEventListener("pointerleave", animateOut);
-    button.addEventListener("focus", animateIn);
-    button.addEventListener("blur", animateOut);
-    button.addEventListener("click", animatePress);
-
+    button.addEventListener("pointerenter", enter);
+    button.addEventListener("pointerleave", leave);
+    button.addEventListener("blur", leave);
+    button.addEventListener("click", press);
     return () => {
-      button.removeEventListener("pointerenter", animateIn);
-      button.removeEventListener("pointerleave", animateOut);
-      button.removeEventListener("focus", animateIn);
-      button.removeEventListener("blur", animateOut);
-      button.removeEventListener("click", animatePress);
+      button.removeEventListener("pointerenter", enter);
+      button.removeEventListener("pointerleave", leave);
+      button.removeEventListener("blur", leave);
+      button.removeEventListener("click", press);
     };
-  }, { scope: buttonRef, dependencies: [mode.id] });
+  }, {
+    scope: buttonRef,
+    dependencies: [mode.id],
+  });
 
   return (
     <button
       ref={buttonRef}
       type="button"
-      data-work-view-button
+      data-work-view-option
       data-cursor=""
       aria-label={mode.label}
-      aria-pressed={isActive}
-      title={mode.shortLabel}
+      aria-pressed={active}
+      tabIndex={expanded || active ? 0 : -1}
       onClick={onSelect}
-      className={`relative z-[1] grid h-11 w-[4.75rem] grid-cols-[1.125rem_minmax(0,1fr)] items-center gap-2 px-2.5 text-left transition-colors duration-700 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-[-3px] focus-visible:outline-current ${
-        isActive ? "text-black" : "text-black/42 hover:text-black"
-      }`}
+      className="group relative grid h-10 w-10 shrink-0 place-items-center text-[#f4f0e8] focus-visible:outline-none"
     >
       <ViewIcon mode={mode.id} />
       <span
-        data-view-label
-        className="pointer-events-none block whitespace-nowrap text-[0.5rem] font-medium uppercase tracking-[0.13em] opacity-100 will-change-transform"
-      >
-        {mode.shortLabel}
-      </span>
+        data-view-active-mark
+        aria-hidden="true"
+        className="absolute bottom-[0.28rem] h-px w-2 bg-current will-change-transform"
+      />
+      <span
+        aria-hidden="true"
+        className="absolute left-[0.24rem] h-1 w-1 scale-0 rounded-full bg-current transition-transform duration-300 group-focus-visible:scale-100"
+      />
+      <span className="sr-only">{mode.shortLabel}</span>
     </button>
   );
 }
 
 export function WorkViewRail({ activeMode, onModeChange }: WorkViewRailProps) {
   const railRef = useRef<HTMLDivElement | null>(null);
-  const activeIndex = workViewModes.findIndex((mode) => mode.id === activeMode);
+  const surfaceRef = useRef<HTMLElement | null>(null);
+  const capsuleTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const openTimerRef = useRef(0);
+  const closeTimerRef = useRef(0);
+  const [expanded, setExpanded] = useState(false);
+  const activeIndex = Math.max(0, workViewModes.findIndex((mode) => mode.id === activeMode));
+
+  const open = useCallback((delay = 85) => {
+    window.clearTimeout(openTimerRef.current);
+    window.clearTimeout(closeTimerRef.current);
+    openTimerRef.current = window.setTimeout(() => setExpanded(true), delay);
+  }, []);
+
+  const close = useCallback((delay = 180) => {
+    window.clearTimeout(openTimerRef.current);
+    window.clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = window.setTimeout(() => setExpanded(false), delay);
+  }, []);
+
+  useEffect(() => () => {
+    window.clearTimeout(openTimerRef.current);
+    window.clearTimeout(closeTimerRef.current);
+  }, []);
+
+  useEffect(() => {
+    if (!expanded) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close(0);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [close, expanded]);
 
   useGSAP(() => {
-    if (!railRef.current) return;
-
-    const projectContainer = document.querySelector<HTMLElement>("[data-work-projects]");
-    if (!projectContainer) return;
+    const surface = surfaceRef.current;
+    const options = gsap.utils.toArray<HTMLElement>("[data-work-view-option]", surface);
+    const marks = gsap.utils.toArray<HTMLElement>("[data-view-active-mark]", surface);
+    if (!surface || options.length === 0) return;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const buttons = gsap.utils.toArray<HTMLElement>("[data-work-view-button]", railRef.current);
-    const showRail = () => {
-      gsap.set(railRef.current, { pointerEvents: "auto" });
-      gsap.to(railRef.current, {
+    const centerOffset = (index: number) => (1 - index) * 40;
+    capsuleTimelineRef.current?.kill();
+    const timeline = gsap.timeline({ defaults: { overwrite: "auto" } });
+    capsuleTimelineRef.current = timeline;
+
+    if (expanded) {
+      gsap.set(options, { pointerEvents: "auto" });
+      timeline
+        .to(surface, {
+          height: 128,
+          duration: reduceMotion ? 0 : 0.92,
+          ease: motionEases.reveal,
+        }, 0)
+        .to(options, {
+          y: 0,
+          scale: 1,
+          autoAlpha: (index) => index === activeIndex ? 1 : 0.46,
+          duration: reduceMotion ? 0 : 0.76,
+          stagger: reduceMotion ? 0 : { amount: 0.12, from: "center" },
+          ease: motionEases.reveal,
+        }, 0.14)
+        .to(marks, {
+          scaleX: (index) => index === activeIndex ? 1 : 0,
+          duration: reduceMotion ? 0 : 0.5,
+          ease: motionEases.settle,
+          transformOrigin: "50% 50%",
+        }, 0.3);
+    } else {
+      options.forEach((option, index) => {
+        gsap.set(option, { pointerEvents: index === activeIndex ? "auto" : "none" });
+      });
+      timeline
+        .to(options, {
+          y: centerOffset,
+          scale: (index) => index === activeIndex ? 1 : 0.82,
+          autoAlpha: (index) => index === activeIndex ? 1 : 0,
+          duration: reduceMotion ? 0 : 0.62,
+          stagger: reduceMotion ? 0 : { amount: 0.06, from: "edges" },
+          ease: motionEases.reveal,
+        }, 0)
+        .to(marks, {
+          scaleX: (index) => index === activeIndex ? 1 : 0,
+          duration: reduceMotion ? 0 : 0.34,
+          ease: motionEases.depart,
+          transformOrigin: "50% 50%",
+        }, 0)
+        .to(surface, {
+          height: 40,
+          duration: reduceMotion ? 0 : 0.82,
+          ease: motionEases.reveal,
+        }, 0);
+    }
+
+    return () => {
+      timeline.kill();
+      if (capsuleTimelineRef.current === timeline) capsuleTimelineRef.current = null;
+    };
+  }, {
+    scope: railRef,
+    dependencies: [activeIndex, expanded],
+  });
+
+  useGSAP(() => {
+    const rail = railRef.current;
+    const projectContainer = document.querySelector<HTMLElement>("[data-work-projects]");
+    if (!rail || !projectContainer) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const show = () => {
+      gsap.set(rail, { pointerEvents: "none" });
+      gsap.set(surfaceRef.current, { pointerEvents: "auto" });
+      gsap.to(rail, {
         x: 0,
-        y: 0,
         autoAlpha: 1,
-        clipPath: "inset(0% 0% 0% 0%)",
         duration: reduceMotion ? 0 : 0.72,
         ease: motionEases.enter,
         overwrite: "auto",
       });
-      if (!reduceMotion) {
-        gsap.fromTo(buttons, { autoAlpha: 0, x: 7 }, {
-          autoAlpha: 1,
-          x: 0,
-          duration: 0.42,
-          stagger: 0.045,
-          ease: motionEases.enter,
-          overwrite: "auto",
-        });
-      }
     };
-    const hideRail = () => {
-      gsap.set(railRef.current, { pointerEvents: "none" });
-      gsap.to(railRef.current, {
-        x: reduceMotion ? 0 : 20,
+    const hide = () => {
+      setExpanded(false);
+      gsap.set(rail, { pointerEvents: "none" });
+      gsap.set(surfaceRef.current, { pointerEvents: "none" });
+      gsap.to(rail, {
+        x: reduceMotion ? 0 : 18,
         autoAlpha: 0,
-        clipPath: "inset(0% 0% 0% 100%)",
         duration: reduceMotion ? 0 : 0.46,
         ease: motionEases.depart,
         overwrite: "auto",
@@ -234,84 +285,72 @@ export function WorkViewRail({ activeMode, onModeChange }: WorkViewRailProps) {
     };
 
     if (activeMode !== "composition") {
-      showRail();
+      show();
       return;
     }
 
-    gsap.set(railRef.current, {
-      x: reduceMotion ? 0 : 20,
+    gsap.set(rail, {
+      x: reduceMotion ? 0 : 18,
       autoAlpha: 0,
-      clipPath: "inset(0% 0% 0% 100%)",
       pointerEvents: "none",
     });
+    gsap.set(surfaceRef.current, { pointerEvents: "none" });
 
     const trigger = ScrollTrigger.create({
       trigger: projectContainer,
       start: "top 12%",
-      onEnter: showRail,
-      onEnterBack: showRail,
-      onLeaveBack: hideRail,
+      onEnter: show,
+      onEnterBack: show,
+      onLeaveBack: hide,
     });
 
     return () => trigger.kill();
   }, { scope: railRef, dependencies: [activeMode], revertOnUpdate: true });
 
-  useGSAP(() => {
-    const indicator = railRef.current?.querySelector<HTMLElement>("[data-work-view-indicator]");
-    if (!indicator) return;
+  const handleBlur = (event: FocusEvent<HTMLElement>) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) close(80);
+  };
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const media = gsap.matchMedia();
-
-    media.add("(min-width: 768px)", () => {
-      gsap.to(indicator, {
-        x: 0,
-        y: activeIndex * VIEW_BUTTON_HEIGHT,
-        duration: reduceMotion ? 0 : 0.58,
-        ease: motionEases.settle,
-        overwrite: "auto",
-      });
-    });
-
-    media.add("(max-width: 767px)", () => {
-      gsap.to(indicator, {
-        x: activeIndex * VIEW_BUTTON_WIDTH,
-        y: 0,
-        duration: reduceMotion ? 0 : 0.58,
-        ease: motionEases.settle,
-        overwrite: "auto",
-      });
-    });
-
-    return () => media.revert();
-  }, { scope: railRef, dependencies: [activeIndex] });
+  const selectMode = (mode: WorkViewMode) => {
+    if (mode === activeMode) {
+      open(0);
+      return;
+    }
+    onModeChange(mode);
+    close(80);
+  };
 
   return (
-    <div
-      className="pointer-events-none fixed bottom-5 right-[var(--spacing-viewport-gutter)] z-40 md:inset-y-0 md:flex md:items-center"
-    >
+    <div className="pointer-events-none fixed inset-y-0 right-[var(--spacing-viewport-gutter)] z-40 flex items-center">
       <div
         ref={railRef}
         data-work-view-rail
-        className="pointer-events-auto will-change-[transform,clip-path,opacity]"
+        className="pointer-events-none relative h-32 w-11 overflow-visible will-change-[transform,opacity]"
       >
         <nav
+          ref={surfaceRef}
+          data-view-capsule-surface
+          data-expanded={expanded}
           aria-label="Choose project view"
-          className="relative flex border border-black/12 bg-[#efebe3] p-1 text-black shadow-[0_10px_30px_rgba(25,22,18,0.1)] md:flex-col"
+          className="absolute right-0 top-1/2 h-10 w-11 -translate-y-1/2 overflow-hidden rounded-[9px] border border-white/14 bg-[#292824] text-[#f4f0e8] shadow-[0_8px_24px_rgba(19,18,15,0.16)] will-change-[height] [contain:layout_paint]"
+          onPointerEnter={() => open()}
+          onPointerLeave={() => close()}
+          onMouseEnter={() => open()}
+          onMouseLeave={() => close()}
+          onFocusCapture={() => open(0)}
+          onBlurCapture={handleBlur}
         >
-          <span
-            data-work-view-indicator
-            aria-hidden="true"
-            className="pointer-events-none absolute left-1 top-1 h-11 w-[4.75rem] border border-black/10 bg-white/80 shadow-[0_2px_8px_rgba(25,22,18,0.06)] will-change-transform"
-          />
-          {workViewModes.map((mode) => (
-            <WorkViewButton
-              key={mode.id}
-              mode={mode}
-              isActive={activeMode === mode.id}
-              onSelect={() => onModeChange(mode.id)}
-            />
-          ))}
+          <div className="absolute left-1/2 top-1/2 flex h-[7.5rem] w-10 -translate-x-1/2 -translate-y-1/2 flex-col">
+            {workViewModes.map((mode) => (
+              <ViewOption
+                key={mode.id}
+                mode={mode}
+                active={activeMode === mode.id}
+                expanded={expanded}
+                onSelect={() => selectMode(mode.id)}
+              />
+            ))}
+          </div>
         </nav>
       </div>
     </div>

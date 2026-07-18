@@ -71,12 +71,17 @@ export function EditorialProjectCard({
       >
         <div
           data-project-image
+          data-mode-project={project.id}
+          data-mode-project-image
+          data-transition-image={`${project.id}:cover`}
           className="relative overflow-hidden bg-black"
           style={{ aspectRatio: project.image.aspectRatio }}
         >
           <img
             ref={imageRef}
             src={project.image.url}
+            srcSet={project.image.srcSet}
+            sizes={project.image.sizes}
             alt={project.image.alt}
             width={project.image.width}
             height={project.image.height}

@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "assets:work-previews": "node scripts/generate-work-transition-previews.mjs",
     "cms": "sanity dev",
     "cms:deploy": "sanity deploy",
     "cms:import-projects": "node scripts/import-sanity-projects.mjs",
