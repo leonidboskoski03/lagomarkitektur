@@ -11,6 +11,8 @@ The original [production plan](../AI_VIDEO_PROCESS_PRODUCTION_PLAN.md) is preser
 **Next production action:** User reviews S10 v001 at normal speed and in forward/reverse playback. Do not approve or retry automatically.  
 **Do not start yet:** Composite/master export or WebP extraction.
 
+**Web prototype exception (2026-07-19):** The user explicitly authorized a reversible 18 fps scroll-playback prototype from the current merged preview. This does not approve S10, start the final composite, or satisfy Gate 7; the original 10 fps web sequence remains preserved.
+
 ## Source-of-truth documents
 
 | Document | Owns | Update when |

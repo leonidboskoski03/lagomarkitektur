@@ -30,13 +30,14 @@ interface FrameSequenceRenderer {
 
 interface CreateFrameSequenceRendererOptions {
     canvas: HTMLCanvasElement;
+    backdropCanvas: HTMLCanvasElement;
     tier: SequenceTier;
     frameCount: number;
     basePath: string;
     onFirstDraw: () => void;
 }
 
-const clampFrame = (frame: number, frameCount: number) => (
+const clampFrameIndex = (frame: number, frameCount: number) => (
     Math.max(0, Math.min(frameCount - 1, Math.round(frame)))
 );
 
@@ -46,13 +47,15 @@ const frameUrl = (basePath: string, zeroBasedIndex: number) => (
 
 const createFrameSequenceRenderer = ({
     canvas,
+    backdropCanvas,
     tier,
     frameCount,
     basePath,
     onFirstDraw,
 }: CreateFrameSequenceRendererOptions): FrameSequenceRenderer => {
-    const context = canvas.getContext("2d", {alpha: false});
-    if (!context) {
+    const context = canvas.getContext("2d");
+    const backdropContext = backdropCanvas.getContext("2d", {alpha: false});
+    if (!context || !backdropContext) {
         return {
             requestFrame: () => undefined,
             resize: () => undefined,
@@ -60,11 +63,11 @@ const createFrameSequenceRenderer = ({
         };
     }
 
-    const preloadAhead = tier === "desktop" ? 6 : 4;
-    const preloadBehind = tier === "desktop" ? 2 : 1;
-    const cacheLimit = tier === "desktop" ? 16 : 10;
-    const maxConcurrentLoads = tier === "desktop" ? 3 : 2;
-    const maximumFallbackDistance = tier === "desktop" ? 4 : 3;
+    const preloadAhead = tier === "desktop" ? 20 : 14;
+    const preloadBehind = tier === "desktop" ? 5 : 4;
+    const cacheLimit = tier === "desktop" ? 24 : 18;
+    const maxConcurrentLoads = tier === "desktop" ? 6 : 4;
+    const maximumFallbackDistance = tier === "desktop" ? 16 : 12;
     const maxCanvasWidth = tier === "desktop" ? 1920 : 1280;
     const cache = new Map<number, CachedFrame>();
     const loading = new Map<number, ActiveFrameLoad>();
@@ -72,7 +75,7 @@ const createFrameSequenceRenderer = ({
     let queue: number[] = [];
     let desiredFrame = 0;
     let direction: -1 | 1 = 1;
-    let drawnFrame = -1;
+    let drawnPosition = -1;
     let drawRequest = 0;
     let forceNextDraw = false;
     let disposed = false;
@@ -88,28 +91,47 @@ const createFrameSequenceRenderer = ({
         if (canvas.width !== nextWidth || canvas.height !== nextHeight) {
             canvas.width = nextWidth;
             canvas.height = nextHeight;
+            backdropCanvas.width = nextWidth;
+            backdropCanvas.height = nextHeight;
             forceNextDraw = true;
             scheduleDraw();
         }
     };
 
-    const draw = (frame: CachedFrame) => {
-        const {image} = frame;
-        const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
+    const drawImage = (
+        targetContext: CanvasRenderingContext2D,
+        targetCanvas: HTMLCanvasElement,
+        frame: CachedFrame,
+        mode: "cover" | "contain",
+    ) => {
+        const canvasWidth = targetCanvas.width;
+        const canvasHeight = targetCanvas.height;
         const imageRatio = frame.width / frame.height;
         const canvasRatio = canvasWidth / canvasHeight;
-        const renderWidth = canvasRatio > imageRatio ? canvasHeight * imageRatio : canvasWidth;
+        const renderWidth = mode === "cover"
+            ? (canvasRatio > imageRatio ? canvasWidth : canvasHeight * imageRatio)
+            : (canvasRatio > imageRatio ? canvasHeight * imageRatio : canvasWidth);
         const renderHeight = renderWidth / imageRatio;
         const offsetX = (canvasWidth - renderWidth) * 0.5;
         const offsetY = (canvasHeight - renderHeight) * (tier === "mobile" ? 0.26 : 0.5);
 
-        context.fillStyle = "#11110f";
-        context.fillRect(0, 0, canvasWidth, canvasHeight);
+        targetContext.drawImage(frame.image, offsetX, offsetY, renderWidth, renderHeight);
+        frame.lastUsed = performance.now();
+    };
+
+    const draw = (frame: CachedFrame) => {
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        context.clearRect(0, 0, canvasWidth, canvasHeight);
         context.imageSmoothingEnabled = true;
         context.imageSmoothingQuality = "high";
-        context.drawImage(image, offsetX, offsetY, renderWidth, renderHeight);
-        frame.lastUsed = performance.now();
+        backdropContext.fillStyle = "#11110f";
+        backdropContext.fillRect(0, 0, backdropCanvas.width, backdropCanvas.height);
+        backdropContext.imageSmoothingEnabled = true;
+        backdropContext.imageSmoothingQuality = "high";
+
+        drawImage(backdropContext, backdropCanvas, frame, "cover");
+        drawImage(context, canvas, frame, "contain");
 
         if (!hasDrawn) {
             hasDrawn = true;
@@ -118,11 +140,13 @@ const createFrameSequenceRenderer = ({
     };
 
     const drawClosestFrame = (force = false) => {
-        const exactFrame = cache.get(desiredFrame);
+        const exactIndex = clampFrameIndex(desiredFrame, frameCount);
+        const exactFrame = cache.get(exactIndex);
         if (exactFrame) {
-            if (!force && drawnFrame === desiredFrame) return;
+            if (!force && drawnPosition === exactIndex) return;
             draw(exactFrame);
-            drawnFrame = desiredFrame;
+            drawnPosition = exactIndex;
+            canvas.dataset.processFrame = String(exactIndex + 1);
             return;
         }
 
@@ -140,11 +164,12 @@ const createFrameSequenceRenderer = ({
 
         if (
             nearestFrame
-            && (drawnFrame < 0 || nearestDistance <= maximumFallbackDistance)
-            && (force || drawnFrame !== nearestIndex)
+            && (drawnPosition < 0 || nearestDistance <= maximumFallbackDistance)
+            && (force || drawnPosition !== nearestIndex)
         ) {
             draw(nearestFrame);
-            drawnFrame = nearestIndex;
+            drawnPosition = nearestIndex;
+            canvas.dataset.processFrame = String(nearestIndex + 1);
         }
     };
 
@@ -169,9 +194,13 @@ const createFrameSequenceRenderer = ({
     const trimCache = () => {
         if (cache.size <= cacheLimit) return;
 
+        const exactIndex = clampFrameIndex(desiredFrame, frameCount);
         const evictionCandidates = Array.from(cache.entries())
-            .filter(([index]) => index !== drawnFrame && Math.abs(index - desiredFrame) > preloadAhead)
-            .sort(([, a], [, b]) => a.lastUsed - b.lastUsed);
+            .filter(([index]) => index !== exactIndex)
+            .sort(([indexA, frameA], [indexB, frameB]) => {
+                const distanceDifference = Math.abs(indexB - desiredFrame) - Math.abs(indexA - desiredFrame);
+                return distanceDifference || frameA.lastUsed - frameB.lastUsed;
+            });
 
         while (cache.size > cacheLimit && evictionCandidates.length > 0) {
             const [index, frame] = evictionCandidates.shift()!;
@@ -241,7 +270,7 @@ const createFrameSequenceRenderer = ({
     };
 
     const enqueue = (index: number, priority = false) => {
-        const safeIndex = clampFrame(index, frameCount);
+        const safeIndex = clampFrameIndex(index, frameCount);
         if (cache.has(safeIndex) || loading.has(safeIndex) || queued.has(safeIndex)) return;
         queued.add(safeIndex);
         if (priority) queue.unshift(safeIndex);
@@ -249,9 +278,12 @@ const createFrameSequenceRenderer = ({
     };
 
     const requestFrame = (index: number) => {
-        const nextFrame = clampFrame(index, frameCount);
+        const nextFrame = clampFrameIndex(index, frameCount);
         if (nextFrame !== desiredFrame) direction = nextFrame > desiredFrame ? 1 : -1;
         desiredFrame = nextFrame;
+        const lowerIndex = Math.floor(desiredFrame);
+        const upperIndex = Math.ceil(desiredFrame);
+        const preloadCenter = direction > 0 ? upperIndex : lowerIndex;
 
         queue = queue.filter((queuedIndex) => {
             const keep = Math.abs(queuedIndex - desiredFrame) <= preloadAhead * 2;
@@ -259,16 +291,29 @@ const createFrameSequenceRenderer = ({
             return keep;
         });
 
-        loading.forEach(({controller}, loadingIndex) => {
-            if (Math.abs(loadingIndex - desiredFrame) > preloadAhead * 3) controller.abort();
-        });
+        const targetIsAvailable = [lowerIndex, upperIndex].every((targetIndex) => (
+            cache.has(targetIndex) || loading.has(targetIndex)
+        ));
+        if (!targetIsAvailable && loading.size >= maxConcurrentLoads) {
+            const farthestActiveLoad = Array.from(loading.keys())
+                .sort((a, b) => Math.abs(b - desiredFrame) - Math.abs(a - desiredFrame))[0];
+            if (Math.abs(farthestActiveLoad - desiredFrame) > preloadAhead * 2) {
+                loading.get(farthestActiveLoad)?.controller.abort();
+            }
+        }
 
-        enqueue(desiredFrame, true);
+        if (direction > 0) {
+            enqueue(lowerIndex, true);
+            enqueue(upperIndex, true);
+        } else {
+            enqueue(upperIndex, true);
+            enqueue(lowerIndex, true);
+        }
         for (let offset = 1; offset <= preloadAhead; offset += 1) {
-            enqueue(desiredFrame + (offset * direction));
+            enqueue(preloadCenter + (offset * direction));
         }
         for (let offset = 1; offset <= preloadBehind; offset += 1) {
-            enqueue(desiredFrame - (offset * direction));
+            enqueue(preloadCenter - (offset * direction));
         }
 
         scheduleDraw();
@@ -293,7 +338,8 @@ const createFrameSequenceRenderer = ({
 export function ArchitecturalProcessStory() {
     const rootRef = useRef<HTMLElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const posterRef = useRef<HTMLImageElement | null>(null);
+    const backdropCanvasRef = useRef<HTMLCanvasElement | null>(null);
+    const posterRef = useRef<HTMLDivElement | null>(null);
     const loaderRef = useRef<HTMLDivElement | null>(null);
     const progressNumberRef = useRef<HTMLSpanElement | null>(null);
     const rendererRef = useRef<FrameSequenceRenderer | null>(null);
@@ -324,7 +370,7 @@ export function ArchitecturalProcessStory() {
             if (!entry.isIntersecting) return;
             setIsNearSequence(true);
             observer.disconnect();
-        }, {rootMargin: "125% 0px"});
+        }, {rootMargin: "300% 0px"});
 
         observer.observe(sequenceStage);
         return () => observer.disconnect();
@@ -332,13 +378,15 @@ export function ArchitecturalProcessStory() {
 
     useEffect(() => {
         const canvas = canvasRef.current;
-        if (!canvas || !isNearSequence || prefersReducedMotion) return;
+        const backdropCanvas = backdropCanvasRef.current;
+        if (!canvas || !backdropCanvas || !isNearSequence || prefersReducedMotion) return;
 
         const basePath = tier === "desktop"
             ? processStory.sequence.desktopBasePath
             : processStory.sequence.mobileBasePath;
         const renderer = createFrameSequenceRenderer({
             canvas,
+            backdropCanvas,
             tier,
             frameCount: processStory.sequence.frameCount,
             basePath,
@@ -477,9 +525,9 @@ export function ArchitecturalProcessStory() {
                     scrollTrigger: {
                         trigger: sequenceSection,
                         start: "top top",
-                        end: () => desktop ? "+=720%" : "+=620%",
+                        end: () => desktop ? "+=520%" : "+=500%",
                         pin: stage,
-                        scrub: desktop ? 0.78 : 0.48,
+                        scrub: true,
                         anticipatePin: 1,
                         invalidateOnRefresh: true,
                     },
@@ -490,11 +538,12 @@ export function ArchitecturalProcessStory() {
                     duration: 1,
                     ease: "none",
                     onUpdate: () => {
-                        const nextFrame = clampFrame(playhead.frame, processStory.sequence.frameCount);
+                        const nextFrame = clampFrameIndex(playhead.frame, processStory.sequence.frameCount);
                         desiredFrameRef.current = nextFrame;
                         rendererRef.current?.requestFrame(nextFrame);
                         if (progressNumberRef.current) {
                             progressNumberRef.current.textContent = `${Math.round((nextFrame / lastFrame) * 100)}%`;
+                            progressNumberRef.current.dataset.processTargetFrame = String(nextFrame + 1);
                         }
                     },
                 }, 0);
@@ -536,7 +585,7 @@ export function ArchitecturalProcessStory() {
     }, {scope: rootRef});
 
     return (
-        <section ref={rootRef} className="relative z-[2] overflow-x-clip bg-[#f4f1ea] text-[#171717]">
+        <section ref={rootRef} className="relative z-[2] overflow-x-clip bg-white text-[#171717]">
             <div
                 data-process-prelude
                 className="relative isolate flex min-h-[145svh] flex-col justify-between overflow-hidden px-5 py-28 md:min-h-[160svh] md:px-10 md:py-40 lg:px-16"
@@ -619,11 +668,26 @@ export function ArchitecturalProcessStory() {
             ) : (
                 <section data-process-sequence className="relative min-h-svh bg-[#11110f] text-[#f7f4ed]">
                     <div data-process-stage className="relative h-svh w-full overflow-hidden bg-[#11110f]">
-                        <img
+                        <div
                             ref={posterRef}
-                            src={processStory.sequence.poster}
-                            alt="Architectural drawing and material samples on a studio table"
-                            className="absolute inset-0 h-full w-full bg-[#11110f] object-contain opacity-100 transition-opacity duration-150"
+                            className="absolute inset-0 overflow-hidden bg-[#11110f] opacity-100 transition-opacity duration-150"
+                        >
+                            <img
+                                src={processStory.sequence.poster}
+                                alt=""
+                                aria-hidden="true"
+                                className="absolute inset-0 h-full w-full scale-105 object-cover opacity-70 blur-2xl"
+                            />
+                            <img
+                                src={processStory.sequence.poster}
+                                alt="Architectural drawing and material samples on a studio table"
+                                className="absolute inset-0 h-full w-full object-contain"
+                            />
+                        </div>
+                        <canvas
+                            ref={backdropCanvasRef}
+                            aria-hidden="true"
+                            className="pointer-events-none absolute inset-0 h-full w-full scale-110 opacity-90 blur-2xl"
                         />
                         <canvas ref={canvasRef} aria-hidden="true" className="absolute inset-0 h-full w-full"/>
                         <div

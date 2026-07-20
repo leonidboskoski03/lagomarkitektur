@@ -44,6 +44,7 @@ This document records material decisions and owns cross-phase approval. Sequence
 | D058 | Complete S02 v001 camera test | Candidate under review | camera move is coherent, but delivered boundaries are resampled and the endpoint remains oblique rather than exact K02 bird's-eye; no automatic retry |
 | D059 | Test exact-tail S02B continuation | Rejected as seamless assembly candidate | split concept is valid, but Kling re-renders the exact bridge at a closer crop and still misses exact K02; preserve all assets and do not auto-resubmit |
 | D060 | Approve user-supplied five-second S02B and close S02 | Approved | v002 opening/end registration and slow camera continuation pass review; clean ten-second split master becomes authoritative; activate S03 |
+| D079 | Generate and integrate an 18 fps web-playback prototype | Prototype approved for local review | Reversible extraction from the current merged preview; final master and Gate 7 remain open |
 
 ## Open questions
 
@@ -787,6 +788,20 @@ This document records material decisions and owns cross-phase approval. Sequence
 - Initial QA: architecture and object placement remain stable; the camera change is restrained; finish, glazing and daylight resolve without a visible cut or dramatic exposure event.
 - Decision: preserve as an immutable review candidate; do not approve or retry automatically.
 - Follow-up: user reviews normal and forward/reverse playback.
+
+### D079 — Generate and integrate an 18 fps web-playback prototype
+
+- Date: 2026-07-19.
+- Status: local web prototype complete; final composite and Gate 7 remain open.
+- Authorization: the user explicitly requested proceeding with a smoother, sharper sequence derived from the current merged video.
+- Source: `production/approved-videos-numbered/approved-sequences-merged.mp4`; H.264, 1920 × 1080, 24 fps, 54.375 seconds, 1,305 frames; SHA-256 `92540017195F9187BFA67D8C2FCBBCC873FE45B364FD4B7CC9C2726992F51DE9`.
+- Extraction: uniform FFmpeg `fps=18` sampling with Lanczos scaling and no generated/interpolated frames. Desktop uses 1920 × 1080 WebP at quality 90; mobile uses 1280 × 720 WebP at quality 88.
+- Outputs: `public/process-story-v2/desktop/` and `public/process-story-v2/mobile/`, each containing 979 numbered frames. Desktop totals 110.84 MiB (115.9 KiB average); mobile totals 58.21 MiB (60.9 KiB average). The prior `public/process-story/` assets remain unchanged.
+- Quality evidence: representative desktop frame 656 versus the corresponding 18 fps source sample measured SSIM `0.996352` and average PSNR `50.255423` dB. First/last filenames and 1920 × 1080 / 1280 × 720 dimensions were validated.
+- Runtime decision: use exact decoded frames with a direction-aware moving cache; keep the foreground frame contained to avoid architectural clipping and render the same frame as a soft full-bleed backdrop to remove black side bars.
+- Interaction evidence: at 1440 × 900, one 100 px forward gesture moved the drawn frame from 390 to 411 and reverse returned to 390 through intermediate frames. At 390 × 844, one 100 px gesture moved the drawn frame from 734 to 757 while staying within one frame of the target.
+- Boundary: this prototype does not approve S10, authorize the final composite/master, or mark the adaptive WebP, load-budget, device-memory, or reduced-motion Gate 7 checks complete.
+- Follow-up: user reviews the local scroll feel and visual quality; if accepted after the final master exists, repeat extraction from that approved master and complete the full Gate 7 device/network matrix.
 
 ## Gate 2 — Geometry and camera
 
