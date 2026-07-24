@@ -6,6 +6,10 @@ import {Link} from "react-router-dom";
 import {processStory} from "../../data/processStory";
 import {usePrefersReducedMotion} from "../../hooks/usePrefersReducedMotion";
 import {motionEases} from "../../lib/motion";
+import {
+    PROCESS_GRID_LINE_COLOR,
+    ProcessCanvasEntranceShader,
+} from "./ProcessCanvasEntranceShader";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -344,6 +348,9 @@ export function ArchitecturalProcessStory() {
     const progressNumberRef = useRef<HTMLSpanElement | null>(null);
     const rendererRef = useRef<FrameSequenceRenderer | null>(null);
     const desiredFrameRef = useRef(0);
+    const transitionProgressRef = useRef(0);
+    const gridRevealRef = useRef(0);
+    const promptRevealRef = useRef(0);
     const prefersReducedMotion = usePrefersReducedMotion();
     const [isNearSequence, setIsNearSequence] = useState(false);
     const [tier, setTier] = useState<SequenceTier>(() => (
@@ -416,14 +423,30 @@ export function ArchitecturalProcessStory() {
         const headingParts = gsap.utils.toArray<HTMLElement>("[data-process-heading-part]", prelude ?? undefined);
         const introCopy = prelude?.querySelector<HTMLElement>("[data-process-intro-copy]");
         const aperture = prelude?.querySelector<HTMLElement>("[data-process-aperture]");
+        const ledger = prelude?.querySelector<HTMLElement>("[data-process-ledger]");
         const ledgerItems = gsap.utils.toArray<HTMLElement>("[data-process-ledger-item]", prelude ?? undefined);
-        const railTrack = prelude?.querySelector<HTMLElement>("[data-process-rail-track]");
+        const ledgerContents = gsap.utils.toArray<HTMLElement>("[data-process-ledger-content]", prelude ?? undefined);
+        const ledgerTopBorders = gsap.utils.toArray<HTMLElement>("[data-process-border='top']", prelude ?? undefined);
+        const ledgerRightBorders = gsap.utils.toArray<HTMLElement>("[data-process-border='right']", prelude ?? undefined);
+        const ledgerBottomBorders = gsap.utils.toArray<HTMLElement>("[data-process-border='bottom']", prelude ?? undefined);
+        const ledgerLeftBorders = gsap.utils.toArray<HTMLElement>("[data-process-border='left']", prelude ?? undefined);
+        const ledgerBorders = [
+            ...ledgerTopBorders,
+            ...ledgerRightBorders,
+            ...ledgerBottomBorders,
+            ...ledgerLeftBorders,
+        ];
         const sequenceSection = root.querySelector<HTMLElement>("[data-process-sequence]");
         const stage = sequenceSection?.querySelector<HTMLElement>("[data-process-stage]");
         const captions = gsap.utils.toArray<HTMLElement>("[data-process-caption]", stage ?? undefined);
+        const captionRules = gsap.utils.toArray<HTMLElement>("[data-process-caption-rule]", stage ?? undefined);
+        const captionDisciplines = gsap.utils.toArray<HTMLElement>("[data-process-caption-discipline]", stage ?? undefined);
+        const captionTitles = gsap.utils.toArray<HTMLElement>("[data-process-caption-title]", stage ?? undefined);
+        const captionDescriptions = gsap.utils.toArray<HTMLElement>("[data-process-caption-description]", stage ?? undefined);
         const progressBar = stage?.querySelector<HTMLElement>("[data-process-progress-bar]");
         const mediaWash = stage?.querySelector<HTMLElement>("[data-process-media-wash]");
-        const introTargets = [...headingParts, introCopy, aperture, ...ledgerItems]
+        const transitionGuard = stage?.querySelector<HTMLElement>("[data-process-transition-guard]");
+        const introTargets = [...headingParts, introCopy, aperture, ...ledgerItems, ...ledgerContents, ...ledgerBorders]
             .filter((target): target is HTMLElement => Boolean(target));
         const matchMedia = gsap.matchMedia();
 
@@ -440,23 +463,28 @@ export function ArchitecturalProcessStory() {
                 };
 
                 if (reduceMotion) {
+                    transitionProgressRef.current = 1;
+                    gridRevealRef.current = 1;
+                    promptRevealRef.current = 1;
                     gsap.set(introTargets, {
                         clearProps: "all",
                         autoAlpha: 1,
                     });
+                    if (transitionGuard) {
+                        gsap.set(transitionGuard, {autoAlpha: 0});
+                    }
                     return;
                 }
 
                 if (prelude && introCopy && aperture) {
                     gsap.set(headingParts, {
-                        yPercent: 118,
+                        y: desktop ? 150 : 76,
                         rotation: 1.2,
                         transformOrigin: "left bottom",
                         willChange: "transform",
                     });
                     gsap.set(introCopy, {y: 24, autoAlpha: 0});
                     gsap.set(aperture, {scale: 0.78, rotation: -2, transformOrigin: "center"});
-                    gsap.set(ledgerItems, {y: 22, autoAlpha: 0});
 
                     gsap.timeline({
                         defaults: {ease: motionEases.enter},
@@ -468,7 +496,7 @@ export function ArchitecturalProcessStory() {
                         },
                     })
                         .to(headingParts, {
-                            yPercent: 0,
+                            y: 0,
                             rotation: 0,
                             duration: 1.22,
                             stagger: 0.11,
@@ -483,42 +511,131 @@ export function ArchitecturalProcessStory() {
                             y: 0,
                             autoAlpha: 1,
                             duration: 0.92,
-                        }, 0.44)
-                        .to(ledgerItems, {
-                            y: 0,
-                            autoAlpha: 1,
-                            duration: 0.82,
-                            stagger: 0.07,
-                        }, 0.58);
+                        }, 0.44);
 
-                    if (railTrack) {
-                        const railTween = gsap.to(railTrack, {
-                            xPercent: -50,
-                            duration: 34,
-                            repeat: -1,
-                            ease: "none",
-                            paused: true,
+                    if (ledger && ledgerBorders.length > 0) {
+                        gsap.set(ledgerContents, {
+                            y: desktop ? 16 : 10,
+                            autoAlpha: 0,
+                            willChange: "transform, opacity",
+                        });
+                        gsap.set([...ledgerTopBorders, ...ledgerBottomBorders], {
+                            scaleX: 0,
+                            transformOrigin: "left center",
+                            willChange: "transform",
+                        });
+                        gsap.set([...ledgerLeftBorders, ...ledgerRightBorders], {
+                            scaleY: 0,
+                            transformOrigin: "center top",
+                            willChange: "transform",
                         });
 
-                        ScrollTrigger.create({
-                            trigger: prelude,
-                            start: "top bottom",
-                            end: "bottom top",
-                            onEnter: () => railTween.play(),
-                            onEnterBack: () => railTween.play(),
-                            onLeave: () => railTween.pause(),
-                            onLeaveBack: () => railTween.pause(),
+                        const ledgerTimeline = gsap.timeline({
+                            defaults: {
+                                duration: 0.78,
+                                ease: motionEases.reveal,
+                            },
+                            scrollTrigger: {
+                                trigger: ledger,
+                                start: "top 82%",
+                                once: true,
+                            },
+                            onComplete: () => {
+                                gsap.set(ledgerBorders, {
+                                    clearProps: "transform,transform-origin,will-change",
+                                });
+                            },
                         });
+
+                        ledgerTimeline
+                            .addLabel("origin", 0)
+                            .to(ledgerTopBorders, {scaleX: 1}, "origin")
+                            .to(ledgerLeftBorders, {scaleY: 1}, "origin")
+                            .addLabel("completion", ">")
+                            .to(ledgerRightBorders, {scaleY: 1}, "completion")
+                            .to(ledgerBottomBorders, {scaleX: 1}, "completion")
+                            .to(ledgerContents, {
+                                y: 0,
+                                autoAlpha: 1,
+                                duration: 0.82,
+                                ease: motionEases.enter,
+                                clearProps: "transform,opacity,visibility,will-change",
+                            }, "completion-=0.12");
                     }
+
+                }
+
+                if (sequenceSection) {
+                    gridRevealRef.current = 0;
+                    promptRevealRef.current = 0;
+
+                    gsap.to(gridRevealRef, {
+                        current: 1,
+                        duration: 1.35,
+                        ease: motionEases.reveal,
+                        scrollTrigger: {
+                            trigger: sequenceSection,
+                            start: "top 70%",
+                            toggleActions: "play none none reverse",
+                        },
+                    });
+
+                    gsap.to(promptRevealRef, {
+                        current: 1,
+                        duration: 1.9,
+                        ease: motionEases.cinematic,
+                        scrollTrigger: {
+                            trigger: sequenceSection,
+                            start: "top 35%",
+                            toggleActions: "play none none reverse",
+                        },
+                    });
                 }
 
                 if (!sequenceSection || !stage || !progressBar || !mediaWash || captions.length === 0) return;
 
                 const playhead = {frame: 0};
                 const lastFrame = processStory.sequence.frameCount - 1;
+                const entranceRange = desktop ? 0.14 : 0.17;
+                const storyRange = 1 - entranceRange;
+                const syncEntranceProgress = (trigger: ScrollTrigger) => {
+                    transitionProgressRef.current = gsap.utils.clamp(
+                        0,
+                        1,
+                        trigger.progress / entranceRange,
+                    );
+                };
+                transitionProgressRef.current = 0;
                 gsap.set(captions, {y: 34, autoAlpha: 0});
                 gsap.set(captions[0], {y: 0, autoAlpha: 1});
+                gsap.set(captionRules[0], {
+                    scaleX: 0,
+                    transformOrigin: "left center",
+                    willChange: "transform",
+                });
+                gsap.set(captionDisciplines[0], {
+                    x: desktop ? -14 : -8,
+                    autoAlpha: 0,
+                    filter: desktop ? "blur(3px)" : "blur(1.5px)",
+                    willChange: "transform, opacity, filter",
+                });
+                gsap.set(captionTitles[0], {
+                    y: desktop ? 28 : 18,
+                    autoAlpha: 0,
+                    clipPath: "inset(100% 0% 0% 0%)",
+                    filter: desktop ? "blur(5px)" : "blur(2px)",
+                    willChange: "transform, opacity, clip-path, filter",
+                });
+                gsap.set(captionDescriptions[0], {
+                    y: desktop ? 16 : 10,
+                    autoAlpha: 0,
+                    filter: desktop ? "blur(3px)" : "blur(1.5px)",
+                    willChange: "transform, opacity, filter",
+                });
                 gsap.set(progressBar, {scaleY: 0, transformOrigin: "top center"});
+                if (transitionGuard) {
+                    gsap.set(transitionGuard, {autoAlpha: 1});
+                }
 
                 const storyTimeline = gsap.timeline({
                     defaults: {ease: motionEases.enter},
@@ -530,12 +647,51 @@ export function ArchitecturalProcessStory() {
                         scrub: true,
                         anticipatePin: 1,
                         invalidateOnRefresh: true,
+                        onUpdate: syncEntranceProgress,
+                        onRefresh: syncEntranceProgress,
                     },
                 });
 
+                if (transitionGuard) {
+                    storyTimeline.to(transitionGuard, {
+                        autoAlpha: 0,
+                        duration: 0.035,
+                        ease: "none",
+                    }, 0.018);
+                }
+
+                storyTimeline
+                    .to(captionRules[0], {
+                        scaleX: 1,
+                        duration: entranceRange * 0.24,
+                        ease: motionEases.reveal,
+                    }, entranceRange * 0.28)
+                    .to(captionDisciplines[0], {
+                        x: 0,
+                        autoAlpha: 1,
+                        filter: "blur(0px)",
+                        duration: entranceRange * 0.26,
+                        ease: motionEases.enter,
+                    }, entranceRange * 0.3)
+                    .to(captionTitles[0], {
+                        y: 0,
+                        autoAlpha: 1,
+                        clipPath: "inset(0% 0% 0% 0%)",
+                        filter: "blur(0px)",
+                        duration: entranceRange * 0.43,
+                        ease: motionEases.reveal,
+                    }, entranceRange * 0.37)
+                    .to(captionDescriptions[0], {
+                        y: 0,
+                        autoAlpha: 1,
+                        filter: "blur(0px)",
+                        duration: entranceRange * 0.32,
+                        ease: motionEases.enter,
+                    }, entranceRange * 0.64);
+
                 storyTimeline.to(playhead, {
                     frame: lastFrame,
-                    duration: 1,
+                    duration: storyRange,
                     ease: "none",
                     onUpdate: () => {
                         const nextFrame = clampFrameIndex(playhead.frame, processStory.sequence.frameCount);
@@ -546,19 +702,28 @@ export function ArchitecturalProcessStory() {
                             progressNumberRef.current.dataset.processTargetFrame = String(nextFrame + 1);
                         }
                     },
-                }, 0);
-                storyTimeline.to(progressBar, {scaleY: 1, duration: 1, ease: "none"}, 0);
+                }, entranceRange);
+                storyTimeline.to(progressBar, {
+                    scaleY: 1,
+                    duration: storyRange,
+                    ease: "none",
+                }, entranceRange);
                 storyTimeline.to(mediaWash, {
                     opacity: desktop ? 0.42 : 0.7,
                     duration: 0.16,
                     ease: motionEases.settle,
-                }, 0.68);
+                }, entranceRange + 0.68 * storyRange);
 
                 processStory.chapters.forEach((chapter, index) => {
                     const caption = captions[index];
                     if (!caption) return;
-                    const revealDuration = Math.min(0.055, Math.max(0.032, (chapter.end - chapter.start) * 0.24));
+                    const revealDuration = Math.min(
+                        0.055,
+                        Math.max(0.032, (chapter.end - chapter.start) * 0.24),
+                    ) * storyRange;
                     const exitDuration = index === captions.length - 1 ? 0 : Math.min(0.045, revealDuration);
+                    const chapterStart = entranceRange + chapter.start * storyRange;
+                    const chapterEnd = entranceRange + chapter.end * storyRange;
 
                     if (index > 0) {
                         storyTimeline.to(caption, {
@@ -566,7 +731,7 @@ export function ArchitecturalProcessStory() {
                             autoAlpha: 1,
                             duration: revealDuration,
                             ease: motionEases.enter,
-                        }, chapter.start + 0.01);
+                        }, chapterStart + 0.01);
                     }
 
                     if (index < captions.length - 1) {
@@ -575,7 +740,7 @@ export function ArchitecturalProcessStory() {
                             autoAlpha: 0,
                             duration: exitDuration,
                             ease: motionEases.depart,
-                        }, chapter.end - exitDuration - 0.008);
+                        }, chapterEnd - exitDuration - 0.008);
                     }
                 });
             },
@@ -588,9 +753,9 @@ export function ArchitecturalProcessStory() {
         <section ref={rootRef} className="relative z-[2] overflow-x-clip bg-white text-[#171717]">
             <div
                 data-process-prelude
-                className="relative isolate flex min-h-[145svh] flex-col justify-between overflow-hidden px-5 py-28 md:min-h-[160svh] md:px-10 md:py-40 lg:px-16"
+                className="relative isolate flex min-h-svh flex-col justify-start overflow-hidden py-14 md:py-16"
             >
-                <div className="relative z-[1] mx-auto flex w-full max-w-[120rem] flex-1 flex-col justify-center">
+                <div className="viewport-container relative z-[1] flex flex-none flex-col justify-start">
                     <p className="mb-8 text-[11px] font-medium uppercase tracking-[0.18em] text-black/48 md:mb-12 md:text-xs">
                         {processStory.intro.eyebrow}
                     </p>
@@ -630,37 +795,29 @@ export function ArchitecturalProcessStory() {
                     </div>
                 </div>
 
-                <div className="relative z-[1] mx-auto mt-24 w-full max-w-[120rem] md:mt-36">
-                    <div className="grid grid-flow-dense grid-cols-2 border-l border-t border-black/20 md:grid-cols-4">
+                <div className="viewport-container relative z-[1] mt-16 pb-10 md:mt-24 md:pb-14">
+                    <div data-process-ledger className="grid grid-flow-dense grid-cols-2 md:grid-cols-4">
                         {processStory.ledger.map((item) => (
                             <article
                                 key={item.title}
                                 data-process-ledger-item
-                                className="min-h-44 border-b border-r border-black/20 p-5 md:min-h-48 md:p-7"
+                                className="relative min-h-44 p-5 md:min-h-48 md:p-7"
                             >
-                                <h3 className="text-base tracking-[-0.025em] md:text-lg">{item.title}</h3>
-                                <p className="mt-12 max-w-[17rem] text-sm leading-[1.35] text-black/50 md:mt-14 md:text-[15px]">
-                                    {item.description}
-                                </p>
+                                <span data-process-border="top" aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-px" style={{backgroundColor: PROCESS_GRID_LINE_COLOR}}/>
+                                <span data-process-border="right" aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-px" style={{backgroundColor: PROCESS_GRID_LINE_COLOR}}/>
+                                <span data-process-border="bottom" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-px" style={{backgroundColor: PROCESS_GRID_LINE_COLOR}}/>
+                                <span data-process-border="left" aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-0 w-px" style={{backgroundColor: PROCESS_GRID_LINE_COLOR}}/>
+                                <div data-process-ledger-content>
+                                    <h3 className="text-base tracking-[-0.025em] md:text-lg">{item.title}</h3>
+                                    <p className="mt-12 max-w-[17rem] text-sm leading-[1.35] text-black/50 md:mt-14 md:text-[15px]">
+                                        {item.description}
+                                    </p>
+                                </div>
                             </article>
                         ))}
                     </div>
                 </div>
 
-                <div className="absolute inset-x-0 bottom-8 z-[1] overflow-hidden border-y border-black/14 py-3 md:bottom-10">
-                    <div data-process-rail-track className="flex w-max will-change-transform">
-                        {[0, 1].map((setIndex) => (
-                            <div key={setIndex} className="flex shrink-0 items-center" aria-hidden={setIndex === 1}>
-                                {processStory.rail.map((word) => (
-                                    <span key={`${setIndex}-${word}`} className="flex items-center text-[11px] uppercase tracking-[0.2em] text-black/46">
-                                        <span className="px-6 md:px-10">{word}</span>
-                                        <span className="h-1 w-1 rounded-full bg-black/30"/>
-                                    </span>
-                                ))}
-                            </div>
-                        ))}
-                    </div>
-                </div>
             </div>
 
             {prefersReducedMotion ? (
@@ -695,8 +852,24 @@ export function ArchitecturalProcessStory() {
                             className="pointer-events-none absolute inset-0 z-[1] opacity-[0.7] [background:linear-gradient(90deg,rgba(12,12,10,0.66)_0%,rgba(12,12,10,0.19)_40%,rgba(12,12,10,0.01)_68%),linear-gradient(0deg,rgba(12,12,10,0.5)_0%,transparent_48%)] md:opacity-[0.44]"
                         />
                         <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10"/>
+                        <div
+                            data-process-transition-guard
+                            aria-hidden="true"
+                            className="pointer-events-none absolute inset-0 z-[8] bg-white"
+                        />
+                        <ProcessCanvasEntranceShader
+                            progressRef={transitionProgressRef}
+                            gridRevealRef={gridRevealRef}
+                            promptRevealRef={promptRevealRef}
+                            prompt={processStory.gridPrompt}
+                            className="pointer-events-none absolute inset-0 z-[9] h-full w-full"
+                        />
+                        <p className="sr-only">
+                            {processStory.gridPrompt.titleLines.join(" ")}{" "}
+                            {processStory.gridPrompt.cue}
+                        </p>
 
-                        <header className="absolute inset-x-0 top-0 z-[2] flex items-center border-b border-white/18 px-5 py-5 md:px-8 md:py-6">
+                        <header className="absolute inset-x-0 top-0 z-[2] flex items-center border-b border-white/18 px-[var(--spacing-viewport-gutter)] py-5 md:py-6">
                             <p className="text-[11px] uppercase tracking-[0.18em] text-white/72 md:text-xs">
                                 {processStory.sequence.title}
                             </p>
@@ -705,24 +878,42 @@ export function ArchitecturalProcessStory() {
                             </span>
                         </header>
 
-                        <div className="absolute bottom-8 left-5 top-24 z-[2] hidden w-px bg-white/18 mix-blend-difference md:left-auto md:right-8 md:block">
+                        <div className="absolute bottom-8 top-24 z-[2] hidden w-px bg-white/18 mix-blend-difference md:right-[var(--spacing-viewport-gutter)] md:block">
                             <span data-process-progress-bar className="block h-full w-px bg-[#f7f4ed] will-change-transform"/>
                         </div>
 
-                        <div className="absolute inset-x-5 bottom-10 z-[2] h-[19rem] md:inset-x-auto md:bottom-16 md:left-8 md:h-[22rem] md:w-[min(48rem,56vw)] lg:left-16">
+                        <div className="absolute inset-x-[var(--spacing-viewport-gutter)] bottom-10 z-[2] h-[19rem] md:right-auto md:bottom-16 md:h-[22rem] md:w-[min(48rem,56vw)]">
                             {processStory.chapters.map((chapter) => (
                                 <article
                                     key={chapter.id}
                                     data-process-caption
                                     className="absolute inset-x-0 bottom-0 will-change-[transform,opacity]"
                                 >
-                                    <p className="mb-5 text-[11px] font-medium uppercase tracking-[0.18em] text-white/58 md:text-xs">
-                                        {chapter.discipline}
-                                    </p>
-                                    <h3 className="max-w-[48rem] text-[clamp(2.55rem,5.4vw,6rem)] font-normal leading-[0.9] tracking-[-0.058em]">
-                                        {chapter.title}
-                                    </h3>
-                                    <p className="mt-6 max-w-[35rem] text-[15px] leading-[1.4] text-white/66 md:mt-8 md:text-lg">
+                                    <div className="mb-5 flex items-center gap-3 md:gap-4">
+                                        <span
+                                            data-process-caption-rule
+                                            aria-hidden="true"
+                                            className="block h-px w-8 shrink-0 bg-white/44 md:w-11"
+                                        />
+                                        <p
+                                            data-process-caption-discipline
+                                            className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/58 md:text-xs"
+                                        >
+                                            {chapter.discipline}
+                                        </p>
+                                    </div>
+                                    <div className="overflow-hidden pb-[0.08em]">
+                                        <h3
+                                            data-process-caption-title
+                                            className="max-w-[48rem] text-[clamp(2.55rem,5.4vw,6rem)] font-normal leading-[0.9] tracking-[-0.058em]"
+                                        >
+                                            {chapter.title}
+                                        </h3>
+                                    </div>
+                                    <p
+                                        data-process-caption-description
+                                        className="mt-6 max-w-[35rem] text-[15px] leading-[1.4] text-white/66 md:mt-8 md:text-lg"
+                                    >
                                         {chapter.description}
                                     </p>
                                 </article>
@@ -731,7 +922,7 @@ export function ArchitecturalProcessStory() {
 
                         <div
                             ref={loaderRef}
-                            className="absolute bottom-5 right-5 z-[3] flex items-center gap-3 text-[10px] uppercase tracking-[0.16em] text-white/46 transition-opacity duration-150 md:bottom-7 md:right-14"
+                            className="absolute bottom-5 right-[var(--spacing-viewport-gutter)] z-[3] flex items-center gap-3 text-[10px] uppercase tracking-[0.16em] text-white/46 transition-opacity duration-150 md:bottom-7"
                         >
                             <span className="h-px w-8 bg-white/40"/>
                             Preparing sequence
@@ -740,8 +931,8 @@ export function ArchitecturalProcessStory() {
                 </section>
             )}
 
-            <section className="flex min-h-[88svh] items-center bg-[#11110f] px-5 py-28 text-[#f7f4ed] md:px-10 md:py-40 lg:px-16">
-                <div className="mx-auto grid w-full max-w-[120rem] gap-16 border-t border-white/20 pt-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:pt-12">
+            <section className="flex min-h-[88svh] items-center bg-[#11110f] py-28 text-[#f7f4ed] md:py-40">
+                <div className="viewport-container grid gap-16 border-t border-white/20 pt-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:pt-12">
                     <div>
                         <p className="mb-8 text-[11px] uppercase tracking-[0.18em] text-white/46 md:text-xs">
                             {processStory.outro.eyebrow}
@@ -771,8 +962,8 @@ function ReducedMotionProcessStory() {
     const basePath = processStory.sequence.mobileBasePath;
 
     return (
-        <section className="bg-[#11110f] px-5 py-28 text-[#f7f4ed] md:px-10 md:py-40 lg:px-16">
-            <div className="mx-auto w-full max-w-[120rem]">
+        <section className="bg-[#11110f] py-28 text-[#f7f4ed] md:py-40">
+            <div className="viewport-container">
                 <header className="mb-20 flex items-center justify-between border-b border-white/18 pb-5">
                     <h2 className="text-sm uppercase tracking-[0.16em] text-white/76">{processStory.sequence.title}</h2>
                     <span className="text-xs text-white/42">A still-frame journey</span>

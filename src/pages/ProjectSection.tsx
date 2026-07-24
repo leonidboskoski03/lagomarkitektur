@@ -144,7 +144,10 @@ export const ProjectSection = () => {
                     gsap.set(metaItems, {autoAlpha: 1, clearProps: "transform"});
                     gsap.set([centerGroup, indexWrap, titleWrap, line], {autoAlpha: 1, clearProps: "transform"});
                     gsap.set(line, {scaleX: 1});
-                    gsap.set(backgroundFrame, {padding: 0});
+                    gsap.set(backgroundFrame, {
+                        clipPath: "inset(0px)",
+                        clearProps: "transform,willChange",
+                    });
                     return;
                 }
 
@@ -209,7 +212,11 @@ export const ProjectSection = () => {
                 gsap.set(indexWrap, {x: desktop ? window.innerWidth * 0.18 : window.innerWidth * 0.12, willChange: "transform"});
                 gsap.set(titleWrap, {x: desktop ? -window.innerWidth * 0.18 : -window.innerWidth * 0.12, willChange: "transform, width"});
                 gsap.set(rail, {transformPerspective: 1200});
-                gsap.set(backgroundFrame, {padding: desktop ? 128 : 64});
+                gsap.set(backgroundFrame, {
+                    clipPath: `inset(${desktop ? 128 : 64}px)`,
+                    force3D: true,
+                    willChange: "clip-path",
+                });
 
                 gsap.timeline({
                     defaults: {ease: "none"},
@@ -240,12 +247,12 @@ export const ProjectSection = () => {
                     }, 0.08);
 
                 gsap.to(backgroundFrame, {
-                    padding: 0,
+                    clipPath: "inset(0px)",
                     ease: "none",
                     scrollTrigger: {
                         trigger: section,
                         start: "top 90%",
-                        end: "top -5%",
+                        end: "top top",
                         scrub: true,
                         invalidateOnRefresh: true,
                     },
@@ -433,10 +440,8 @@ export const ProjectSection = () => {
                     scrollTrigger: {
                         trigger: section,
                         start: "top top",
-                        end: () => desktop ? "+=560%" : "+=470%",
+                        end: "bottom bottom",
                         scrub: 0.8,
-                        pin: stage,
-                        anticipatePin: 1,
                         invalidateOnRefresh: true,
                     },
                 });
@@ -547,8 +552,12 @@ export const ProjectSection = () => {
     }, {scope: sectionRef});
 
     return (
-        <section ref={sectionRef} data-project-section className="relative z-[3] min-h-screen  text-white -mt-[100vh]">
-            <div ref={stageRef} className="relative h-screen w-full overflow-hidden bg-transparent">
+        <section
+            ref={sectionRef}
+            data-project-section
+            className="relative z-[3] -mt-[100vh] h-[570vh] text-white md:h-[660vh]"
+        >
+            <div ref={stageRef} className="sticky top-0 h-screen w-full overflow-hidden bg-transparent">
                 <div data-project-bg-frame className="absolute inset-0 overflow-hidden ">
                     <div className="relative h-full w-full overflow-hidden">
                         <div data-project-intro-bg className="absolute inset-0" aria-hidden="true">

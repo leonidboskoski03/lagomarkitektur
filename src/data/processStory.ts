@@ -22,7 +22,6 @@ export const processStory = {
         description: "Move through one continuous architectural process—from the first quiet brief to a home resolved in structure, material, and light.",
         scrollPrompt: "Scroll to enter the process",
     },
-    rail: ["Listen", "Draw", "Test", "Refine", "Resolve"],
     ledger: [
         {
             title: "Consultation",
@@ -41,6 +40,10 @@ export const processStory = {
             description: "Atmosphere is tested before anything is built.",
         },
     ] satisfies ProcessStoryLedgerItem[],
+    gridPrompt: {
+        titleLines: ["Something is", "taking shape."],
+        cue: "Continue to reveal the process",
+    },
     sequence: {
         title: "The making of L-28",
         poster: "/process-story/poster.webp",
