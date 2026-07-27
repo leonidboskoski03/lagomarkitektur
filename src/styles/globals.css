@@ -23,6 +23,8 @@
   --color-border: #d9d9d9;
   --color-accent-dark: #000000;
   --color-accent-warm: #a3a3a3;
+  --color-brand-paper: #eceae6;
+  --color-brand-ink: #0b1c26;
 
   --font-sans: "Clash Grotesk", "Satoshi", "Geist", "Helvetica Neue", Arial, sans-serif;
   --font-display: "Clash Grotesk", "Satoshi", "Geist", "Helvetica Neue", Arial, sans-serif;
@@ -81,6 +83,10 @@ body::-webkit-scrollbar {
   .has-custom-cursor textarea,
   .has-custom-cursor select {
     cursor: none !important;
+  }
+
+  html[data-project-transition] [data-custom-cursor] {
+    opacity: 0 !important;
   }
 }
 

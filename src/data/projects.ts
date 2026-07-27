@@ -1,4 +1,8 @@
-import type { Project } from "../types/project";
+import type {
+  Project,
+  ProjectGalleryMedia,
+  ProjectStoryPlacement,
+} from "../types/project";
 
 const projectAssets = import.meta.glob<string>(
   "../assets/LAGOM Arkitektur/**/*.{jpg,jpeg,png,webp}",
@@ -79,7 +83,7 @@ export const projects: Project[] = [
       "Visualizations/1.png",
       "Visualizations/2.png",
     ]),
-    credits: "Site size: 54 sqm",
+    credits: "54 m²",
     isFeatured: true,
   },
   {
@@ -103,7 +107,7 @@ export const projects: Project[] = [
       "Visualizations/night version/1.png",
       "Visualizations/night version/2.png",
     ]),
-    credits: "Site size: 75 sqm",
+    credits: "75 m²",
     isFeatured: true,
   },
   {
@@ -127,7 +131,7 @@ export const projects: Project[] = [
       "Visualizations/5.png",
       "Visualizations/6.png",
     ]),
-    credits: "Site size: 64 sqm",
+    credits: "64 m²",
     isFeatured: true,
   },
   {
@@ -149,7 +153,7 @@ export const projects: Project[] = [
       "Visualizations/3.png",
       "Visualizations/4.png",
     ]),
-    credits: "Site size: 186 sqm",
+    credits: "186 m²",
     isFeatured: true,
   },
   {
@@ -173,7 +177,7 @@ export const projects: Project[] = [
       "Visualizations/5.png",
       "Visualizations/6.png",
     ]),
-    credits: "Site size: 140 sqm",
+    credits: "140 m²",
     isFeatured: true,
   },
   {
@@ -197,7 +201,7 @@ export const projects: Project[] = [
       "Visualizations/5.png",
       "Visualizations/6.png",
     ]),
-    credits: "Site size: 12 sqm",
+    credits: "12 m²",
     isFeatured: false,
   },
   {
@@ -220,7 +224,7 @@ export const projects: Project[] = [
       "Visualizations/4.png",
       "Visualizations/5.png",
     ]),
-    credits: "Site size: 25 sqm",
+    credits: "25 m²",
     isFeatured: false,
   },
   {
@@ -243,7 +247,7 @@ export const projects: Project[] = [
       "Visualizations/4.png",
       "Visualizations/5.png",
     ]),
-    credits: "Site size: 45 sqm",
+    credits: "45 m²",
     isFeatured: false,
   },
   {
@@ -268,7 +272,7 @@ export const projects: Project[] = [
       "Visualizations/5.png",
       "Visualizations/6.png",
     ]),
-    credits: "Site size: 60 sqm",
+    credits: "60 m²",
     isFeatured: true,
   },
   {
@@ -291,7 +295,7 @@ export const projects: Project[] = [
       "Visualizations/4.png",
       "Visualizations/5.png",
     ]),
-    credits: "Site size: 12 sqm",
+    credits: "12 m²",
     isFeatured: false,
   },
   {
@@ -314,7 +318,7 @@ export const projects: Project[] = [
       "Visualizations/4.png",
       "Visualizations/5.png",
     ]),
-    credits: "Site size: 11 sqm",
+    credits: "11 m²",
     isFeatured: false,
   },
 ];
@@ -333,6 +337,48 @@ export const projectShowcaseProjects: ProjectShowcaseItem[] = projects.slice(0, 
 }));
 
 export const projectCategories = Array.from(new Set(projects.map((project) => project.category)));
+
+const galleryDimensions: Record<string, ReadonlyArray<readonly [number, number]>> = {
+  "01": [[4032, 2688], [4032, 2268], [3024, 3780], [3024, 3024], [1920, 1080], [1920, 1080]],
+  "02": [[1536, 1024], [1536, 1024], [1536, 1024], [1536, 1024], [1536, 1024], [1536, 1024]],
+  "03": [[1920, 1080], [1920, 1080], [1816, 1062], [1920, 1080], [1920, 1080], [1811, 1080]],
+  "04": [[1672, 941], [1672, 941], [1672, 941], [1830, 1080]],
+  "05": [[1536, 1024], [1295, 1024], [1536, 1024], [1536, 1024], [1536, 1024], [1920, 1000]],
+  "06": [[1920, 1080], [1536, 1024], [1920, 1080], [1920, 1080], [1920, 1080], [1536, 1024]],
+  "07": [[2100, 1181], [2100, 1181], [2100, 1181], [2100, 1181], [2100, 1181]],
+  "08": [[1536, 1024], [1536, 1024], [1536, 1024], [1536, 1024], [1536, 1024]],
+  "09": [[1920, 1080], [1920, 1080], [1920, 1080], [1920, 1080], [1920, 1080], [1920, 1080]],
+  "10": [[1536, 1024], [1536, 1024], [1536, 1024], [1536, 1024], [1536, 1024]],
+  "11": [[1536, 1024], [1536, 1024], [1536, 1024], [1920, 1200], [1536, 1024]],
+};
+
+const defaultStoryPlacements: readonly ProjectStoryPlacement[] = [
+  "wide",
+  "portrait-left",
+  "portrait-center",
+  "portrait-right",
+  "landscape-left",
+  "landscape-right",
+];
+
+export function getProjectGalleryMedia(project: Project): ProjectGalleryMedia[] {
+  const dimensions = galleryDimensions[project.id] ?? [];
+
+  return project.gallery.map((src, index) => {
+    const [width, height] = dimensions[index] ?? [1600, 1000];
+
+    return {
+      id: `${project.id}-gallery-${index}`,
+      src,
+      previewSrc: `/work-previews/${project.id}/${index}.webp`,
+      alt: `${project.title} — view ${String(index + 1).padStart(2, "0")}`,
+      width,
+      height,
+      aspectRatio: width / height,
+      storyPlacement: defaultStoryPlacements[index % defaultStoryPlacements.length],
+    };
+  });
+}
 
 export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((project) => project.slug === slug);

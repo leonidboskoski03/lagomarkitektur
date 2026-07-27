@@ -14,6 +14,7 @@ import {
     type LoaderRevealEventDetail,
 } from "../lib/revealEvents";
 import { motionEaseCurves, motionEases } from "../lib/motion";
+import { WorkTransitionLink } from "../components/transition/WorkTransitionLink";
 
 const descriptionLines = [
     "Sustainable architecture shaped by",
@@ -204,8 +205,7 @@ export const Hero = () => {
 
                 <div className="viewport-container absolute inset-x-0 bottom-8 z-10 flex items-end justify-between gap-8 md:bottom-10">
                     <div className="overflow-hidden">
-                        <a
-                            href="/works"
+                        <WorkTransitionLink
                             data-cursor=""
                             data-hero-project-item
                             className="flex items-center gap-1.5 text-sm font-semibold uppercase text-white will-change-transform"
@@ -220,7 +220,7 @@ export const Hero = () => {
                         >
                             <NavItemUnderlineAnimation label="View project" />
                             <DotAnimation hovered={hovered} />
-                        </a>
+                        </WorkTransitionLink>
                     </div>
 
                     <h1 className="w-fit max-w-[29rem] text-left text-[clamp(1rem,1.7vw,1.5rem)] font-normal leading-[1.12] tracking-[-0.035em] text-white">

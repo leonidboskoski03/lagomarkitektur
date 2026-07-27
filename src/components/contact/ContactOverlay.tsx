@@ -1,7 +1,7 @@
 import {useEffect, useRef} from "react";
 import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
-import heroImage from "../../assets/images/hero2.avif";
+import contactHousePortrait from "../../assets/images/contact-house-portrait.avif";
 import {motionEases} from "../../lib/motion";
 import {ClipMaskTextAnimation} from "../animation/ClipMaskTextAnimation";
 
@@ -133,7 +133,7 @@ export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProp
                 data-lenis-prevent-touch
                 className="contact-panel absolute inset-y-0 right-0 flex h-dvh w-full touch-pan-y flex-col overflow-y-auto overscroll-contain bg-black text-white will-change-transform md:w-[58vw] lg:w-[54vw]"
             >
-                <div className="grid min-h-full grid-rows-[auto_auto_1fr_auto] gap-8 px-[var(--spacing-viewport-gutter)] py-6 md:gap-10 md:py-8">
+                <div className="grid min-h-full grid-rows-[auto_auto_1fr_auto] gap-8 px-[var(--spacing-viewport-gutter)] pb-10 pt-6 md:gap-10 md:pb-12 md:pt-8">
                     <header className="flex items-start justify-between border-t border-white/70 pt-4">
                         <div className="overflow-hidden">
                             <div className="contact-row will-change-transform">
@@ -161,7 +161,7 @@ export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProp
                         </div>
                         <figure className="hidden md:block">
                             <div className="aspect-[3/4] overflow-hidden bg-white/10">
-                                <img ref={imageRef} src={heroImage} alt="Lagom residential architecture" className="h-full w-full object-cover will-change-transform" />
+                                <img ref={imageRef} src={contactHousePortrait} alt="Lagom residential architecture" className="h-full w-full object-cover will-change-transform" />
                             </div>
                             <figcaption className="mt-2 flex justify-between text-[0.6rem] font-semibold uppercase text-white/55">
                                 <span>Lagom</span><span>01/01</span>
@@ -191,7 +191,7 @@ export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProp
                                             required={field.required}
                                             placeholder={field.placeholder}
                                             data-cursor="default"
-                                            className="h-14 w-full rounded-none border border-transparent bg-[#f4f1ea] px-4 text-sm text-black outline-none transition-colors placeholder:text-black/40 focus:border-white focus:bg-white"
+                                            className="h-14 w-full rounded-none border border-transparent bg-white px-4 text-sm text-black outline-none transition-colors placeholder:text-black/40 focus:border-white"
                                         />
                                     </div>
                                 </div>
@@ -207,7 +207,7 @@ export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProp
                                         rows={4}
                                         placeholder="Location, scope, timeline and anything else we should know"
                                         data-cursor="default"
-                                        className="w-full resize-none rounded-none border border-transparent bg-[#f4f1ea] px-4 py-4 text-sm text-black outline-none transition-colors placeholder:text-black/40 focus:border-white focus:bg-white"
+                                        className="w-full resize-none rounded-none border border-transparent bg-white px-4 py-4 text-sm text-black outline-none transition-colors placeholder:text-black/40 focus:border-white"
                                     />
                                 </div>
                             </div>
@@ -223,7 +223,7 @@ export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProp
                         </div>
                     </form>
 
-                    <footer className="flex justify-between text-[0.62rem] font-semibold uppercase text-white/45">
+                    <footer className="flex shrink-0 justify-between pb-8 text-[0.62rem] font-semibold uppercase text-white/45 md:pb-10">
                         <span>Lagom Arkitektur</span><span>Studio enquiries</span>
                     </footer>
                 </div>

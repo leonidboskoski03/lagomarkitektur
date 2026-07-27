@@ -1,23 +1,34 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState, type MouseEvent} from "react";
 import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
 import {motionEases} from "../../lib/motion";
 import {ClipMaskTextAnimation} from "../animation/ClipMaskTextAnimation";
 
 const menuLinks = [
+    {href: "/", label: "Home"},
     {href: "/work", label: "Work"},
-    {href: "/studio", label: "Studio"},
-    {href: "/process", label: "Process"},
+    {href: "/studio", label: "About"},
     {href: "/contact", label: "Contact"},
 ] as const;
 
 interface MenuOverlayProps {
     isOpen: boolean;
     onClose: () => void;
+    onNavigate: (href: string) => void;
     triggerRef: React.RefObject<HTMLButtonElement | null>;
 }
 
-export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
+function shouldUseNativeNavigation(event: MouseEvent<HTMLAnchorElement>) {
+    return event.button !== 0
+        || event.metaKey
+        || event.ctrlKey
+        || event.shiftKey
+        || event.altKey
+        || event.currentTarget.target === "_blank"
+        || event.currentTarget.hasAttribute("download");
+}
+
+export function MenuOverlay({isOpen, onClose, onNavigate, triggerRef}: MenuOverlayProps) {
     const [clipActiveIndex, setClipActiveIndex] = useState<number | null>(null);
     const overlayRef = useRef<HTMLDivElement | null>(null);
     const closeButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -29,6 +40,7 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
     const hoverTimelineRef = useRef<gsap.core.Timeline | null>(null);
     const hoveredIndexRef = useRef<number | null>(null);
     const metaRef = useRef<HTMLDivElement | null>(null);
+    const pendingNavigationRef = useRef<string | null>(null);
 
     useGSAP(() => {
         const overlay = overlayRef.current;
@@ -39,6 +51,7 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
         const duration = reduceMotion ? 0 : 0.9;
 
         if (isOpen) {
+            pendingNavigationRef.current = null;
             hoveredIndexRef.current = null;
             setClipActiveIndex(null);
             gsap.set(overlay, {visibility: "visible", pointerEvents: "auto"});
@@ -72,7 +85,12 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
 
         gsap.timeline({
             defaults: {overwrite: "auto"},
-            onComplete: () => gsap.set(overlay, {visibility: "hidden", pointerEvents: "none"}),
+            onComplete: () => {
+                gsap.set(overlay, {visibility: "hidden", pointerEvents: "none"});
+                const pendingHref = pendingNavigationRef.current;
+                pendingNavigationRef.current = null;
+                if (pendingHref) onNavigate(pendingHref);
+            },
         })
             .to(closeContentRef.current, {
                 yPercent: -130,
@@ -92,6 +110,18 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
                 ease: motionEases.depart,
             }, reduceMotion ? 0 : 0.12);
     }, {scope: overlayRef, dependencies: [isOpen]});
+
+    const handleInternalNavigation = (
+        event: MouseEvent<HTMLAnchorElement>,
+        href: string,
+    ) => {
+        if (shouldUseNativeNavigation(event)) return;
+
+        event.preventDefault();
+        hoverTimelineRef.current?.kill();
+        pendingNavigationRef.current = href;
+        onClose();
+    };
 
     const handleRouteEnter = (activeIndex: number) => {
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -204,7 +234,13 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
         >
             <div className="viewport-container grid h-full grid-rows-[auto_1fr_auto] py-5 md:py-8">
                 <div className="flex items-start justify-between">
-                    <a href="/" data-cursor="" aria-label="Lagom Arkitektur home" className="py-2">
+                    <a
+                        href="/"
+                        data-cursor=""
+                        aria-label="Lagom Arkitektur home"
+                        className="py-2"
+                        onClick={(event) => handleInternalNavigation(event, "/")}
+                    >
                         <MenuUtilityText text="Lagom Arkitektur" className="text-sm font-bold tracking-[-0.035em]" />
                     </a>
                     <button
@@ -244,7 +280,7 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
                                         ref={(element) => { routeRefs.current[index] = element; }}
                                         href={link.href}
                                         data-cursor=""
-                                        onClick={onClose}
+                                        onClick={(event) => handleInternalNavigation(event, link.href)}
                                         onMouseEnter={() => handleRouteEnter(index)}
                                         onMouseLeave={() => handleRouteLeave(index)}
                                         onFocus={() => handleRouteEnter(index)}
@@ -287,7 +323,7 @@ export function MenuOverlay({isOpen, onClose, triggerRef}: MenuOverlayProps) {
                 <div ref={metaRef} className="grid grid-cols-2 items-end text-[0.65rem] font-semibold uppercase md:grid-cols-3">
                     <MenuUtilityText className={"w-fit"} text={`© ${new Date().getFullYear()} Lagom Arkitektur`} />
                     <div className="hidden justify-self-center md:block">
-                        <MenuUtilityText text="Architecture · Interior · Landscape" />
+                        <MenuUtilityText text="Architecture · Design · Interior" />
                     </div>
                     <div className="flex justify-end gap-5">
                         <a href="mailto:studio@lagomarkitektur.se" data-cursor=""><MenuUtilityText text="Email" /></a>

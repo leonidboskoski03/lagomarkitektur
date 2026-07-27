@@ -1,11 +1,11 @@
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { WorkProjectItem } from "../../hooks/useWorkProjects";
 import { motionEases } from "../../lib/motion";
 import { ProjectIndexStrip } from "./ProjectIndexStrip";
+import { ProjectTransitionLink } from "../transition/ProjectTransitionLink";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -125,8 +125,8 @@ export function ProjectIndex({ projects }: ProjectIndexProps) {
             className="border-b border-black/16 will-change-[transform,opacity,clip-path]"
           >
             <div className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-3 gap-y-8 py-9 md:grid-cols-[4rem_minmax(13rem,0.68fr)_minmax(0,2fr)] md:gap-8 md:py-14">
-              <Link
-                to={`/work/${project.slug}`}
+              <ProjectTransitionLink
+                projectSlug={project.slug}
                 data-cursor="open"
                 aria-label={`View ${project.title}`}
                 className="col-span-2 grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-3 md:grid-cols-[4rem_minmax(13rem,0.68fr)] md:gap-8"
@@ -149,7 +149,7 @@ export function ProjectIndex({ projects }: ProjectIndexProps) {
                     {project.siteSize ? <span>{project.siteSize}</span> : null}
                   </span>
                 </span>
-              </Link>
+              </ProjectTransitionLink>
 
               <div className="col-span-2 min-w-0 md:col-span-1">
                 <ProjectIndexStrip projectId={project.id} images={project.gallery} />

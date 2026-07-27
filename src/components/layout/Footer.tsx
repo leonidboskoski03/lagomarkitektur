@@ -1,81 +1,149 @@
-import { Link } from "react-router-dom";
-import { SITE_TITLE } from "../../lib/constants";
-import { useGsapReveal } from "../../hooks/useGsapReveal";
-import { PageContainer } from "./PageContainer";
+import { useRef } from "react";
+import { footerContent, type FooterContent, type FooterLinkItem } from "../../data/footer";
+import { cn } from "../../lib/utils";
+import { FooterBackToTop } from "./footer/FooterBackToTop";
+import { FooterColumn } from "./footer/FooterColumn";
+import { FooterLink } from "./footer/FooterLink";
+import { FooterMotionMask } from "./footer/FooterMotionMask";
+import { FooterWordmark } from "./footer/FooterWordmark";
+import { useFooterMotion } from "./footer/useFooterMotion";
 
-export function Footer() {
-  const footerRef = useGsapReveal<HTMLElement>();
+interface FooterProps {
+  content?: FooterContent;
+  className?: string;
+}
+
+export function Footer({ content = footerContent, className }: FooterProps) {
+  const footerRef = useRef<HTMLElement | null>(null);
+  const currentYear = new Date().getFullYear();
+  const emailLink: FooterLinkItem = {
+    label: content.studio.email,
+    href: `mailto:${content.studio.email}`,
+  };
+
+  useFooterMotion(footerRef);
 
   return (
     <footer
       ref={footerRef}
-      className="bg-accent-dark text-white/80"
+      data-site-footer
+      className={cn(
+        "relative z-10 overflow-hidden bg-white text-brand-ink",
+        className,
+      )}
+      aria-labelledby="footer-heading"
     >
-      <PageContainer className="py-20 md:py-32">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-20">
-          <div>
-            <h3 className="font-display text-3xl mb-4 text-white">{SITE_TITLE}</h3>
-            <p className="text-sm leading-relaxed text-white/60 max-w-xs">
-              Svensk arkitektbyrå med fokus på hållbar, tidlös och mänsklig arkitektur.
+      <div className="w-full px-[var(--spacing-viewport-gutter)]">
+        <section
+          data-footer-section
+          className="pt-[clamp(5rem,8vw,8rem)]"
+          aria-label="Project enquiries"
+        >
+          <div className="grid grid-cols-1 gap-10 pb-[clamp(4.5rem,7vw,7.5rem)] md:grid-cols-12 md:gap-x-6">
+            <FooterMotionMask kind="eyebrow" className="md:col-span-3">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.08em]">
+                {content.enquiry.eyebrow}
+              </p>
+            </FooterMotionMask>
+
+            <div className="md:col-span-9 md:col-start-4 md:justify-self-end md:text-right">
+              <FooterMotionMask kind="display">
+                <h2
+                  id="footer-heading"
+                  className="ml-auto max-w-[16ch] text-balance text-[clamp(2.5rem,5.9vw,7.2rem)] font-medium leading-[0.9] tracking-[-0.065em]"
+                >
+                  {content.enquiry.title}
+                </h2>
+              </FooterMotionMask>
+              <FooterMotionMask kind="action" className="mt-8 md:mt-12">
+                <FooterLink
+                  item={content.enquiry.link}
+                  showArrow
+                  variant="menu-utility"
+                  className="text-sm font-semibold uppercase tracking-[0.04em]"
+                />
+              </FooterMotionMask>
+            </div>
+          </div>
+        </section>
+
+        <section
+          data-footer-section
+          className="grid grid-cols-2 gap-x-6 gap-y-12 pb-[clamp(4rem,5.5vw,6rem)] md:grid-cols-12"
+          aria-label="Studio information"
+        >
+          <FooterColumn label="Studio" className="col-span-2 md:col-span-4">
+            <p className="max-w-[29rem] text-[clamp(1.1rem,1.55vw,1.55rem)] leading-[1.18] tracking-[-0.025em]">
+              {content.studio.description}
             </p>
-          </div>
+            <p className="mt-7 max-w-[28rem] text-xs font-medium uppercase leading-relaxed tracking-[0.035em] opacity-55">
+              {content.studio.disciplines}
+            </p>
+          </FooterColumn>
 
-          <div>
-            <h4 className="text-xs tracking-widest uppercase mb-6 text-white/40">
-              Kontakt
-            </h4>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <a
-                  href="mailto:hej@lagomarkitektur.se"
-                  data-cursor=""
-                  className="hover:text-white transition-colors"
-                >
-                  hej@lagomarkitektur.se
-                </a>
-              </li>
-              <li>
-                <a
-                  href="tel:+46701234567"
-                  data-cursor=""
-                  className="hover:text-white transition-colors"
-                >
-                  +46 70 123 45 67
-                </a>
-              </li>
-              <li className="text-white/60">Skeppsbron 10, 111 30 Stockholm</li>
-            </ul>
-          </div>
+          <FooterColumn label="Navigate" className="md:col-span-2 md:col-start-6">
+            <nav aria-label="Footer navigation">
+              <ul className="space-y-0.5 text-sm font-medium">
+                {content.navigation.map((item) => (
+                  <li key={item.href}>
+                    <FooterLink item={item} variant="menu-utility" />
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </FooterColumn>
 
-          <div>
-            <h4 className="text-xs tracking-widest uppercase mb-6 text-white/40">
-              Navigation
-            </h4>
-            <ul className="space-y-3 text-sm">
-              {[
-                { href: "/", label: "Start" },
-                { href: "/work", label: "Work" },
-                { href: "/om-oss", label: "Om oss" },
-                { href: "/kontakt", label: "Kontakt" },
-              ].map((link) => (
-                <li key={link.href}>
-                  <Link
-                    to={link.href}
-                    data-cursor=""
-                    className="hover:text-white transition-colors"
-                  >
-                    {link.label}
-                  </Link>
+          <FooterColumn label="Follow" className="md:col-span-2 md:col-start-8">
+            <ul className="space-y-0.5 text-sm font-medium">
+              {content.social.map((item) => (
+                <li key={item.href}>
+                  <FooterLink item={item} showArrow variant="menu-utility" />
                 </li>
               ))}
             </ul>
-          </div>
-        </div>
+          </FooterColumn>
 
-        <div className="mt-20 pt-8 border-t border-white/10 text-xs text-white/30 flex flex-col md:flex-row justify-between gap-4">
-          <p>&copy; {new Date().getFullYear()} {SITE_TITLE}. Alla rättigheter förbehållna.</p>
-        </div>
-      </PageContainer>
+          <FooterColumn
+            label="Find us"
+            className="col-span-2 md:col-span-3 md:col-start-10 md:text-right"
+          >
+            <address className="space-y-1 text-sm font-medium not-italic md:flex md:flex-col md:items-end">
+              <p>{content.studio.location}</p>
+              <FooterLink item={emailLink} className="break-all" />
+            </address>
+          </FooterColumn>
+        </section>
+
+        <FooterWordmark />
+
+        <section
+          data-footer-utility-section
+          className="pb-[clamp(1.25rem,2vw,2rem)]"
+          aria-label="Legal and utilities"
+        >
+          <div
+            data-footer-utility-content
+            className="grid grid-cols-2 gap-x-6 gap-y-4 pt-[clamp(0.25rem,0.45vw,0.45rem)] text-[0.64rem] font-semibold uppercase tracking-[0.055em] md:grid-cols-4"
+          >
+            <FooterMotionMask kind="utility">
+              <p>© {currentYear} {content.studio.name}</p>
+            </FooterMotionMask>
+            <FooterMotionMask kind="utility" className="md:text-center">
+              <p>{content.studio.location}</p>
+            </FooterMotionMask>
+            <FooterMotionMask kind="utility" className="md:text-center">
+              <div>
+                {content.legal.map((item) => (
+                  <FooterLink key={item.href} item={item} />
+                ))}
+              </div>
+            </FooterMotionMask>
+            <FooterMotionMask kind="utility" className="justify-self-end">
+              <FooterBackToTop />
+            </FooterMotionMask>
+          </div>
+        </section>
+      </div>
     </footer>
   );
 }

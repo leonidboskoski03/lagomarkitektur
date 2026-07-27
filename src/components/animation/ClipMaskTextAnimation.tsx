@@ -8,6 +8,7 @@ interface ClipMaskTextAnimationProps {
     handleMouseEnter?: () => void;
     controlled?: boolean;
     active?: boolean;
+    uppercase?: boolean;
 }
 
 export function ClipMaskTextAnimation({
@@ -16,9 +17,13 @@ export function ClipMaskTextAnimation({
     handleMouseEnter,
     controlled = false,
     active = false,
+    uppercase = true,
 }: ClipMaskTextAnimationProps) {
     return (
-        <span onMouseEnter={handleMouseEnter} className={clsx("relative block overflow-hidden uppercase", className)}>
+        <span
+            onMouseEnter={handleMouseEnter}
+            className={clsx("relative block overflow-hidden", uppercase && "uppercase", className)}
+        >
             <motion.span
                 className="relative block"
                 animate={controlled ? {y: active ? "-100%" : "0%"} : undefined}
@@ -26,7 +31,7 @@ export function ClipMaskTextAnimation({
                 transition={{duration: controlled ? 0.42 : 0.3, ease: motionEaseCurves.settle}}
             >
                 <span className="block">{text}</span>
-                <span className="absolute left-0 top-full block w-full">{text}</span>
+                <span aria-hidden="true" className="absolute left-0 top-full block w-full">{text}</span>
             </motion.span>
         </span>
     );

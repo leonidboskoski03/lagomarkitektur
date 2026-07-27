@@ -118,9 +118,9 @@ export const project = defineType({
     }),
     defineField({
       name: "siteSize",
-      title: "Site size",
+      title: "Area",
       type: "string",
-      description: "Example: 75 sqm. Leave empty if not relevant.",
+      description: "Example: 54 m². Leave empty if not relevant.",
       group: "details",
     }),
     defineField({

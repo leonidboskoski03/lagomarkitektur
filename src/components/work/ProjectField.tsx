@@ -1,5 +1,4 @@
 import { useMemo, useRef } from "react";
-import { Link } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { Draggable } from "gsap/Draggable";
@@ -7,6 +6,7 @@ import { InertiaPlugin } from "gsap/InertiaPlugin";
 import type { WorkProjectImage, WorkProjectItem } from "../../hooks/useWorkProjects";
 import { DirectionalShaderImage } from "./DirectionalShaderImage";
 import { DirectionalShaderStage, type DirectionalMotion } from "./DirectionalShaderStage";
+import { ProjectTransitionLink } from "../transition/ProjectTransitionLink";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 
@@ -197,9 +197,9 @@ function FieldTile({
         const instanceId = `${tileIndex}-${entry.id}`;
 
         return (
-          <Link
+          <ProjectTransitionLink
             key={instanceId}
-            to={`/work/${project.slug}`}
+            projectSlug={project.slug}
             data-cursor="open"
             aria-label={interactive ? `View ${project.title}` : undefined}
             tabIndex={interactive ? 0 : -1}
@@ -238,7 +238,7 @@ function FieldTile({
               <span className="max-w-[75%]">{project.title}</span>
               <span className="text-text-muted">{project.year}</span>
             </span>
-          </Link>
+          </ProjectTransitionLink>
         );
       })}
     </div>

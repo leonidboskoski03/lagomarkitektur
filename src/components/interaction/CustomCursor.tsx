@@ -124,7 +124,12 @@ export function CustomCursor() {
     }, {scope: rootRef});
 
     return (
-        <div ref={rootRef} aria-hidden="true" className="pointer-events-none fixed inset-0 z-[2000] opacity-0 mix-blend-difference">
+        <div
+            ref={rootRef}
+            data-custom-cursor
+            aria-hidden="true"
+            className="pointer-events-none fixed inset-0 z-[2000] opacity-0 mix-blend-difference"
+        >
             <div
                 ref={ringRef}
                 className="fixed left-0 top-0 flex h-[46px] w-[46px] -translate-x-1/2 -translate-y-1/2 scale-[0.26087] items-center justify-center rounded-full border border-transparent bg-white text-black will-change-transform"

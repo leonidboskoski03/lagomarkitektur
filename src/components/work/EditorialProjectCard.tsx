@@ -1,9 +1,9 @@
 import { useRef, type CSSProperties } from "react";
-import { Link } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import type { WorkProjectItem } from "../../hooks/useWorkProjects";
 import { motionEases } from "../../lib/motion";
+import { ProjectTransitionLink } from "../transition/ProjectTransitionLink";
 
 interface EditorialProjectCardProps {
   project: WorkProjectItem;
@@ -63,8 +63,8 @@ export function EditorialProjectCard({
       className="w-full will-change-[clip-path,transform] md:w-[min(100%,46vw,52rem,calc(64vh*var(--editorial-aspect)))]"
       style={{ "--editorial-aspect": project.image.aspectRatio } as CSSProperties}
     >
-      <Link
-        to={`/work/${project.slug}`}
+      <ProjectTransitionLink
+        projectSlug={project.slug}
         data-cursor="open"
         className="group block"
         aria-label={`View ${project.title}`}
@@ -85,8 +85,9 @@ export function EditorialProjectCard({
             alt={project.image.alt}
             width={project.image.width}
             height={project.image.height}
-            loading={index === 0 ? "eager" : "lazy"}
-            fetchPriority={index === 0 ? "high" : "auto"}
+            data-work-critical-image={index < 2 ? "" : undefined}
+            loading={index < 2 ? "eager" : "lazy"}
+            fetchPriority={index < 2 ? "high" : "auto"}
             decoding="async"
             className="!h-full w-full object-cover will-change-transform"
           />
@@ -117,7 +118,7 @@ export function EditorialProjectCard({
             </span>
           </span>
         </div>
-      </Link>
+      </ProjectTransitionLink>
     </article>
   );
 }

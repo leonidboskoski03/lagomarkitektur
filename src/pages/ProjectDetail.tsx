@@ -1,118 +1,73 @@
-import { Link, useParams } from "react-router-dom";
-import { getProjectBySlug, projects } from "../data/projects";
+import { useLayoutEffect } from "react";
+import { useParams } from "react-router-dom";
+import {
+  getProjectBySlug,
+  getProjectGalleryMedia,
+  projects,
+} from "../data/projects";
+import { NextProjectFeature } from "../components/project/NextProjectFeature";
+import { ProjectClosingStory } from "../components/project/ProjectClosingStory";
+import { ProjectGallery } from "../components/project/ProjectGallery";
+import styles from "../components/project/ProjectDetail.module.css";
 import { ProjectHero } from "../components/project/ProjectHero";
-import { ImageReveal } from "../components/ui/ImageReveal";
-import { useGsapReveal } from "../hooks/useGsapReveal";
+import { ProjectStoryIntro } from "../components/project/ProjectStoryIntro";
 import { PageContainer } from "../components/layout/PageContainer";
+import { WorkTransitionLink } from "../components/transition/WorkTransitionLink";
 
 export function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
   const project = slug ? getProjectBySlug(slug) : undefined;
-  const contentRef = useGsapReveal<HTMLDivElement>();
+
+  useLayoutEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "auto",
+    });
+  }, [slug]);
 
   if (!project) {
     return (
       <PageContainer className="pt-40 text-center">
         <h1 className="mb-4 font-display text-4xl">Project not found</h1>
-        <Link to="/work" data-cursor="" className="text-sm uppercase tracking-widest underline">
+        <WorkTransitionLink data-cursor="" className="text-sm uppercase tracking-widest underline">
           Back to work
-        </Link>
+        </WorkTransitionLink>
       </PageContainer>
     );
   }
 
-  const currentIndex = projects.findIndex((item) => item.slug === slug);
+  const currentIndex = projects.findIndex((item) => item.slug === project.slug);
   const nextProject = currentIndex < projects.length - 1 ? projects[currentIndex + 1] : projects[0];
+  const galleryMedia = getProjectGalleryMedia(project);
+  const nextProjectMedia = getProjectGalleryMedia(nextProject);
+  const heroMedia = galleryMedia[0];
+  const nextMedia = nextProjectMedia[0];
 
-  return (
-    <>
-      <ProjectHero project={project} />
-
-      <PageContainer ref={contentRef} className="section-space">
-        <div className="mb-20 grid grid-cols-1 gap-12 md:grid-cols-3">
-          <div className="md:col-span-2">
-            <p className="text-base leading-relaxed text-text-primary md:text-lg">
-              {project.description}
-            </p>
-          </div>
-          <aside className="space-y-6">
-            <ProjectMeta label="Year" value={project.year} />
-            <ProjectMeta label="Location" value={project.location} />
-            <ProjectMeta label="Category" value={project.category} />
-            {project.services.length > 0 && (
-              <div>
-                <span className="mb-2 block text-xs uppercase tracking-widest text-text-muted">
-                  Services
-                </span>
-                <ul className="space-y-1">
-                  {project.services.map((service) => (
-                    <li key={service} className="text-sm">
-                      {service}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </aside>
-        </div>
-
-        {project.gallery.length > 0 && (
-          <div className="space-y-8 md:space-y-16">
-            {project.gallery.map((img, index) => (
-              <div key={img} className={index % 2 === 0 ? "md:col-span-2 md:col-start-2" : ""}>
-                <ImageReveal
-                  src={img}
-                  alt={`${project.title} image ${index + 1}`}
-                  aspectRatio={index === 1 ? "16/9" : "4/3"}
-                  className={index % 2 === 0 ? "ml-auto md:w-2/3" : "md:w-2/3"}
-                />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {project.credits && (
-          <div className="mt-20 border-t border-border pt-12">
-            <span className="mb-2 block text-xs uppercase tracking-widest text-text-muted">
-              Scale
-            </span>
-            <p className="text-sm text-text-muted">{project.credits}</p>
-          </div>
-        )}
+  if (!heroMedia || !nextMedia) {
+    return (
+      <PageContainer className="pt-40 text-center">
+        <h1 className="mb-4 font-display text-4xl">Project imagery is unavailable</h1>
+        <WorkTransitionLink data-cursor="" className="text-sm uppercase tracking-widest underline">
+          Back to work
+        </WorkTransitionLink>
       </PageContainer>
+    );
+  }
 
-      <div className="border-t border-border">
-        <Link
-          to={`/work/${nextProject.slug}`}
-          data-cursor=""
-          className="group block section-space-sm transition-colors hover:bg-surface/30"
-        >
-          <PageContainer className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-            <div>
-              <span className="mb-2 block text-xs uppercase tracking-widest text-text-muted">
-                Next project
-              </span>
-              <h3 className="font-display text-2xl text-text-primary transition-colors group-hover:text-text-muted md:text-4xl">
-                {nextProject.title}
-              </h3>
-            </div>
-            <span className="text-sm uppercase tracking-widest text-text-muted transition-colors group-hover:text-text-primary">
-              View →
-            </span>
-          </PageContainer>
-        </Link>
-      </div>
-    </>
-  );
-}
-
-function ProjectMeta({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <span className="mb-1 block text-xs uppercase tracking-widest text-text-muted">
-        {label}
-      </span>
-      <span className="text-sm">{value}</span>
-    </div>
+    <article className={styles.page}>
+      <ProjectHero project={project} media={heroMedia} />
+      <ProjectStoryIntro project={project} />
+      <ProjectGallery projectTitle={project.title} media={galleryMedia} />
+
+      <ProjectClosingStory
+        projectTitle={project.title}
+        projectSlug={project.slug}
+        excerpt={project.excerpt}
+      />
+
+      <NextProjectFeature project={nextProject} media={nextMedia} />
+    </article>
   );
 }

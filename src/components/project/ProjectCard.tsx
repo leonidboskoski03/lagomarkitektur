@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
 import { useRef } from "react";
 import type { Project } from "../../types/project";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
+import { ProjectTransitionLink } from "../transition/ProjectTransitionLink";
 
 interface ProjectCardProps {
   project: Project;
@@ -26,14 +26,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
   }
 
   return (
-    <Link
-      to={`/work/${project.slug}`}
+    <ProjectTransitionLink
+      projectSlug={project.slug}
       data-cursor=""
       className="group block"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="overflow-hidden bg-surface mb-4">
+      <div data-transition-image={`${project.id}:cover`} className="overflow-hidden bg-surface mb-4">
         <img
           ref={imgRef}
           src={project.featuredImage}
@@ -51,6 +51,6 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </h3>
         <p className="text-sm text-text-muted line-clamp-2">{project.excerpt}</p>
       </div>
-    </Link>
+    </ProjectTransitionLink>
   );
 }

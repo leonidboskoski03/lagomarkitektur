@@ -10,15 +10,17 @@ import {MenuOverlay} from "./MenuOverlay";
 import {LogoMark} from "../branding/LogoMark";
 import {ClipMaskTextAnimation} from "../animation/ClipMaskTextAnimation";
 import {ContactOverlay} from "../contact/ContactOverlay";
-import {useLocation} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
+import {WorkTransitionLink} from "../transition/WorkTransitionLink";
+import {useWorkTransition} from "../transition/workTransitionContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const links = [
-    {href: "/work", label: "work"},
-    {href: "/studio", label: "Studio"},
-    {href: "/contact", label: "contact"},
-    {href: "/process", label: "process"},
+    {href: "/", label: "Home"},
+    {href: "/work", label: "Work"},
+    {href: "/studio", label: "About"},
+    {href: "/contact", label: "Contact"},
 ];
 
 const charVariants = {
@@ -51,7 +53,11 @@ const handleMouseEnter = () => {
 
 export function Navbar() {
     const {pathname} = useLocation();
+    const navigate = useNavigate();
+    const {startWorkTransition} = useWorkTransition();
     const hidePrimaryNav = pathname === "/work";
+    const usesProcessNavSequence = pathname === "/" || pathname === "/process";
+    const usesLightPrimaryNav = pathname === "/studio" || pathname === "/om-oss";
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isContactOpen, setIsContactOpen] = useState(false);
     const headerRef = useRef<HTMLElement | null>(null);
@@ -64,6 +70,22 @@ export function Navbar() {
     const menuButtonRef = useRef<HTMLButtonElement | null>(null);
     const contactButtonRef = useRef<HTMLButtonElement | null>(null);
     const closeMenu = useCallback(() => setIsMenuOpen(false), []);
+    const handleMenuNavigate = useCallback((href: string) => {
+        if (href === "/work") {
+            startWorkTransition();
+            return;
+        }
+
+        if (href === pathname) {
+            window.scrollTo({top: 0, left: 0, behavior: "auto"});
+            return;
+        }
+
+        navigate(href);
+        window.requestAnimationFrame(() => {
+            window.scrollTo({top: 0, left: 0, behavior: "auto"});
+        });
+    }, [navigate, pathname, startWorkTransition]);
 
     useGSAP((_context, contextSafe) => {
         const navItems = navItemRefs.current.filter(Boolean);
@@ -186,20 +208,61 @@ export function Navbar() {
             });
         }
 
-        const projectSection = document.querySelector("[data-project-section]");
+        if (usesProcessNavSequence) {
+            const projectSection = document.querySelector("[data-project-section]");
 
-        if (projectSection) {
-            ScrollTrigger.create({
-                trigger: projectSection,
-                start: "top 30%",
-                end: "bottom top",
-                invalidateOnRefresh: true,
-                onEnter: () => {
-                    hideNavbar();
-                    hideSecondaryNavbar();
-                },
-                onLeaveBack: showSecondaryNavbar,
-            });
+            if (projectSection) {
+                ScrollTrigger.create({
+                    trigger: projectSection,
+                    start: "top 30%",
+                    end: "bottom top",
+                    invalidateOnRefresh: true,
+                    onEnter: () => {
+                        hideNavbar();
+                        hideSecondaryNavbar();
+                    },
+                    onLeaveBack: showSecondaryNavbar,
+                });
+            }
+
+            const servicesSection = document.querySelector("[data-services-section]");
+
+            if (servicesSection) {
+                ScrollTrigger.create({
+                    trigger: servicesSection,
+                    start: "top top",
+                    end: "max",
+                    invalidateOnRefresh: true,
+                    onEnter: showSecondaryNavbar,
+                    onLeaveBack: hideSecondaryNavbar,
+                });
+            }
+
+            const processSequence = document.querySelector("[data-process-sequence]");
+
+            if (processSequence) {
+                ScrollTrigger.create({
+                    trigger: processSequence,
+                    start: "top 12%",
+                    end: "max",
+                    invalidateOnRefresh: true,
+                    onEnter: hideSecondaryNavbar,
+                    onLeaveBack: showSecondaryNavbar,
+                });
+            }
+
+            const footer = document.querySelector("[data-site-footer]");
+
+            if (footer) {
+                ScrollTrigger.create({
+                    trigger: footer,
+                    start: "top 12%",
+                    end: "max",
+                    invalidateOnRefresh: true,
+                    onEnter: showSecondaryNavbar,
+                    onLeaveBack: hideSecondaryNavbar,
+                });
+            }
         }
 
         const loader = document.querySelector<HTMLElement>("[data-lagom-loader]");
@@ -222,7 +285,12 @@ export function Navbar() {
           aria-hidden={hidePrimaryNav || undefined}
         >
           <div ref={primaryNavContentRef} className="viewport-container flex h-full items-center justify-between will-change-transform">
-            <div className="flex items-start justify-center gap-2 text-white">
+            <div
+                className={clsx(
+                    "flex items-start justify-center gap-2",
+                    usesLightPrimaryNav ? "text-brand-ink" : "text-white",
+                )}
+            >
                 <div className="overflow-hidden">
                     <div ref={logoMarkRef} className="will-change-transform">
                         <LogoMark onMouseEnter={handleMouseEnter} animatedParts />
@@ -235,28 +303,65 @@ export function Navbar() {
                 </div>
             </div>
 
-            <nav className="flex gap-4 text-white">
-                {links.map((link, index) => (
-                    <div key={link.href} className="overflow-hidden" data-cursor={""}>
+            <nav
+                className={clsx(
+                    "hidden gap-4 md:flex",
+                    usesLightPrimaryNav ? "text-brand-ink" : "text-white",
+                )}
+            >
+                {links.map((link, index) => {
+                    const content = (
                         <div
                             ref={(element) => { navItemRefs.current[index] = element; }}
                             className="will-change-transform"
-                            data-cursor={""}
                         >
                             <ClipMaskTextAnimation text={link.label} className="text-sm font-[600]" />
                         </div>
-                    </div>
-                ))}
+                    );
+
+                    return link.href === "/work" ? (
+                        <WorkTransitionLink
+                            key={link.href}
+                            className="overflow-hidden"
+                            data-cursor=""
+                        >
+                            {content}
+                        </WorkTransitionLink>
+                    ) : (
+                        <Link
+                            key={link.href}
+                            to={link.href}
+                            className="overflow-hidden"
+                            data-cursor=""
+                        >
+                            {content}
+                        </Link>
+                    );
+                })}
             </nav>
 
-            <div className="overflow-hidden rounded-4xl">
+            <div className="hidden overflow-hidden rounded-4xl md:block">
                 <div ref={buttonRef} className="will-change-transform">
-                    <GetInTouchButton onClick={(event) => {
+                    <GetInTouchButton variant={usesLightPrimaryNav ? "dark" : "light"} onClick={(event) => {
                         contactButtonRef.current = event.currentTarget;
                         setIsContactOpen(true);
                     }} />
                 </div>
             </div>
+
+            <button
+                type="button"
+                onClick={(event) => {
+                    menuButtonRef.current = event.currentTarget;
+                    setIsMenuOpen(true);
+                }}
+                className="rounded-full bg-[#f4f1ea] px-5 py-4 text-sm font-medium text-black md:hidden"
+                aria-label="Open menu"
+                aria-expanded={isMenuOpen}
+                aria-controls="site-menu"
+            >
+                Menu
+            </button>
           </div>
         </header>
         <div
@@ -285,7 +390,12 @@ export function Navbar() {
                 <ClipMaskTextAnimation text="Menu" className="text-sm font-medium" />
             </button>
         </div>
-        <MenuOverlay isOpen={isMenuOpen} onClose={closeMenu} triggerRef={menuButtonRef} />
+        <MenuOverlay
+            isOpen={isMenuOpen}
+            onClose={closeMenu}
+            onNavigate={handleMenuNavigate}
+            triggerRef={menuButtonRef}
+        />
         <ContactOverlay
             isOpen={isContactOpen}
             onClose={() => setIsContactOpen(false)}

@@ -9,6 +9,7 @@ import { ProjectGrid } from "../components/project/ProjectGrid";
 import { StickyOverlapHero } from "../components/sections/StickyOverlapHero";
 import { PageContainer } from "../components/layout/PageContainer";
 import { Section } from "../components/layout/Section";
+import { WorkTransitionLink } from "../components/transition/WorkTransitionLink";
 
 const featured = getFeaturedProjects();
 
@@ -107,13 +108,12 @@ export function Home() {
           />
           <ProjectGrid projects={featured} />
           <div className="mt-16 text-center">
-            <Link
-              to="/work"
+            <WorkTransitionLink
               data-cursor=""
               className="inline-block text-sm tracking-widest uppercase border-b border-text-primary pb-1 hover:text-text-muted hover:border-text-muted transition-colors"
             >
               Visa alla projekt
-            </Link>
+            </WorkTransitionLink>
           </div>
       </Section>
 

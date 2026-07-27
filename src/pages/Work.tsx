@@ -1,11 +1,14 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AnimatePresence, motion } from "motion/react";
 import { LogoMark } from "../components/branding/LogoMark";
-import { HERO_CONTENT_REVEAL_EVENT } from "../lib/revealEvents";
+import {
+  HERO_CONTENT_REVEAL_EVENT,
+  WORK_CONTENT_REVEAL_EVENT,
+} from "../lib/revealEvents";
 import { motionEaseCurves, motionEases } from "../lib/motion";
 import { WorkProjectViews } from "../components/work/WorkProjectViews";
 import { WorkViewRail } from "../components/work/WorkViewRail";
@@ -14,10 +17,22 @@ import { useWorkProjects } from "../hooks/useWorkProjects";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function Work() {
+interface WorkProps {
+  onFooterVisibilityChange?: (visible: boolean) => void;
+}
+
+export function Work({ onFooterVisibilityChange }: WorkProps) {
   const pageRef = useRef<HTMLDivElement | null>(null);
   const { projects, isLoading } = useWorkProjects();
   const [viewMode, setViewMode] = useState<WorkViewMode>("composition");
+
+  useEffect(() => {
+    onFooterVisibilityChange?.(viewMode !== "field");
+
+    return () => {
+      onFooterVisibilityChange?.(true);
+    };
+  }, [onFooterVisibilityChange, viewMode]);
 
   useGSAP((_context, contextSafe) => {
     const eyebrow = pageRef.current?.querySelector<HTMLElement>("[data-work-eyebrow]");
@@ -80,11 +95,14 @@ export function Work() {
       introTimeline.play(0);
     });
 
+    const workTransitionIsActive = document.documentElement.dataset.workTransition === "true";
     const loader = document.querySelector<HTMLElement>("[data-lagom-loader]");
     const loaderIsHidden = !loader || window.getComputedStyle(loader).display === "none";
     let loaderObserver: MutationObserver | undefined;
 
-    if (loaderIsHidden) {
+    if (workTransitionIsActive) {
+      window.addEventListener(WORK_CONTENT_REVEAL_EVENT, playIntro, { once: true });
+    } else if (loaderIsHidden) {
       playIntro();
     } else {
       window.addEventListener(HERO_CONTENT_REVEAL_EVENT, playIntro, { once: true });
@@ -95,13 +113,18 @@ export function Work() {
     }
 
     return () => {
+      window.removeEventListener(WORK_CONTENT_REVEAL_EVENT, playIntro);
       window.removeEventListener(HERO_CONTENT_REVEAL_EVENT, playIntro);
       loaderObserver?.disconnect();
     };
   }, { scope: pageRef });
 
   return (
-    <div ref={pageRef} className="min-h-screen overflow-x-hidden bg-bg text-text-primary">
+    <div
+      ref={pageRef}
+      data-work-page
+      className="min-h-screen overflow-x-hidden bg-bg text-text-primary"
+    >
       <Link
         to="/"
         data-work-logo

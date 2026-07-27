@@ -354,7 +354,11 @@ const ServicesAccordion = ({initialActiveIndex = services.length - 1}: ServicesA
     };
 
     return (
-        <section ref={sectionRef} className="relative z-[1] bg-white text-[#111]">
+        <section
+            ref={sectionRef}
+            data-services-section
+            className="relative z-[1] bg-white text-[#111]"
+        >
             <div ref={stageRef} className="relative h-screen w-full overflow-hidden bg-white">
                 <div
                     data-services-panel

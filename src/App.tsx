@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {BrowserRouter, Navigate, Route, Routes, useLocation} from "react-router-dom";
 import {Navbar} from "./components/navigation/Navbar.tsx";
 import {Hero} from "./pages/Hero.tsx";
@@ -15,13 +15,18 @@ import gsap from "gsap";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {Loader} from "./pages/Loader.tsx";
 import {CustomCursor} from "./components/interaction/CustomCursor.tsx";
+import {Footer} from "./components/layout/Footer.tsx";
+import {ProjectTransitionProvider} from "./components/transition/ProjectTransitionProvider.tsx";
+import {WorkTransitionProvider} from "./components/transition/WorkTransitionProvider.tsx";
 
 function HomepageLoader() {
     const {pathname} = useLocation();
     return pathname === "/" ? <Loader/> : null;
 }
 
-function App() {
+function AppContent() {
+    const [isFooterVisible, setIsFooterVisible] = useState(true);
+
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger);
 
@@ -55,37 +60,53 @@ function App() {
     }, []);
 
     return (
-        <BrowserRouter>
-            <main className={"min-h-screen bg-bg"}>
+            <div className={"min-h-screen bg-bg"}>
                 <CustomCursor/>
                 <HomepageLoader/>
                 <Navbar/>
-                <Routes>
-                    <Route
-                        path="/"
-                        element={(
-                            <>
-                                <Hero/>
-                                <AboutIntro/>
-                                <ProjectSection/>
-                                <ServicesSection/>
-                            </>
-                        )}
-                    />
-                    <Route path="/work" element={<Work/>}/>
-                    <Route path="/works" element={<Navigate to="/work" replace/>}/>
-                    <Route path="/projects" element={<Navigate to="/work" replace/>}/>
-                    <Route path="/projekt" element={<Navigate to="/work" replace/>}/>
-                    <Route path="/work/:slug" element={<ProjectDetail/>}/>
-                    <Route path="/projects/:slug" element={<ProjectDetail/>}/>
-                    <Route path="/projekt/:slug" element={<ProjectDetail/>}/>
-                    <Route path="/studio" element={<About/>}/>
-                    <Route path="/om-oss" element={<About/>}/>
-                    <Route path="/contact" element={<Contact/>}/>
-                    <Route path="/kontakt" element={<Contact/>}/>
-                    <Route path="/process" element={<ServicesSection/>}/>
-                </Routes>
-            </main>
+                <main id="main-content">
+                    <Routes>
+                        <Route
+                            path="/"
+                            element={(
+                                <>
+                                    <Hero/>
+                                    <AboutIntro/>
+                                    <ProjectSection/>
+                                    <ServicesSection/>
+                                </>
+                            )}
+                        />
+                        <Route
+                            path="/work"
+                            element={<Work onFooterVisibilityChange={setIsFooterVisible}/>}
+                        />
+                        <Route path="/works" element={<Navigate to="/work" replace/>}/>
+                        <Route path="/projects" element={<Navigate to="/work" replace/>}/>
+                        <Route path="/projekt" element={<Navigate to="/work" replace/>}/>
+                        <Route path="/work/:slug" element={<ProjectDetail/>}/>
+                        <Route path="/projects/:slug" element={<ProjectDetail/>}/>
+                        <Route path="/projekt/:slug" element={<ProjectDetail/>}/>
+                        <Route path="/studio" element={<About/>}/>
+                        <Route path="/om-oss" element={<About/>}/>
+                        <Route path="/contact" element={<Contact/>}/>
+                        <Route path="/kontakt" element={<Contact/>}/>
+                        <Route path="/process" element={<ServicesSection/>}/>
+                    </Routes>
+                </main>
+                {isFooterVisible ? <Footer/> : null}
+            </div>
+    );
+}
+
+function App() {
+    return (
+        <BrowserRouter>
+            <ProjectTransitionProvider>
+                <WorkTransitionProvider>
+                    <AppContent/>
+                </WorkTransitionProvider>
+            </ProjectTransitionProvider>
         </BrowserRouter>
     );
 }

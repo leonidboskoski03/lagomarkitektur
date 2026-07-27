@@ -14,3 +14,23 @@ export interface Project {
   credits: string;
   isFeatured: boolean;
 }
+
+export type ProjectStoryPlacement =
+  | "wide"
+  | "portrait-left"
+  | "portrait-center"
+  | "portrait-right"
+  | "landscape-left"
+  | "landscape-right";
+
+export interface ProjectGalleryMedia {
+  id: string;
+  src: string;
+  previewSrc: string;
+  alt: string;
+  caption?: string;
+  width: number;
+  height: number;
+  aspectRatio: number;
+  storyPlacement: ProjectStoryPlacement;
+}

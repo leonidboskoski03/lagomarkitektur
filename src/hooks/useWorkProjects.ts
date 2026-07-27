@@ -6,6 +6,7 @@ import {
   sanityImageUrl,
   workProjectListQuery,
 } from "../lib/sanity";
+import { formatProjectArea } from "../lib/projectArea";
 
 export interface WorkProjectImage {
   url: string;
@@ -84,6 +85,8 @@ const workPreviewWidths = [320, 480, 640];
 const workDisplayWidths = [640, 960, 1280, 1600];
 const workGalleryWidths = [480, 720, 900, 1200];
 const workAtlasWidth = 768;
+let cachedWorkProjects: WorkProjectItem[] | null = null;
+let workProjectsPromise: Promise<WorkProjectItem[]> | null = null;
 
 function getAvailableWidths(widths: number[], sourceWidth?: number) {
   if (!sourceWidth) return widths;
@@ -190,7 +193,7 @@ function normalizeSanityProject(project: SanityWorkProject): WorkProjectItem | n
     title: project.title,
     slug: project.slug,
     category: project.category,
-    siteSize: project.siteSize,
+    siteSize: formatProjectArea(project.siteSize),
     year: project.year,
     image: normalizedDisplayImage,
     gallery: normalizedGallery.length > 0 ? normalizedGallery : [normalizedDisplayImage],
@@ -230,7 +233,7 @@ async function loadLocalFallback(): Promise<WorkProjectItem[]> {
       title: project.title,
       slug: project.slug,
       category: project.category,
-      siteSize: project.credits.replace(/^Site size:\s*/i, ""),
+      siteSize: formatProjectArea(project.credits),
       year: project.year,
       image,
       gallery: galleryImages,
@@ -239,44 +242,56 @@ async function loadLocalFallback(): Promise<WorkProjectItem[]> {
   });
 }
 
-export function useWorkProjects() {
-  const [projects, setProjects] = useState<WorkProjectItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export function loadWorkProjects(): Promise<WorkProjectItem[]> {
+  if (cachedWorkProjects) return Promise.resolve(cachedWorkProjects);
+  if (workProjectsPromise) return workProjectsPromise;
 
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function loadProjects() {
+  workProjectsPromise = (async () => {
       try {
         if (!hasSanityConfig) throw new Error("Sanity is not configured");
 
         const result = await sanityClient.fetch<SanityWorkProject[]>(
           workProjectListQuery,
           {},
-          { signal: controller.signal },
         );
         const normalized = result
           .map(normalizeSanityProject)
           .filter((project): project is WorkProjectItem => project !== null);
 
         if (normalized.length === 0) throw new Error("Sanity returned no published projects");
-        if (!controller.signal.aborted) {
-          setProjects(normalized);
-          setIsLoading(false);
-        }
+        return normalized;
       } catch (error) {
-        if (controller.signal.aborted) return;
         console.warn("Using local Work projects because Sanity could not be loaded.", error);
-        const fallback = await loadLocalFallback();
-        if (!controller.signal.aborted) {
-          setProjects(fallback);
-          setIsLoading(false);
-        }
+        return loadLocalFallback();
       }
-    }
+    })()
+    .then((projects) => {
+      cachedWorkProjects = projects;
+      return projects;
+    })
+    .finally(() => {
+      workProjectsPromise = null;
+    });
 
-    void loadProjects();
-    return () => controller.abort();
+  return workProjectsPromise;
+}
+
+export function useWorkProjects() {
+  const [projects, setProjects] = useState<WorkProjectItem[]>(() => cachedWorkProjects || []);
+  const [isLoading, setIsLoading] = useState(() => cachedWorkProjects === null);
+
+  useEffect(() => {
+    let active = true;
+
+    void loadWorkProjects().then((loadedProjects) => {
+      if (!active) return;
+      setProjects(loadedProjects);
+      setIsLoading(false);
+    });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   return { projects, isLoading };

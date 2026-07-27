@@ -5,6 +5,7 @@ import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {motionEases} from "../lib/motion";
 import {projectShowcaseIntro, projectShowcaseProjects} from "../data/projects";
 import projectIntroImage from "../assets/images/hero2.avif";
+import {ProjectTransitionLink} from "../components/transition/ProjectTransitionLink";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -637,11 +638,11 @@ export const ProjectSection = () => {
 
                 <div data-project-rail className="absolute inset-0 z-20">
                     {projectShowcaseProjects.map((project) => (
-                        <a
+                        <ProjectTransitionLink
                             key={project.id}
+                            projectSlug={project.slug}
                             data-project-card
                             data-cursor="open"
-                            href={`/projects/${project.slug}`}
                             className="group absolute left-1/2 top-1/2 block overflow-hidden shadow-[0_2rem_5rem_rgba(0,0,0,0.36)] outline outline-1 outline-white/14"
                             aria-label={`Open project ${project.title}`}
                         >
@@ -660,7 +661,7 @@ export const ProjectSection = () => {
                                 className="absolute inset-0 z-10 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                 loading="lazy"
                             />
-                        </a>
+                        </ProjectTransitionLink>
                     ))}
                 </div>
             </div>
