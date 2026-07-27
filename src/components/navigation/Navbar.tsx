@@ -57,7 +57,10 @@ export function Navbar() {
     const {startWorkTransition} = useWorkTransition();
     const hidePrimaryNav = pathname === "/work";
     const usesProcessNavSequence = pathname === "/" || pathname === "/process";
-    const usesLightPrimaryNav = pathname === "/studio" || pathname === "/om-oss";
+    const usesLightPrimaryNav = pathname === "/studio"
+        || pathname === "/om-oss"
+        || pathname === "/contact"
+        || pathname === "/kontakt";
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isContactOpen, setIsContactOpen] = useState(false);
     const headerRef = useRef<HTMLElement | null>(null);

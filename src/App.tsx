@@ -25,7 +25,9 @@ function HomepageLoader() {
 }
 
 function AppContent() {
+    const {pathname} = useLocation();
     const [isFooterVisible, setIsFooterVisible] = useState(true);
+    const isContactPage = pathname === "/contact" || pathname === "/kontakt";
 
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger);
@@ -94,7 +96,13 @@ function AppContent() {
                         <Route path="/process" element={<ServicesSection/>}/>
                     </Routes>
                 </main>
-                {isFooterVisible ? <Footer/> : null}
+                {isFooterVisible ? (
+                    <Footer
+                        showEnquiry={!isContactPage}
+                        showStudioInformation={!isContactPage}
+                        showCompactNavigation={isContactPage}
+                    />
+                ) : null}
             </div>
     );
 }

@@ -8,6 +8,8 @@ import founderPortrait from "../assets/LAGOM Arkitektur/viber_image_2023-11-12_1
 export interface StudioProjectMedia {
   src: string;
   alt: string;
+  width: number;
+  height: number;
   projectTitle: string;
   projectSlug: string;
   transitionImageId: string;
@@ -22,14 +24,29 @@ export interface StudioPrinciple {
 }
 
 export const studioContent = {
+  loader: {
+    label: "About Lagom Arkitektur",
+    title: "LAGOM",
+  },
   hero: {
     eyebrow: "Lagom Arkitektur",
-    titleLines: ["Spaces that", "feel just", "right."],
+    titleLines: ["Spaces that feel", "just right."],
     description:
       "Architecture, interiors and visualisation shaped by precision, simplicity and lasting value.",
+    accentMedia: {
+      src: archmoodArch,
+      alt: "ArchMood Interior Concept with sculpted arches and framed daylight",
+      width: 1536,
+      height: 1024,
+      projectTitle: "ArchMood Interior Concept",
+      projectSlug: "archmood-interior-concept",
+      transitionImageId: "06:cover",
+    } satisfies StudioProjectMedia,
     media: {
       src: sereneDining,
       alt: "Serene Luxe Residence dining space framed by daylight and a distant landscape",
+      width: 1536,
+      height: 1024,
       projectTitle: "Serene Luxe Residence",
       projectSlug: "serene-luxe-residence",
       transitionImageId: "02:cover",
@@ -39,14 +56,16 @@ export const studioContent = {
     label: "The studio",
     title: "Architecture in balance, with meaning and precision.",
     paragraphs: [
-      "LAGOM Arkitektur creates architecture, interiors and visualisations defined by precision, simplicity and lasting value. Through close collaboration and careful attention to detail, we shape tailored environments that reflect each client’s identity—in balance between aesthetics, function and sustainability.",
-      "We believe in close dialogue with our clients, where understanding, trust and shared direction form the foundation of every project. The result is timeless architecture with meaning and presence—spaces that support the life lived within them and retain their value over time.",
+      "LAGOM Arkitektur creates architecture, interiors and visualisations defined by precision, simplicity and lasting value. Through close collaboration and careful attention to detail, we shape tailored environments that reflect each client’s identity while balancing aesthetics, function and sustainability.",
+      "We believe in close dialogue with our clients, where understanding, trust and shared direction form the foundation of every project. The result is timeless architecture with meaning and presence. These spaces support the life lived within them and retain their value over time.",
       "Our portfolio spans interior design, residential architecture and hospitality environments. This breadth of experience lets us approach every commission with flexibility and insight, adapting our process to different scales, contexts and ways of living.",
     ],
     media: [
       {
         src: stoneframeEntry,
         alt: "L-28 Stoneframe Villa entrance shaped by natural stone, plaster and warm timber",
+        width: 1800,
+        height: 1013,
         projectTitle: "L-28 Stoneframe Villa",
         projectSlug: "l-28-stoneframe-villa",
         transitionImageId: "04:cover",
@@ -54,6 +73,8 @@ export const studioContent = {
       {
         src: archmoodArch,
         alt: "ArchMood Interior Concept with a sculpted arch and carefully framed daylight",
+        width: 1536,
+        height: 1024,
         projectTitle: "ArchMood Interior Concept",
         projectSlug: "archmood-interior-concept",
         transitionImageId: "06:cover",
@@ -68,13 +89,15 @@ export const studioContent = {
     portrait: {
       src: founderPortrait,
       alt: "Nikola Gjorgoski, founder and licensed architect at LAGOM Arkitektur",
+      width: 600,
+      height: 1200,
     },
     paragraphs: [
       "The studio was founded by Nikola Gjorgoski, Licensed Architect (SAR/MSA), with several years of experience as an architect, interior designer and instructor in 3D modelling and rendering.",
-      "LAGOM combines creative vision with technical expertise and offers comprehensive services that guide a project through every stage—from concept development, sketches and drawings to building permits, project management and supervision.",
+      "LAGOM combines creative vision with technical expertise and offers comprehensive services that guide a project through every stage, from concept development, sketches and drawings to building permits, project management and supervision.",
     ],
     philosophy:
-      "At the core of our process lies trust. By building strong relationships with our clients, we create the conditions for thoughtful decisions, meaningful design and results that are both lasting and loved—spaces where architecture truly serves the people who experience it.",
+      "At the core of our process lies trust. By building strong relationships with our clients, we create the conditions for thoughtful decisions, meaningful design and results that are both lasting and loved. We create spaces where architecture truly serves the people who experience it.",
     facts: [
       { label: "Studio", value: "LAGOM Arkitektur" },
       { label: "Based in", value: "Malmö, Sweden" },
@@ -90,10 +113,12 @@ export const studioContent = {
         title: "Balance",
         summary: "Neither too much nor too little.",
         body:
-          "We create sustainable architecture defined by balance, meaning and purpose—where every element is carefully considered and feels just right.",
+          "We create sustainable architecture defined by balance, meaning and purpose, where every element is carefully considered and feels just right.",
         media: {
           src: sereneDining,
           alt: "Balanced dining composition in Serene Luxe Residence",
+          width: 1536,
+          height: 1024,
           projectTitle: "Serene Luxe Residence",
           projectSlug: "serene-luxe-residence",
           transitionImageId: "02:cover",
@@ -108,6 +133,8 @@ export const studioContent = {
         media: {
           src: archmoodArch,
           alt: "Layered arches and daylight in ArchMood Interior Concept",
+          width: 1536,
+          height: 1024,
           projectTitle: "ArchMood Interior Concept",
           projectSlug: "archmood-interior-concept",
           transitionImageId: "06:cover",
@@ -122,6 +149,8 @@ export const studioContent = {
         media: {
           src: stoneframeFront,
           alt: "Front elevation of L-28 Stoneframe Villa",
+          width: 1800,
+          height: 1013,
           projectTitle: "L-28 Stoneframe Villa",
           projectSlug: "l-28-stoneframe-villa",
           transitionImageId: "04:cover",
@@ -136,6 +165,8 @@ export const studioContent = {
         media: {
           src: stoneframeSide,
           alt: "Stone facade and tree shadows at L-28 Stoneframe Villa",
+          width: 1800,
+          height: 1062,
           projectTitle: "L-28 Stoneframe Villa",
           projectSlug: "l-28-stoneframe-villa",
           transitionImageId: "04:cover",
@@ -143,4 +174,11 @@ export const studioContent = {
       },
     ] satisfies StudioPrinciple[],
   },
+  disciplines: [
+    "Architecture",
+    "Interiors",
+    "Visualisation",
+    "Project guidance",
+  ],
+  disciplinesIntro: "One studio, four connected disciplines.",
 } as const;

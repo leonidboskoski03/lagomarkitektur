@@ -1,0 +1,30 @@
+.revealLine {
+  will-change: transform;
+}
+
+.marqueeTrack {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.marqueeGroup {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marqueeTrack {
+    width: 100%;
+  }
+
+  .marqueeGroup {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .marqueeGroup[aria-hidden="true"] {
+    display: none;
+  }
+}

@@ -4,197 +4,178 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { studioContent } from "../../data/studio";
 import { motionEases } from "../../lib/motion";
-import { StudioSectionLabel } from "./StudioSectionLabel";
+import { StudioImageReveal } from "./StudioImageReveal";
+import { useStudioTextReveals } from "./useStudioTextReveals";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export function StudioFounder() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const { founder } = studioContent;
 
+  useStudioTextReveals(sectionRef);
+
   useGSAP(() => {
     const section = sectionRef.current;
-    if (!section) return;
+    const facts = section?.querySelector<HTMLElement>("[data-studio-facts]");
+    if (!section || !facts) return;
 
-    const matchMedia = gsap.matchMedia();
-    matchMedia.add(
-      {
-        desktop: "(min-width: 768px)",
-        reduceMotion: "(prefers-reduced-motion: reduce)",
-      },
-      (context) => {
-        const { desktop, reduceMotion } = context.conditions as {
-          desktop: boolean;
-          reduceMotion: boolean;
-        };
-        const reveals = gsap.utils.toArray<HTMLElement>("[data-founder-reveal]", section);
-        const portraitFrame = section.querySelector<HTMLElement>("[data-founder-frame]");
-        const portrait = section.querySelector<HTMLImageElement>("[data-founder-image]");
-        const facts = gsap.utils.toArray<HTMLElement>("[data-founder-fact]", section);
-
-        if (reduceMotion) {
-          gsap.set([reveals, portraitFrame, portrait, facts], { clearProps: "all" });
-          return;
-        }
-
-        reveals.forEach((element, index) => {
-          gsap.from(element, {
-            y: 54,
-            autoAlpha: 0,
-            duration: 1.05,
-            delay: Math.min(index * 0.075, 0.225),
-            ease: motionEases.enter,
-            scrollTrigger: {
-              trigger: element,
-              start: "top 86%",
-              once: true,
-            },
-          });
-        });
-
-        if (portraitFrame && portrait) {
-          const portraitTimeline = gsap.timeline({
-            scrollTrigger: {
-              trigger: portraitFrame,
-              start: "top 80%",
-              once: true,
-            },
-          });
-
-          portraitTimeline
-            .from(portraitFrame, {
-              clipPath: "inset(0 100% 0 0)",
-              duration: 1.48,
-              ease: motionEases.cinematic,
-            })
-            .from(portrait, {
-              scale: 1.085,
-              duration: 1.82,
-              ease: motionEases.settle,
-            }, 0);
-
-          if (desktop) {
-            gsap.to(portrait, {
-              yPercent: 6,
-              scale: 1.045,
-              ease: "none",
-              scrollTrigger: {
-                trigger: portraitFrame,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: 1.2,
-                invalidateOnRefresh: true,
-              },
-            });
-          }
-        }
-
-        if (facts.length > 0) {
-          gsap.from(facts, {
-            y: 32,
-            autoAlpha: 0,
-            duration: 0.92,
-            stagger: 0.1,
-            ease: motionEases.enter,
-            scrollTrigger: {
-              trigger: facts[0],
-              start: "top 88%",
-              once: true,
-            },
-          });
-        }
-      },
+    const horizontalRules = gsap.utils.toArray<HTMLElement>(
+      '[data-studio-fact-rule="horizontal"]',
+      facts,
     );
+    const verticalRules = gsap.utils.toArray<HTMLElement>(
+      '[data-studio-fact-rule="vertical"]',
+      facts,
+    );
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
-    return () => matchMedia.revert();
+    if (reduceMotion) {
+      gsap.set(horizontalRules, { scaleX: 1 });
+      gsap.set(verticalRules, { scaleY: 1 });
+      return;
+    }
+
+    gsap.set(horizontalRules, { scaleX: 0, transformOrigin: "left center" });
+    gsap.set(verticalRules, { scaleY: 0, transformOrigin: "center top" });
+
+    gsap
+      .timeline({
+        scrollTrigger: {
+          trigger: facts,
+          start: "top 82%",
+          once: true,
+        },
+      })
+      .to(horizontalRules, {
+        scaleX: 1,
+        duration: 1.1,
+        stagger: 0.08,
+        ease: motionEases.reveal,
+      })
+      .to(
+        verticalRules,
+        {
+          scaleY: 1,
+          duration: 1.04,
+          stagger: 0.12,
+          ease: motionEases.cinematic,
+        },
+        0.16,
+      );
   }, { scope: sectionRef });
 
   return (
     <section
       ref={sectionRef}
-      className="bg-white px-[var(--spacing-viewport-gutter)] pb-[clamp(7rem,12vw,13rem)] pt-28 text-brand-ink md:pt-0"
+      className="bg-white px-[var(--spacing-viewport-gutter)] pb-[clamp(2.5rem,4vw,4rem)] pt-[clamp(3rem,5vw,5rem)] text-brand-ink"
       aria-labelledby="studio-founder-heading"
     >
       <div className="mx-auto max-w-[var(--width-viewport-content)]">
-        <div className="grid grid-cols-1 items-center gap-[clamp(3.5rem,7vw,8rem)] md:grid-cols-12">
-          <div className="md:col-span-5">
-            <div data-founder-reveal>
-              <StudioSectionLabel>{founder.label}</StudioSectionLabel>
-            </div>
-            <h2
-              id="studio-founder-heading"
-              data-founder-reveal
-              className="mt-[clamp(2.25rem,4vw,4rem)] max-w-[8ch] text-[clamp(3.25rem,6.4vw,7.6rem)] font-medium leading-[0.91] tracking-[-0.074em]"
+        <div
+          data-studio-fade-reveal
+          className="grid grid-cols-1 gap-3 pt-3 text-[0.67rem] font-semibold uppercase tracking-[0.07em] text-black/52 md:grid-cols-12"
+        >
+          <span className="md:col-span-5">{founder.name}</span>
+          <span className="md:col-span-5 md:col-start-8">{founder.role}</span>
+        </div>
+
+        <h2
+          id="studio-founder-heading"
+          data-studio-text-reveal
+          className="mt-[clamp(3rem,5vw,5rem)] max-w-[16ch] text-[clamp(2.8rem,11vw,3.45rem)] font-medium leading-[0.89] tracking-[-0.075em] md:text-[clamp(3.45rem,7.25vw,8.8rem)]"
+        >
+          {founder.title}
+        </h2>
+
+        <div className="mt-[clamp(4rem,7vw,7rem)] grid grid-cols-1 gap-[clamp(4rem,7vw,8rem)] md:grid-cols-12 md:items-start">
+          <figure className="md:sticky md:top-[12vh] md:col-span-5">
+            <StudioImageReveal
+              src={founder.portrait.src}
+              alt={founder.portrait.alt}
+              width={founder.portrait.width}
+              height={founder.portrait.height}
+              sizes="(max-width: 767px) 100vw, 42vw"
+              className="aspect-[0.8/1]"
+              imageClassName="object-top grayscale"
+            />
+            <figcaption
+              data-studio-fade-reveal
+              className="mt-3 flex items-start justify-between gap-5 border-t border-black/18 pt-2 text-[0.65rem] font-semibold uppercase tracking-[0.065em] text-black/55"
             >
-              {founder.title}
-            </h2>
+              <span>{founder.name}</span>
+              <span className="max-w-[18rem] text-right">{founder.role}</span>
+            </figcaption>
+          </figure>
 
-            <div data-founder-reveal className="mt-[clamp(2.75rem,5vw,5.5rem)]">
-              <p className="text-[clamp(1.5rem,2.2vw,2.45rem)] font-medium leading-none tracking-[-0.045em]">
-                {founder.name}
-              </p>
-              <p className="mt-2 text-[0.7rem] font-semibold uppercase tracking-[0.07em] text-black/48">
-                {founder.role}
-              </p>
-            </div>
+          <div className="md:col-span-5 md:col-start-8 md:pt-[clamp(1rem,4vw,5rem)]">
+            <h3
+              data-studio-text-reveal
+              className="max-w-[10ch] text-[clamp(2.7rem,5vw,6.2rem)] font-medium leading-[0.92] tracking-[-0.065em]"
+            >
+              Behind LAGOM.
+            </h3>
 
-            <div className="mt-[clamp(2.75rem,4.5vw,4.5rem)] space-y-5">
+            <div className="mt-[clamp(3rem,5vw,5rem)] space-y-[clamp(2.5rem,4vw,4.25rem)]">
               {founder.paragraphs.map((paragraph) => (
                 <p
                   key={paragraph}
-                  data-founder-reveal
-                  className="text-[clamp(1rem,1.15vw,1.18rem)] leading-[1.54] tracking-[-0.015em] text-black/63"
+                  data-studio-text-reveal
+                  className="text-[clamp(1.14rem,1.55vw,1.65rem)] leading-[1.46] tracking-[-0.027em] text-black/67"
                 >
                   {paragraph}
                 </p>
               ))}
             </div>
 
-            <div data-founder-reveal className="mt-[clamp(2.75rem,4.5vw,4.5rem)] border-t border-black/18 pt-5">
-              <p className="mb-4 text-[0.68rem] font-semibold uppercase tracking-[0.075em] text-black/48">
-                Philosophy
-              </p>
-              <p className="text-[clamp(1.08rem,1.35vw,1.38rem)] leading-[1.45] tracking-[-0.022em]">
+            <blockquote className="mt-[clamp(3.5rem,5vw,5rem)] border-t border-black/18 pt-[clamp(1.75rem,3vw,3rem)]">
+              <p
+                data-studio-text-reveal
+                className="text-[clamp(1.7rem,2.6vw,3rem)] leading-[1.22] tracking-[-0.045em]"
+              >
                 {founder.philosophy}
               </p>
-            </div>
+            </blockquote>
           </div>
-
-          <figure className="md:col-span-6 md:col-start-7">
-            <div
-              data-founder-frame
-              className="relative aspect-[0.78/1] overflow-hidden bg-[#e9e6e0] will-change-[clip-path]"
-            >
-              <img
-                data-founder-image
-                src={founder.portrait.src}
-                alt={founder.portrait.alt}
-                loading="lazy"
-                decoding="async"
-                className="absolute inset-0 h-[112%] w-full object-cover object-top will-change-transform"
-                style={{ height: "112%", top: "-6%" }}
-                onLoad={() => ScrollTrigger.refresh()}
-              />
-            </div>
-            <figcaption className="mt-3 border-t border-black/18 pt-2 text-[0.65rem] font-semibold uppercase tracking-[0.065em] text-black/55">
-              {founder.role}
-            </figcaption>
-          </figure>
         </div>
 
-        <dl className="mt-[clamp(5rem,9vw,9rem)] grid grid-cols-1 border-t border-black/18 md:grid-cols-3">
-          {founder.facts.map((fact) => (
+        <dl
+          data-studio-facts
+          className="relative mt-[clamp(5rem,8vw,8rem)] grid grid-cols-1 md:grid-cols-3"
+        >
+          <span
+            data-studio-fact-rule="horizontal"
+            aria-hidden="true"
+            className="absolute inset-x-0 top-0 h-px bg-black/18 will-change-transform"
+          />
+
+          {founder.facts.map((fact, index) => (
             <div
               key={fact.label}
-              data-founder-fact
-              className="flex min-h-32 flex-col justify-between border-b border-black/18 py-5 md:min-h-40 md:border-b-0 md:border-r md:px-7 md:first:pl-0 md:last:border-r-0"
+              data-studio-fade-reveal
+              className="relative flex min-h-36 flex-col justify-between py-5 md:min-h-44 md:px-7 md:first:pl-0"
             >
-              <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.07em] text-black/45">
+              <dt className="text-[0.67rem] font-semibold uppercase tracking-[0.07em] text-black/45">
                 {fact.label}
               </dt>
-              <dd className="mt-8 max-w-[13ch] text-[clamp(1.55rem,2.4vw,2.8rem)] font-medium leading-[0.98] tracking-[-0.052em]">
+              <dd className="mt-10 max-w-[15ch] text-[clamp(1.7rem,2.8vw,3.3rem)] font-medium leading-[0.98] tracking-[-0.058em]">
                 {fact.value}
               </dd>
+
+              <span
+                data-studio-fact-rule="horizontal"
+                aria-hidden="true"
+                className="absolute inset-x-0 bottom-0 h-px bg-black/18 will-change-transform md:hidden"
+              />
+              {index < founder.facts.length - 1 ? (
+                <span
+                  data-studio-fact-rule="vertical"
+                  aria-hidden="true"
+                  className="absolute inset-y-0 right-0 hidden w-px bg-black/18 will-change-transform md:block"
+                />
+              ) : null}
             </div>
           ))}
         </dl>

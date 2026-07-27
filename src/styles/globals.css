@@ -135,12 +135,45 @@ img {
   height: auto;
 }
 
+[data-contact-hero-frame] {
+  --contact-aperture: 20%;
+  clip-path: inset(
+    var(--contact-aperture)
+    var(--contact-aperture)
+    var(--contact-aperture)
+    var(--contact-aperture)
+  );
+}
+
+[data-contact-hero-image] {
+  transform: scale(1.065);
+  transform-origin: center center;
+}
+
+[data-contact-hero-veil] {
+  background-color: rgba(4, 13, 18, 0.055);
+  backdrop-filter: brightness(0.72);
+}
+
 ::selection {
   background-color: var(--color-accent-dark);
   color: var(--color-bg);
 }
 
 @media (prefers-reduced-motion: reduce) {
+  [data-contact-hero-frame] {
+    --contact-aperture: 0%;
+  }
+
+  [data-contact-hero-image] {
+    transform: none;
+  }
+
+  [data-contact-hero-veil] {
+    opacity: 0;
+    backdrop-filter: none;
+  }
+
   *,
   *::before,
   *::after {

@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL } from "../lib/constants";
+import { CONTACT_EMAIL, CONTACT_LOCATION } from "../lib/constants";
 
 export interface FooterLinkItem {
   label: string;
@@ -38,7 +38,7 @@ export const footerContent: FooterContent = {
     description:
       "Interior architecture, visualisation and spatial consultancy shaped with clarity, warmth and restraint.",
     disciplines: "Architecture · Interiors · Visualisation · Consultancy",
-    location: "Malmö, Sweden",
+    location: CONTACT_LOCATION,
     email: CONTACT_EMAIL,
   },
   navigation: [
