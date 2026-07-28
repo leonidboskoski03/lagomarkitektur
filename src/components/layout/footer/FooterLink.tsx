@@ -4,6 +4,7 @@ import type { FooterLinkItem } from "../../../data/footer";
 import { ClipMaskTextAnimation } from "../../animation/ClipMaskTextAnimation";
 import { cn } from "../../../lib/utils";
 import { WorkTransitionLink } from "../../transition/WorkTransitionLink";
+import { ContactTransitionLink } from "../../transition/ContactTransitionLink";
 
 interface FooterLinkProps {
   item: FooterLinkItem;
@@ -85,6 +86,18 @@ export function FooterLink({
       >
         {content}
       </WorkTransitionLink>
+    );
+  }
+
+  if (item.href === "/contact") {
+    return (
+      <ContactTransitionLink
+        data-cursor=""
+        className={linkClassName}
+        {...interactionProps}
+      >
+        {content}
+      </ContactTransitionLink>
     );
   }
 

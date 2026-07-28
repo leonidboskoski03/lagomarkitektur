@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { ContactPageContent } from "../../data/contact";
 import { motionEases } from "../../lib/motion";
 import { ClipMaskTextAnimation } from "../animation/ClipMaskTextAnimation";
+import { CONTACT_CONTENT_REVEAL_EVENT } from "../../lib/revealEvents";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -82,6 +83,9 @@ export function ContactHero({ content }: ContactHeroProps) {
             return;
           }
 
+          const contactTransitionIsActive =
+            document.documentElement.dataset.contactTransition === "true";
+
           gsap.set(leftMeta, {
             autoAlpha: 0,
             clipPath: "inset(0% 100% 0% 0%)",
@@ -109,8 +113,9 @@ export function ContactHero({ content }: ContactHeroProps) {
             yPercent: 112,
           });
 
-          gsap
+          const introTimeline = gsap
             .timeline({
+              paused: contactTransitionIsActive,
               defaults: {
                 overwrite: "auto",
               },
@@ -180,6 +185,16 @@ export function ContactHero({ content }: ContactHeroProps) {
               ">+=0.08",
             );
 
+          const revealContactContent = () => introTimeline.play(0);
+
+          if (contactTransitionIsActive) {
+            window.addEventListener(
+              CONTACT_CONTENT_REVEAL_EVENT,
+              revealContactContent,
+              { once: true },
+            );
+          }
+
           if (desktop) {
             gsap.to(image, {
               yPercent: -2.5,
@@ -193,6 +208,13 @@ export function ContactHero({ content }: ContactHeroProps) {
               },
             });
           }
+
+          return () => {
+            window.removeEventListener(
+              CONTACT_CONTENT_REVEAL_EVENT,
+              revealContactContent,
+            );
+          };
         },
       );
 

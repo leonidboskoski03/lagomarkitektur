@@ -3,7 +3,10 @@ import {useCallback, useRef, useState} from "react";
 import gsap from "gsap";
 import clsx from "clsx";
 import {useGSAP} from "@gsap/react";
-import {NAVBAR_REVEAL_EVENT} from "../../lib/revealEvents";
+import {
+    CONTACT_CONTENT_REVEAL_EVENT,
+    NAVBAR_REVEAL_EVENT,
+} from "../../lib/revealEvents";
 import {motionEaseCurves, motionEases} from "../../lib/motion";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {MenuOverlay} from "./MenuOverlay";
@@ -13,6 +16,8 @@ import {ContactOverlay} from "../contact/ContactOverlay";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {WorkTransitionLink} from "../transition/WorkTransitionLink";
 import {useWorkTransition} from "../transition/workTransitionContext";
+import {ContactTransitionLink} from "../transition/ContactTransitionLink";
+import {useContactTransition} from "../transition/contactTransitionContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -55,6 +60,7 @@ export function Navbar() {
     const {pathname} = useLocation();
     const navigate = useNavigate();
     const {startWorkTransition} = useWorkTransition();
+    const {startContactTransition} = useContactTransition();
     const hidePrimaryNav = pathname === "/work";
     const usesProcessNavSequence = pathname === "/" || pathname === "/process";
     const usesLightPrimaryNav = pathname === "/studio"
@@ -79,6 +85,11 @@ export function Navbar() {
             return;
         }
 
+        if (href === "/contact") {
+            startContactTransition();
+            return;
+        }
+
         if (href === pathname) {
             window.scrollTo({top: 0, left: 0, behavior: "auto"});
             return;
@@ -88,7 +99,7 @@ export function Navbar() {
         window.requestAnimationFrame(() => {
             window.scrollTo({top: 0, left: 0, behavior: "auto"});
         });
-    }, [navigate, pathname, startWorkTransition]);
+    }, [navigate, pathname, startContactTransition, startWorkTransition]);
 
     useGSAP((_context, contextSafe) => {
         const navItems = navItemRefs.current.filter(Boolean);
@@ -180,6 +191,25 @@ export function Navbar() {
             });
         });
 
+        const revealContactNavbar = contextSafe!(() => {
+            gsap.killTweensOf([
+                primaryNavContentRef.current,
+                ...animatedItems,
+                ...secondaryNavTargets,
+            ]);
+            gsap.set(primaryNavContentRef.current, {
+                clearProps: "transform",
+                pointerEvents: "auto",
+            });
+            gsap.set(animatedItems, {clearProps: "transform"});
+            gsap.set(secondaryNavTargets, {
+                yPercent: -125,
+                clipPath: "inset(0% 0% 100% 0%)",
+                autoAlpha: 0,
+                pointerEvents: "none",
+            });
+        });
+
         ScrollTrigger.create({
             start: () => window.innerHeight * 0.12,
             end: "max",
@@ -268,13 +298,22 @@ export function Navbar() {
             }
         }
 
-        const loader = document.querySelector<HTMLElement>("[data-lagom-loader]");
+        const loader = pathname === "/"
+            ? document.querySelector<HTMLElement>("[data-lagom-loader]")
+            : null;
         const loaderIsHidden = !loader || window.getComputedStyle(loader).display === "none";
 
+        window.addEventListener(NAVBAR_REVEAL_EVENT, revealNavbar);
+        window.addEventListener(CONTACT_CONTENT_REVEAL_EVENT, revealContactNavbar);
         if (loaderIsHidden) revealNavbar();
-        else window.addEventListener(NAVBAR_REVEAL_EVENT, revealNavbar, { once: true });
 
-        return () => window.removeEventListener(NAVBAR_REVEAL_EVENT, revealNavbar);
+        return () => {
+            window.removeEventListener(NAVBAR_REVEAL_EVENT, revealNavbar);
+            window.removeEventListener(
+                CONTACT_CONTENT_REVEAL_EVENT,
+                revealContactNavbar,
+            );
+        };
     }, { scope: headerRef, dependencies: [pathname], revertOnUpdate: true });
 
     return (
@@ -330,6 +369,14 @@ export function Navbar() {
                         >
                             {content}
                         </WorkTransitionLink>
+                    ) : link.href === "/contact" ? (
+                        <ContactTransitionLink
+                            key={link.href}
+                            className="overflow-hidden"
+                            data-cursor=""
+                        >
+                            {content}
+                        </ContactTransitionLink>
                     ) : (
                         <Link
                             key={link.href}

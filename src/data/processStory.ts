@@ -46,9 +46,9 @@ export const processStory = {
     },
     sequence: {
         title: "The making of L-28",
-        poster: "/process-story/poster.webp",
-        desktopBasePath: "/process-story-v2/desktop",
-        mobileBasePath: "/process-story-v2/mobile",
+        poster: publicAsset("process-story/poster.webp"),
+        desktopBasePath: publicAsset("process-story-v2/desktop"),
+        mobileBasePath: publicAsset("process-story-v2/mobile"),
         frameCount: 979,
         durationSeconds: 54.375,
         fps: 18,
@@ -115,3 +115,4 @@ export const processStory = {
         actionHref: "/contact",
     },
 } as const;
+import { publicAsset } from "../lib/publicAsset";

@@ -1,0 +1,199 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1110;
+  visibility: hidden;
+  opacity: 0;
+  background: rgb(3 8 11 / 38%);
+  pointer-events: none;
+  will-change: opacity;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1120;
+  overflow: hidden;
+  background: #fff;
+  color: var(--color-brand-ink);
+  pointer-events: all;
+  contain: strict;
+  isolation: isolate;
+  clip-path: inset(100% 0 0 0);
+  will-change: clip-path;
+}
+
+.shell {
+  display: grid;
+  min-height: 100dvh;
+  grid-template-rows: auto 1fr auto;
+  padding:
+    clamp(1.5rem, 2.1vw, 2.5rem)
+    var(--spacing-viewport-gutter)
+    clamp(1.35rem, 1.8vw, 2rem);
+}
+
+.header,
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  font-size: 0.64rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.header {
+  align-items: flex-start;
+}
+
+.headerMeta,
+.footerMeta {
+  color: rgb(8 27 36 / 46%);
+}
+
+.construction {
+  align-self: center;
+  min-width: 0;
+}
+
+.eyebrowMask,
+.titleMask,
+.media {
+  overflow: hidden;
+}
+
+.eyebrow {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+  will-change: transform, opacity;
+}
+
+.titleRow {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(1rem, 2.5vw, 2.75rem);
+  margin-top: clamp(1.75rem, 3vw, 3.25rem);
+}
+
+.titleMask {
+  min-width: 0;
+  padding-bottom: 0.08em;
+}
+
+.title {
+  white-space: nowrap;
+  font-size: clamp(4rem, 17vw, 15rem);
+  font-weight: 500;
+  line-height: 0.75;
+  letter-spacing: -0.078em;
+  will-change: transform;
+}
+
+.media {
+  position: relative;
+  width: clamp(5.25rem, 16vw, 14rem);
+  height: clamp(3.75rem, 8vw, 7.5rem);
+  flex: 0 0 auto;
+  margin-bottom: 0.09em;
+  background: #eceae4;
+  clip-path: inset(100% 0 0 0);
+  will-change: clip-path;
+}
+
+.media img {
+  position: absolute;
+  left: 0;
+  top: -8%;
+  width: 100%;
+  height: 116%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center 48%;
+  transform: scale(1.08);
+  will-change: transform;
+}
+
+.rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin-top: clamp(1.5rem, 3vw, 3rem);
+  background: rgb(8 27 36 / 20%);
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.footer {
+  align-items: flex-end;
+}
+
+.counter {
+  min-width: 2ch;
+  font-size: clamp(3.75rem, 8vw, 7rem);
+  font-weight: 400;
+  line-height: 0.72;
+  letter-spacing: -0.075em;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  overflow: hidden;
+  background: rgb(8 27 36 / 14%);
+}
+
+.progressFill {
+  width: 100%;
+  height: 100%;
+  background: var(--color-brand-ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+@media (max-width: 47.99rem) {
+  .shell {
+    padding-top: 1.5rem;
+  }
+
+  .headerMeta {
+    max-width: 12rem;
+    text-align: right;
+  }
+
+  .titleRow {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .title {
+    font-size: clamp(3.9rem, 21vw, 6.2rem);
+  }
+
+  .media {
+    width: min(48vw, 11rem);
+    height: min(31vw, 7rem);
+    margin-left: auto;
+  }
+
+  .footerMeta {
+    max-width: 12rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .backdrop {
+    display: none;
+  }
+}

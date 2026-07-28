@@ -18,6 +18,7 @@ import {CustomCursor} from "./components/interaction/CustomCursor.tsx";
 import {Footer} from "./components/layout/Footer.tsx";
 import {ProjectTransitionProvider} from "./components/transition/ProjectTransitionProvider.tsx";
 import {WorkTransitionProvider} from "./components/transition/WorkTransitionProvider.tsx";
+import {ContactTransitionProvider} from "./components/transition/ContactTransitionProvider.tsx";
 
 function HomepageLoader() {
     const {pathname} = useLocation();
@@ -109,10 +110,12 @@ function AppContent() {
 
 function App() {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
             <ProjectTransitionProvider>
                 <WorkTransitionProvider>
-                    <AppContent/>
+                    <ContactTransitionProvider>
+                        <AppContent/>
+                    </ContactTransitionProvider>
                 </WorkTransitionProvider>
             </ProjectTransitionProvider>
         </BrowserRouter>

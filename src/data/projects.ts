@@ -3,6 +3,7 @@ import type {
   ProjectGalleryMedia,
   ProjectStoryPlacement,
 } from "../types/project";
+import { publicAsset } from "../lib/publicAsset";
 
 const projectAssets = import.meta.glob<string>(
   "../assets/LAGOM Arkitektur/**/*.{jpg,jpeg,png,webp}",
@@ -370,7 +371,7 @@ export function getProjectGalleryMedia(project: Project): ProjectGalleryMedia[] 
     return {
       id: `${project.id}-gallery-${index}`,
       src,
-      previewSrc: `/work-previews/${project.id}/${index}.webp`,
+      previewSrc: publicAsset(`work-previews/${project.id}/${index}.webp`),
       alt: `${project.title} — view ${String(index + 1).padStart(2, "0")}`,
       width,
       height,

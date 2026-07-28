@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { publicAsset } from "../lib/publicAsset";
 import type { SanityImageSource } from "@sanity/image-url";
 import {
   hasSanityConfig,
@@ -211,7 +212,7 @@ async function loadLocalFallback(): Promise<WorkProjectItem[]> {
   return projects.map((project, index) => {
     const image: WorkProjectImage = {
       url: project.thumbnailImage || project.featuredImage,
-      previewUrl: `/work-previews/${project.id}/cover.webp`,
+      previewUrl: publicAsset(`work-previews/${project.id}/cover.webp`),
       sizes: "(max-width: 767px) 92vw, 52vw",
       previewSizes: "(max-width: 767px) 48vw, 15vw",
       alt: project.title,
@@ -219,8 +220,8 @@ async function loadLocalFallback(): Promise<WorkProjectItem[]> {
     };
     const galleryImages = project.gallery.map((url, imageIndex) => ({
       url,
-      previewUrl: `/work-previews/${project.id}/${imageIndex}.webp`,
-      atlasUrl: `/work-previews/${project.id}/${imageIndex}.webp`,
+      previewUrl: publicAsset(`work-previews/${project.id}/${imageIndex}.webp`),
+      atlasUrl: publicAsset(`work-previews/${project.id}/${imageIndex}.webp`),
       sizes: "(max-width: 767px) 48vw, 24vw",
       previewSizes: "(max-width: 767px) 48vw, 15vw",
       alt: `${project.title} image ${imageIndex + 1}`,

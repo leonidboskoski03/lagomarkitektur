@@ -14,6 +14,12 @@ export interface ContactFormField {
 }
 
 export interface ContactPageContent {
+  transition: {
+    eyebrow: string;
+    title: string;
+    meta: string;
+    note: string;
+  };
   hero: {
     eyebrow: string;
     image: {
@@ -61,6 +67,12 @@ export interface ContactPageContent {
 }
 
 export const contactContent: ContactPageContent = {
+  transition: {
+    eyebrow: "Project enquiries",
+    title: "CONTACT",
+    meta: "04 / Malmö, Sweden",
+    note: "A considered place to begin.",
+  },
   hero: {
     eyebrow: "Lagom Arkitektur / Contact",
     image: {
