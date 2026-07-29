@@ -13,16 +13,6 @@ export const structure: StructureResolver = (S) =>
             .defaultOrdering([{ field: "orderRank", direction: "asc" }]),
         ),
       S.listItem()
-        .title("Featured projects")
-        .schemaType("project")
-        .child(
-          S.documentList()
-            .title("Featured projects")
-            .schemaType("project")
-            .filter('_type == "project" && isFeatured == true')
-            .defaultOrdering([{ field: "orderRank", direction: "asc" }]),
-        ),
-      S.listItem()
         .title("Draft / hidden projects")
         .schemaType("project")
         .child(
@@ -31,6 +21,15 @@ export const structure: StructureResolver = (S) =>
             .schemaType("project")
             .filter('_type == "project" && isPublished != true')
             .defaultOrdering([{ field: "orderRank", direction: "asc" }]),
+        ),
+      S.divider(),
+      S.listItem()
+        .title("Homepage — Selected work")
+        .schemaType("homeProjectShowcase")
+        .child(
+          S.document()
+            .schemaType("homeProjectShowcase")
+            .documentId("homeProjectShowcase"),
         ),
       S.divider(),
       S.listItem()

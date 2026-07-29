@@ -45,7 +45,6 @@ export interface ProjectShowcaseItem {
   id: string;
   index: string;
   slug: string;
-  prefix: string;
   title: string;
   tags: string[];
   properties: string[];
@@ -328,8 +327,7 @@ export const projectShowcaseProjects: ProjectShowcaseItem[] = projects.slice(0, 
   id: project.id,
   index: project.id,
   slug: project.slug,
-  prefix: project.title.split(" ")[0].replace("'", ""),
-  title: project.title.replace(/^.*? - /, ""),
+  title: project.title,
   tags: [project.category, project.services[0] ?? "Design", project.year, "Lagom"],
   properties: [project.year, project.location, project.credits],
   image: project.featuredImage,

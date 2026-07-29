@@ -186,14 +186,6 @@ export const project = defineType({
       ],
     }),
     defineField({
-      name: "isFeatured",
-      title: "Feature this project",
-      type: "boolean",
-      description: "Featured projects can be highlighted on the homepage and Work intro.",
-      group: "publishing",
-      initialValue: false,
-    }),
-    defineField({
       name: "orderRank",
       title: "Display order",
       type: "number",
@@ -231,7 +223,6 @@ export const project = defineType({
   initialValue: {
     category: "Residential",
     isPublished: true,
-    isFeatured: false,
     orderRank: 100,
   },
   orderings: [

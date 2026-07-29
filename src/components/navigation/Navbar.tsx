@@ -1,11 +1,12 @@
 import {motion} from "motion/react";
-import {useCallback, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import gsap from "gsap";
 import clsx from "clsx";
 import {useGSAP} from "@gsap/react";
 import {
     CONTACT_CONTENT_REVEAL_EVENT,
     NAVBAR_REVEAL_EVENT,
+    WORK_CONTENT_REVEAL_EVENT,
 } from "../../lib/revealEvents";
 import {motionEaseCurves, motionEases} from "../../lib/motion";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
@@ -57,13 +58,13 @@ const handleMouseEnter = () => {
 };
 
 export function Navbar() {
-    const {pathname} = useLocation();
+    const {pathname, key: locationKey} = useLocation();
     const navigate = useNavigate();
     const {startWorkTransition} = useWorkTransition();
     const {startContactTransition} = useContactTransition();
-    const hidePrimaryNav = pathname === "/work";
     const usesProcessNavSequence = pathname === "/" || pathname === "/process";
-    const usesLightPrimaryNav = pathname === "/studio"
+    const usesLightPrimaryNav = pathname === "/work"
+        || pathname === "/studio"
         || pathname === "/om-oss"
         || pathname === "/contact"
         || pathname === "/kontakt";
@@ -71,9 +72,7 @@ export function Navbar() {
     const [isContactOpen, setIsContactOpen] = useState(false);
     const headerRef = useRef<HTMLElement | null>(null);
     const primaryNavContentRef = useRef<HTMLDivElement | null>(null);
-    const logoMarkRef = useRef<HTMLDivElement | null>(null);
-    const logoTextRef = useRef<HTMLDivElement | null>(null);
-    const navItemRefs = useRef<Array<HTMLDivElement | null>>([]);
+    const logoMarkRef = useRef<HTMLAnchorElement | null>(null);
     const buttonRef = useRef<HTMLDivElement | null>(null);
     const secondaryNavRef = useRef<HTMLDivElement | null>(null);
     const menuButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -101,29 +100,62 @@ export function Navbar() {
         });
     }, [navigate, pathname, startContactTransition, startWorkTransition]);
 
-    useGSAP((_context, contextSafe) => {
-        const navItems = navItemRefs.current.filter(Boolean);
-        const animatedItems = [logoMarkRef.current, logoTextRef.current, ...navItems, buttonRef.current].filter(Boolean);
-        const workLogo = hidePrimaryNav
-            ? document.querySelector<HTMLElement>("[data-work-logo]")
+    useEffect(() => {
+        const homeLoader = pathname === "/"
+            ? document.querySelector<HTMLElement>("[data-lagom-loader]")
             : null;
-        const secondaryNavTargets = [secondaryNavRef.current, workLogo].filter(Boolean);
+        const waitsForHomeLoader = homeLoader
+            ? window.getComputedStyle(homeLoader).display !== "none"
+            : false;
+
+        if (waitsForHomeLoader || locationKey === "default") return;
+
+        let restoreFrame = 0;
+        const restoreNavbar = () => {
+            const navItems = gsap.utils.toArray<HTMLElement>(
+                "[data-navbar-item]",
+                headerRef.current,
+            );
+            const animatedItems = [logoMarkRef.current, ...navItems, buttonRef.current].filter(Boolean);
+
+            gsap.killTweensOf([primaryNavContentRef.current, ...animatedItems]);
+            gsap.set(primaryNavContentRef.current, {
+                clearProps: "transform",
+                pointerEvents: "auto",
+            });
+            gsap.set(animatedItems, {clearProps: "transform"});
+        };
+
+        restoreNavbar();
+        const commitFrame = window.requestAnimationFrame(() => {
+            restoreFrame = window.requestAnimationFrame(restoreNavbar);
+        });
+
+        return () => {
+            window.cancelAnimationFrame(commitFrame);
+            window.cancelAnimationFrame(restoreFrame);
+        };
+    }, [locationKey, pathname]);
+
+    useGSAP((_context, contextSafe) => {
+        const navItems = gsap.utils.toArray<HTMLElement>(
+            "[data-navbar-item]",
+            headerRef.current,
+        );
+        const animatedItems = [logoMarkRef.current, ...navItems, buttonRef.current].filter(Boolean);
+        const secondaryNavTargets = [secondaryNavRef.current].filter(Boolean);
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        if (!reduceMotion) gsap.set(animatedItems, { yPercent: 115 });
-        gsap.set(secondaryNavTargets, hidePrimaryNav
-            ? {
-                yPercent: 0,
-                clipPath: "inset(0% 0% 0% 0%)",
-                autoAlpha: 1,
-                pointerEvents: "auto",
-            }
-            : {
-                yPercent: -125,
-                clipPath: "inset(0% 0% 100% 0%)",
-                autoAlpha: 0,
-                pointerEvents: "none",
-            });
+        if (!reduceMotion) {
+            gsap.set(animatedItems, {clearProps: "transform"});
+            gsap.set(animatedItems, {yPercent: 115});
+        }
+        gsap.set(secondaryNavTargets, {
+            yPercent: -125,
+            clipPath: "inset(0% 0% 100% 0%)",
+            autoAlpha: 0,
+            pointerEvents: "none",
+        });
 
         const revealNavbar = contextSafe!(() => {
             if (reduceMotion) return;
@@ -134,7 +166,6 @@ export function Navbar() {
                 .addLabel("action", 0.16);
 
             timeline.to(logoMarkRef.current, { yPercent: 0, duration: 0.62 }, "logo");
-            timeline.to(logoTextRef.current, { yPercent: 0, duration: 0.58 }, "logo+=0.035");
             timeline.to(navItems, {
                 yPercent: 0,
                 duration: 0.54,
@@ -210,6 +241,25 @@ export function Navbar() {
             });
         });
 
+        const revealWorkNavbar = contextSafe!(() => {
+            const currentNavItems = gsap.utils.toArray<HTMLElement>(
+                "[data-navbar-item]",
+                headerRef.current,
+            );
+            const currentAnimatedItems = [
+                logoMarkRef.current,
+                ...currentNavItems,
+                buttonRef.current,
+            ].filter(Boolean);
+
+            gsap.killTweensOf([primaryNavContentRef.current, ...currentAnimatedItems]);
+            gsap.set(primaryNavContentRef.current, {
+                clearProps: "transform",
+                pointerEvents: "auto",
+            });
+            gsap.set(currentAnimatedItems, {clearProps: "transform"});
+        });
+
         ScrollTrigger.create({
             start: () => window.innerHeight * 0.12,
             end: "max",
@@ -218,28 +268,13 @@ export function Navbar() {
             onLeaveBack: showNavbar,
         });
 
-        if (hidePrimaryNav) {
-            const workProjects = document.querySelector<HTMLElement>("[data-work-projects]");
-
-            if (workProjects) {
-                ScrollTrigger.create({
-                    trigger: workProjects,
-                    start: "top 12%",
-                    end: "max",
-                    invalidateOnRefresh: true,
-                    onEnter: hideSecondaryNavbar,
-                    onLeaveBack: showSecondaryNavbar,
-                });
-            }
-        } else {
-            ScrollTrigger.create({
-                start: () => window.innerHeight * 0.92,
-                end: "max",
-                invalidateOnRefresh: true,
-                onEnter: showSecondaryNavbar,
-                onLeaveBack: hideSecondaryNavbar,
-            });
-        }
+        ScrollTrigger.create({
+            start: () => window.innerHeight * 0.92,
+            end: "max",
+            invalidateOnRefresh: true,
+            onEnter: showSecondaryNavbar,
+            onLeaveBack: hideSecondaryNavbar,
+        });
 
         if (usesProcessNavSequence) {
             const projectSection = document.querySelector("[data-project-section]");
@@ -305,10 +340,12 @@ export function Navbar() {
 
         window.addEventListener(NAVBAR_REVEAL_EVENT, revealNavbar);
         window.addEventListener(CONTACT_CONTENT_REVEAL_EVENT, revealContactNavbar);
+        window.addEventListener(WORK_CONTENT_REVEAL_EVENT, revealWorkNavbar);
         if (loaderIsHidden) revealNavbar();
 
         return () => {
             window.removeEventListener(NAVBAR_REVEAL_EVENT, revealNavbar);
+            window.removeEventListener(WORK_CONTENT_REVEAL_EVENT, revealWorkNavbar);
             window.removeEventListener(
                 CONTACT_CONTENT_REVEAL_EVENT,
                 revealContactNavbar,
@@ -320,41 +357,47 @@ export function Navbar() {
       <>
         <header
           ref={headerRef}
-          className={clsx(
-            "fixed top-0 z-[100] h-[15vh] w-full overflow-hidden",
-            hidePrimaryNav && "hidden",
-          )}
-          aria-hidden={hidePrimaryNav || undefined}
+          className="fixed top-0 z-[100] h-[15vh] w-full overflow-hidden"
         >
-          <div ref={primaryNavContentRef} className="viewport-container flex h-full items-center justify-between will-change-transform">
+          <div
+            ref={primaryNavContentRef}
+            className="viewport-container grid h-full grid-cols-[1fr_auto_1fr] items-center will-change-transform"
+          >
             <div
                 className={clsx(
-                    "flex items-start justify-center gap-2",
+                    "col-start-1 row-start-1 justify-self-start overflow-hidden",
                     usesLightPrimaryNav ? "text-brand-ink" : "text-white",
                 )}
             >
-                <div className="overflow-hidden">
-                    <div ref={logoMarkRef} className="will-change-transform">
-                        <LogoMark onMouseEnter={handleMouseEnter} animatedParts />
-                    </div>
-                </div>
-                <div className="self-center overflow-hidden">
-                    <div ref={logoTextRef} className="will-change-transform">
-                        <ClipMaskTextAnimation text="lagom" className="logo-text text-2xl uppercase font-bold" handleMouseEnter={handleMouseEnter} />
-                    </div>
-                </div>
+                <Link
+                    ref={logoMarkRef}
+                    to="/"
+                    data-cursor=""
+                    aria-label="Lagom Arkitektur home"
+                    onMouseEnter={handleMouseEnter}
+                    className="flex h-10 items-center gap-2.5 will-change-transform"
+                >
+                    <LogoMark animatedParts className="h-8 w-auto shrink-0" />
+                    <span
+                        aria-hidden="true"
+                        className="hidden flex-col justify-center text-[0.68rem] font-semibold uppercase leading-[0.9] tracking-[0.055em] sm:flex"
+                    >
+                        <span>Lagom</span>
+                        <span>Arkitektur</span>
+                    </span>
+                </Link>
             </div>
 
             <nav
                 className={clsx(
-                    "hidden gap-4 md:flex",
+                    "col-start-2 row-start-1 hidden gap-4 justify-self-center md:flex",
                     usesLightPrimaryNav ? "text-brand-ink" : "text-white",
                 )}
             >
-                {links.map((link, index) => {
+                {links.map((link) => {
                     const content = (
                         <div
-                            ref={(element) => { navItemRefs.current[index] = element; }}
+                            data-navbar-item
                             className="will-change-transform"
                         >
                             <ClipMaskTextAnimation text={link.label} className="text-sm font-[600]" />
@@ -390,7 +433,7 @@ export function Navbar() {
                 })}
             </nav>
 
-            <div className="hidden overflow-hidden rounded-4xl md:block">
+            <div className="col-start-3 row-start-1 hidden justify-self-end overflow-hidden rounded-lg md:block">
                 <div ref={buttonRef} className="will-change-transform">
                     <GetInTouchButton variant={usesLightPrimaryNav ? "dark" : "light"} onClick={(event) => {
                         contactButtonRef.current = event.currentTarget;
@@ -405,7 +448,7 @@ export function Navbar() {
                     menuButtonRef.current = event.currentTarget;
                     setIsMenuOpen(true);
                 }}
-                className="rounded-full bg-[#f4f1ea] px-5 py-4 text-sm font-medium text-black md:hidden"
+                className="col-start-3 row-start-1 h-10 justify-self-end rounded-lg bg-[#f4f1ea] px-4 text-sm font-medium text-black md:hidden"
                 aria-label="Open menu"
                 aria-expanded={isMenuOpen}
                 aria-controls="site-menu"
@@ -422,7 +465,7 @@ export function Navbar() {
             role="navigation"
             aria-label="Secondary navigation"
         >
-            <div className={clsx(hidePrimaryNav && "hidden sm:block")}>
+            <div>
                 <GetInTouchButton variant="dark" onClick={(event) => {
                     contactButtonRef.current = event.currentTarget;
                     setIsContactOpen(true);
@@ -432,7 +475,7 @@ export function Navbar() {
                 ref={menuButtonRef}
                 type="button"
                 onClick={() => setIsMenuOpen(true)}
-                className="rounded-full bg-[#f4f1ea] px-5 py-4 text-black"
+                className="h-10 rounded-lg bg-[#f4f1ea] px-4 text-black"
                 aria-label="Open menu"
                 aria-expanded={isMenuOpen}
                 aria-controls="site-menu"
@@ -470,7 +513,7 @@ function GetInTouchButton({
             type="button"
             onClick={onClick}
             className={clsx(
-                "rounded-full p-4 flex gap-2 items-center",
+                "h-10 rounded-lg px-4 flex gap-2 items-center",
                 isDark ? "bg-black text-white" : "bg-white text-black"
             )}
             onHoverStart={() => setHovered(true)}

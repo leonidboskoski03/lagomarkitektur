@@ -3,9 +3,14 @@ import {useRef} from "react";
 interface LogoMarkProps {
     onMouseEnter?: () => void;
     animatedParts?: boolean;
+    className?: string;
 }
 
-export function LogoMark({onMouseEnter, animatedParts = false}: LogoMarkProps) {
+export function LogoMark({
+    onMouseEnter,
+    animatedParts = false,
+    className,
+}: LogoMarkProps) {
     const svgRef = useRef<SVGSVGElement>(null);
 
     return (
@@ -17,7 +22,7 @@ export function LogoMark({onMouseEnter, animatedParts = false}: LogoMarkProps) {
             viewBox="69 28 101 118"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="cursor-pointer"
+            className={className ? `block cursor-pointer ${className}` : "block cursor-pointer"}
             aria-hidden="true"
         >
             <polygon id={animatedParts ? "logo-left" : undefined} points="69,28 89,28 90,122 69,142" fill="currentColor" />

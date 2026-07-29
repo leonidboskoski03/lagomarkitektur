@@ -3,8 +3,7 @@ import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {motionEases} from "../lib/motion";
-import {projectShowcaseIntro, projectShowcaseProjects} from "../data/projects";
-import projectIntroImage from "../assets/images/hero2.avif";
+import {useProjectShowcase} from "../hooks/useProjectShowcase";
 import {ProjectTransitionLink} from "../components/transition/ProjectTransitionLink";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -14,7 +13,6 @@ type PathPoint = {
     y: number;
 };
 
-const titleJoin = (prefix: string, title: string) => `${prefix} - ${title}`;
 const renderMetaItems = (items: string[]) => (
     items.map((item, index) => (
         <span key={item} data-project-meta-item className="inline-block will-change-[transform,opacity]">
@@ -92,6 +90,10 @@ const clampValue = (value: number, min: number, max: number) => Math.min(Math.ma
 export const ProjectSection = () => {
     const sectionRef = useRef<HTMLElement | null>(null);
     const stageRef = useRef<HTMLDivElement | null>(null);
+    const {
+        intro: projectShowcaseIntro,
+        projects: projectShowcaseProjects,
+    } = useProjectShowcase();
 
     useGSAP(() => {
         const section = sectionRef.current;
@@ -550,7 +552,11 @@ export const ProjectSection = () => {
         );
 
         return () => matchMedia.revert();
-    }, {scope: sectionRef});
+    }, {
+        scope: sectionRef,
+        dependencies: [projectShowcaseIntro, projectShowcaseProjects],
+        revertOnUpdate: true,
+    });
 
     return (
         <section
@@ -563,7 +569,7 @@ export const ProjectSection = () => {
                     <div className="relative h-full w-full overflow-hidden">
                         <div data-project-intro-bg className="absolute inset-0" aria-hidden="true">
                             <img
-                                src={projectIntroImage}
+                                src={projectShowcaseIntro.image}
                                 alt=""
                                 className="h-full w-full object-cover"
                                 loading="eager"
@@ -630,7 +636,7 @@ export const ProjectSection = () => {
                         </span>
                         {projectShowcaseProjects.map((project) => (
                             <span key={project.id} data-project-title className="absolute right-0 top-0 block whitespace-nowrap">
-                                {titleJoin(project.prefix, project.title)}
+                                {project.title}
                             </span>
                         ))}
                     </div>

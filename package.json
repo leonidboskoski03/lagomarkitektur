@@ -12,6 +12,8 @@
     "cms": "sanity dev",
     "cms:deploy": "sanity deploy",
     "cms:import-projects": "node scripts/import-sanity-projects.mjs",
+    "cms:seed-home-showcase": "node scripts/seed-sanity-home-showcase.mjs",
+    "cms:migrate-public-project-ids": "node scripts/migrate-sanity-public-project-ids.mjs",
     "cms:repair-gallery-keys": "node scripts/repair-sanity-gallery-keys.mjs"
   },
   "dependencies": {

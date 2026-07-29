@@ -10,6 +10,6 @@ export default defineCliConfig({
   },
   studioHost: "lagom-arkitektur",
   deployment: {
-    appId: "plj812naa56s681q3lglt6xy",
+    appId: "plj812naa56s681q3lg1t6xy",
   },
 });

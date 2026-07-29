@@ -98,6 +98,109 @@ export const workProjectListQuery = `*[_type == "project" && isPublished != fals
   }
 }`;
 
+export const homeProjectShowcaseQuery = `*[
+  _type == "homeProjectShowcase" &&
+  _id == "homeProjectShowcase"
+][0] {
+  introTitle,
+  introTags,
+  introProperties,
+  introBackground {
+    alt,
+    crop,
+    hotspot,
+    asset,
+    "assetData": asset-> {
+      _id,
+      metadata {
+        dimensions {
+          width,
+          height,
+          aspectRatio
+        }
+      }
+    }
+  },
+  projects[] {
+    _key,
+    backgroundImage {
+      alt,
+      crop,
+      hotspot,
+      asset,
+      "assetData": asset-> {
+        _id,
+        metadata {
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      }
+    },
+    primaryImage {
+      alt,
+      crop,
+      hotspot,
+      asset,
+      "assetData": asset-> {
+        _id,
+        metadata {
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      }
+    },
+    secondaryImage {
+      alt,
+      crop,
+      hotspot,
+      asset,
+      "assetData": asset-> {
+        _id,
+        metadata {
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      }
+    },
+    project-> {
+      _id,
+      title,
+      "slug": slug.current,
+      category,
+      services,
+      year,
+      location,
+      siteSize,
+      isPublished,
+      featuredImage {
+        alt,
+        crop,
+        hotspot,
+        asset,
+        "assetData": asset-> {
+          _id,
+          metadata {
+            dimensions {
+              width,
+              height,
+              aspectRatio
+            }
+          }
+        }
+      }
+    }
+  }
+}`;
+
 export const projectListQuery = `*[_type == "project"] | order(orderRank asc, year desc) {
   _id,
   title,

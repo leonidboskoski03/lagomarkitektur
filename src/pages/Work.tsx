@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AnimatePresence, motion } from "motion/react";
-import { LogoMark } from "../components/branding/LogoMark";
 import {
   HERO_CONTENT_REVEAL_EVENT,
   WORK_CONTENT_REVEAL_EVENT,
@@ -125,17 +123,6 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
       data-work-page
       className="min-h-screen overflow-x-hidden bg-bg text-text-primary"
     >
-      <Link
-        to="/"
-        data-work-logo
-        data-cursor=""
-        aria-label="Lagom Arkitektur home"
-        className="fixed left-[var(--spacing-viewport-gutter)] top-8 z-30 inline-flex items-center gap-2 text-white mix-blend-difference will-change-[transform,clip-path,opacity] md:top-10"
-      >
-        <LogoMark />
-        <span className="logo-text text-xl font-bold uppercase leading-none">Lagom</span>
-      </Link>
-
       <AnimatePresence initial={false} onExitComplete={() => ScrollTrigger.refresh()}>
         {viewMode === "composition" ? (
           <motion.div
