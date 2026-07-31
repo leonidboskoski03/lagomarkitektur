@@ -8,19 +8,10 @@ import stoneframeEntry from "../assets/images/about/stoneframe-entry.webp";
 import stoneframeSide from "../assets/images/about/stoneframe-side.webp";
 import sereneDining from "../assets/images/about/serene-dining.webp";
 import archmoodArch from "../assets/images/about/archmood-arch.webp";
+import {useLanguage} from "../i18n/LanguageContext";
+import {siteCopy} from "../i18n/siteCopy";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const headingLines = [
-    "Architecture should feel considered,",
-    "personal, and quietly effortless.",
-];
-
-const statementSentences = [
-    "LAGOM Architecture creates sustainable spaces defined by",
-    "balance, meaning and purpose.",
-    "Every element is carefully considered and feels just right.",
-];
 
 const exitRoutes = [
     {xPercent: 26, yPercent: -24, z: 1320, duration: 1.18, offset: 0.04, imageScale: 1.035},
@@ -34,31 +25,38 @@ const imageField = [
     {
         src: stoneframeFront,
         alt: "L-28 Stoneframe villa viewed from the garden",
+        altSv: "L-28 Stoneframe Villa sedd från trädgården",
         className: "-right-[8vw] top-[24vh] h-[22vh] w-[60vw] sm:right-[1vw] sm:top-[20vh] sm:h-auto sm:aspect-[2.1/1] sm:w-[42vw] md:right-[7vw] md:top-[7vh] md:h-[28vh] md:w-[29vw]",
     },
     {
         src: sereneDining,
         alt: "Quiet dining interior framed by daylight",
+        altSv: "Lugn matsalsinteriör inramad av dagsljus",
         className: "left-[4vw] top-[32vh] z-30 h-[19vh] w-[42vw] sm:top-[27vh] sm:h-auto sm:aspect-[1.85/1] sm:w-[35vw] md:left-[17vw] md:top-[15vh] md:h-[22vh] md:w-[20vw]",
     },
     {
         src: stoneframeSide,
         alt: "L-28 Stoneframe villa side elevation in afternoon light",
+        altSv: "L-28 Stoneframe Villas sidofasad i eftermiddagsljus",
         className: "-left-[8vw] bottom-[10vh] h-[22vh] w-[48vw] sm:left-[2vw] sm:bottom-[10vh] sm:h-auto sm:aspect-[1.42/1] sm:w-[32vw] md:bottom-[5vh] md:left-[10vw] md:h-[30vh] md:w-[21vw]",
     },
     {
         src: archmoodArch,
         alt: "Minimal interior with a sculpted architectural arch",
+        altSv: "Minimal interiör med ett skulpturalt arkitektoniskt valv",
         className: "bottom-[7vh] left-[38vw] z-30 h-[18vh] w-[48vw] sm:bottom-[12vh] sm:h-auto sm:aspect-[1.85/1] sm:w-[30vw] md:bottom-[7vh] md:left-[33vw] md:h-[22vh] md:w-[20vw]",
     },
     {
         src: stoneframeEntry,
         alt: "L-28 Stoneframe villa entrance and stone courtyard",
+        altSv: "Entrén och stengården vid L-28 Stoneframe Villa",
         className: "left-[17vw] top-[42vh] z-40 h-[27vh] w-[70vw] sm:left-[20vw] sm:top-[38vh] sm:h-auto sm:aspect-[1.82/1] sm:w-[56vw] md:left-[34vw] md:top-[28vh] md:h-[38vh] md:w-[34vw]",
     },
 ];
 
 export const AboutIntro = () => {
+    const {language} = useLanguage();
+    const copy = siteCopy[language].home;
     const sectionRef = useRef<HTMLElement | null>(null);
     const stageRef = useRef<HTMLDivElement | null>(null);
 
@@ -260,7 +258,7 @@ export const AboutIntro = () => {
             <div ref={stageRef} className="relative h-dvh w-full overflow-hidden [perspective:1600px] [perspective-origin:50%_48%]">
                 <div data-about-heading-block className="absolute left-[var(--spacing-viewport-gutter)] top-[7vh] z-10 max-w-[58rem] md:top-[8vh]">
                     <h2 className="text-[clamp(1.85rem,3.6vw,4.1rem)] font-medium leading-[1.02] tracking-[-0.055em]">
-                        {headingLines.map((line) => (
+                        {copy.aboutHeadingLines.map((line) => (
                             <span key={line} className="block overflow-hidden pb-[0.06em]">
                                 <span data-about-heading-line className="block will-change-transform">{line}</span>
                             </span>
@@ -278,7 +276,7 @@ export const AboutIntro = () => {
                             <img
                                 data-about-image-inner
                                 src={image.src}
-                                alt={image.alt}
+                                alt={language === "sv" ? image.altSv : image.alt}
                                 loading="lazy"
                                 decoding="async"
                                 className="absolute inset-0 !h-full w-full object-cover will-change-transform"
@@ -288,7 +286,7 @@ export const AboutIntro = () => {
                 </div>
 
                 <p data-about-statement-block className="absolute bottom-[5vh] right-[var(--spacing-viewport-gutter)] z-10 max-w-[34rem] text-[clamp(1rem,1.45vw,1.35rem)] leading-[1.18] tracking-[-0.025em] max-md:bottom-[3vh] max-md:max-w-[72vw]">
-                    {statementSentences.map((sentence) => (
+                    {copy.aboutStatements.map((sentence) => (
                         <span key={sentence} className="block overflow-hidden pb-[0.04em]">
                             <span data-about-statement-sentence className="block will-change-[transform,filter,opacity]">
                                 {sentence}

@@ -6,6 +6,8 @@ import {
     LOADER_REVEAL_EVENT,
 } from "../lib/revealEvents";
 import { motionEases } from "../lib/motion";
+import { useLanguage } from "../i18n/LanguageContext";
+import { siteCopy } from "../i18n/siteCopy";
 
 const COUNTER_REELS = [
     [0, 1],
@@ -38,6 +40,8 @@ const HERO_CONTENT_REVEAL_OFFSET =
     LOGO_REVEAL_DURATION * getTimeProgressAtEaseValue(HERO_CONTENT_START_SCALE_PROGRESS);
 
 export const Loader = () => {
+    const { language } = useLanguage();
+    const copy = siteCopy[language].transitions;
     const barRef = useRef<HTMLDivElement>(null!);
     const revealUnderlayRef = useRef<HTMLDivElement>(null!);
     const poly1Ref = useRef<SVGPolygonElement>(null!);
@@ -490,7 +494,7 @@ export const Loader = () => {
                     <div
                         ref={counterDomRef}
                         className="-space-x-[0.06em] flex justify-end overflow-hidden text-4xl font-light leading-none tabular-nums text-white md:text-[7rem]"
-                        aria-label="Loading progress"
+                        aria-label={copy.loadingProgress}
                     >
                             {COUNTER_REELS.map((reel, reelIndex) => (
                                 <span

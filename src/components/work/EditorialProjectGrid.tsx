@@ -5,6 +5,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { WorkProjectItem } from "../../hooks/useWorkProjects";
 import { motionEases } from "../../lib/motion";
 import { EditorialProjectCard } from "./EditorialProjectCard";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -68,6 +70,8 @@ function composeEditorialRows(projects: WorkProjectItem[]) {
 }
 
 export function EditorialProjectGrid({ projects }: EditorialProjectGridProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].work;
   const gridRef = useRef<HTMLElement | null>(null);
   const hasFocusedProjectRef = useRef(false);
   const lastFocusedSlugRef = useRef<string | null>(null);
@@ -233,7 +237,7 @@ export function EditorialProjectGrid({ projects }: EditorialProjectGridProps) {
   return (
     <section
       ref={gridRef}
-      aria-label="Projects"
+      aria-label={copy.projectsLabel}
       onPointerLeave={deactivateProjects}
       className="viewport-container pb-40 pt-16 md:pb-64 md:pt-32"
     >

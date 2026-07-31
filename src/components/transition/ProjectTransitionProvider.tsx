@@ -21,6 +21,8 @@ import {
   type ProjectTransitionRequest,
 } from "./projectTransitionContext";
 import styles from "./ProjectTransition.module.css";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 gsap.registerPlugin(useGSAP);
 
@@ -192,6 +194,8 @@ const ProjectHeroReveal = memo(function ProjectHeroReveal({
 });
 
 export function ProjectTransitionProvider({ children }: { children: ReactNode }) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].transitions;
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
   const [transition, setTransition] = useState<ActiveTransition | null>(null);
@@ -229,8 +233,8 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
   const startProjectTransition = useCallback((request: ProjectTransitionRequest) => {
     if (activeRef.current) return;
 
-    const project = getProjectBySlug(request.slug);
-    const heroMedia = project ? getProjectGalleryMedia(project)[0] : undefined;
+    const project = getProjectBySlug(request.slug, language);
+    const heroMedia = project ? getProjectGalleryMedia(project, language)[0] : undefined;
 
     if (!project || !heroMedia || reduceMotion) {
       navigate(`/work/${request.slug}`);
@@ -313,7 +317,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
         ? { ...current, stage: "revealing" }
         : current);
     });
-  }, [navigate, reduceMotion]);
+  }, [language, navigate, reduceMotion]);
 
   useEffect(() => () => {
     abortRef.current?.abort();
@@ -358,10 +362,10 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
 
   const progressPercent = transition ? Math.round(transition.progress * 100) : 0;
   const loadStatus = transition?.loadFailed
-    ? "Image unavailable"
+    ? copy.imageUnavailable
     : transition?.progress === 1
-      ? "Image decoded"
-      : "Loading hero image";
+      ? copy.imageDecoded
+      : copy.loadingHero;
 
   return (
     <ProjectTransitionContext.Provider value={contextValue}>
@@ -376,7 +380,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
           <motion.aside
             key={transition.slug}
             className={styles.overlay}
-            aria-label={`Opening ${transition.title}. ${loadStatus}.`}
+            aria-label={`${copy.opening} ${transition.title}. ${loadStatus}.`}
             initial={{
               opacity: 1,
               clipPath: "inset(100% 0 0 0)",
@@ -395,7 +399,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
             onAnimationComplete={handleOverlayComplete}
           >
             <span className="sr-only" role="status" aria-live="polite">
-              {`Opening ${transition.title}. ${loadStatus}.`}
+              {`${copy.opening} ${transition.title}. ${loadStatus}.`}
             </span>
 
             <ProjectHeroReveal
@@ -427,7 +431,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
             <motion.div
               className={styles.progress}
               role="progressbar"
-              aria-label={`Loading the hero image for ${transition.title}`}
+              aria-label={`${copy.loadingImageFor} ${transition.title}`}
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={progressPercent}

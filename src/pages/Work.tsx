@@ -13,6 +13,8 @@ import { WorkProjectViews } from "../components/work/WorkProjectViews";
 import { WorkViewRail } from "../components/work/WorkViewRail";
 import type { WorkViewMode } from "../components/work/workView";
 import { useWorkProjects } from "../hooks/useWorkProjects";
+import { useLanguage } from "../i18n/LanguageContext";
+import { siteCopy } from "../i18n/siteCopy";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,6 +23,8 @@ interface WorkProps {
 }
 
 export function Work({ onFooterVisibilityChange }: WorkProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].work;
   const pageRef = useRef<HTMLDivElement | null>(null);
   const { projects, isLoading } = useWorkProjects();
   const [viewMode, setViewMode] = useState<WorkViewMode>("composition");
@@ -135,7 +139,7 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
       loaderObserver?.disconnect();
       introTimeline.eventCallback("onComplete", null);
     };
-  }, { scope: pageRef });
+  }, { scope: pageRef, dependencies: [language], revertOnUpdate: true });
 
   return (
     <div
@@ -171,22 +175,22 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
                 data-work-eyebrow
                 className="mb-5 text-xs font-semibold uppercase tracking-[0.18em] text-text-muted will-change-[transform,opacity,filter]"
               >
-                Lagom Arkitektur / Work
+                {copy.eyebrow}
               </p>
               <h1
-                aria-label="Selected spatial work"
+                aria-label={copy.titleLines.join(" ")}
                 className="text-[clamp(2.35rem,10vw,7rem)] font-medium leading-[0.82] tracking-[-0.065em] text-text-primary xl:text-[clamp(4.25rem,13vw,12.5rem)]"
               >
                 <span className="block overflow-hidden">
                   <span data-work-title-line aria-hidden="true" className="block will-change-transform">
-                    <span className="xl:hidden">Selected spatial</span>
-                    <span className="hidden xl:inline">Selected</span>
+                    <span className="xl:hidden">{copy.mobileTitleLines[0]}</span>
+                    <span className="hidden xl:inline">{copy.titleLines[0]}</span>
                   </span>
                 </span>
                 <span className="block overflow-hidden">
                   <span data-work-title-line aria-hidden="true" className="block will-change-transform">
-                    <span className="xl:hidden">work</span>
-                    <span className="hidden xl:inline">spatial work</span>
+                    <span className="xl:hidden">{copy.mobileTitleLines[1]}</span>
+                    <span className="hidden xl:inline">{copy.titleLines[1]}</span>
                   </span>
                 </span>
               </h1>
@@ -197,8 +201,7 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
               className="max-w-md justify-self-end pt-2 text-sm leading-relaxed text-text-muted will-change-[transform,opacity,filter] xl:pt-10"
             >
               <p>
-                Interiors, residences, hospitality spaces, and quiet architectural concepts shaped through light,
-                proportion, material restraint, and carefully staged atmosphere.
+                {copy.description}
               </p>
             </div>
           </div>
@@ -223,7 +226,7 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
         className={isIntroComplete ? "pointer-events-auto" : "pointer-events-none"}
       >
         {isLoading ? (
-          <section aria-label="Loading projects" aria-busy="true" className="min-h-screen" />
+          <section aria-label={copy.loadingProjects} aria-busy="true" className="min-h-screen" />
         ) : (
           <WorkProjectViews mode={viewMode} projects={projects} />
         )}

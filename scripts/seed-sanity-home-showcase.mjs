@@ -45,9 +45,17 @@ const stoneframeProject =
 const document = {
   _id: "homeProjectShowcase",
   _type: "homeProjectShowcase",
-  introTitle: "Selected work",
-  introTags: ["Lagom Arkitektur", "Selected work", "Spatial portfolio"],
-  introProperties: ["Architecture", "Interiors", "2022-2026"],
+  introTitle: { sv: "Utvalda arbeten", en: "Selected work" },
+  introTags: [
+    { _key: "studio", sv: "Lagom Arkitektur", en: "Lagom Arkitektur" },
+    { _key: "selected", sv: "Utvalda projekt", en: "Selected work" },
+    { _key: "portfolio", sv: "Rumslig portfolio", en: "Spatial portfolio" },
+  ],
+  introProperties: [
+    { _key: "architecture", sv: "Arkitektur", en: "Architecture" },
+    { _key: "interiors", sv: "Interiörer", en: "Interiors" },
+    { _key: "years", sv: "2022–2026", en: "2022-2026" },
+  ],
   introBackground: cleanImage(stoneframeProject.featuredImage),
   projects: selectedProjects.map((project, index) => {
     const imagePool = [
@@ -72,7 +80,7 @@ const document = {
 if (dryRun) {
   console.log(`Dry run: ready to create ${document._id} in ${projectId}/${dataset}.`);
   for (const [index, project] of selectedProjects.entries()) {
-    console.log(`${String(index + 1).padStart(2, "0")} ${project.title}`);
+    console.log(`${String(index + 1).padStart(2, "0")} ${project.title?.sv || project.title?.en || project.title}`);
   }
   console.log("No Sanity documents were changed.");
   process.exit(0);

@@ -6,12 +6,13 @@ import { studioContent } from "../../data/studio";
 import { motionEases } from "../../lib/motion";
 import { StudioImageReveal } from "./StudioImageReveal";
 import { useStudioTextReveals } from "./useStudioTextReveals";
+import { useLocalizedContent } from "../../i18n/LanguageContext";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export function StudioFounder() {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const { founder } = studioContent;
+  const { founder } = useLocalizedContent(studioContent);
 
   useStudioTextReveals(sectionRef);
 

@@ -22,8 +22,7 @@ export const siteSettings = defineType({
     defineField({
       name: "description",
       title: "Short studio description",
-      type: "text",
-      rows: 3,
+      type: "localizedText",
       group: "general",
       description: "Used in general site metadata and fallback descriptions.",
     }),
@@ -43,8 +42,7 @@ export const siteSettings = defineType({
     defineField({
       name: "address",
       title: "Address",
-      type: "text",
-      rows: 2,
+      type: "localizedText",
       group: "contact",
     }),
     defineField({
@@ -62,17 +60,14 @@ export const siteSettings = defineType({
     defineField({
       name: "seoTitle",
       title: "Default SEO title",
-      type: "string",
+      type: "localizedString",
       group: "seo",
-      validation: (rule) => rule.max(70),
     }),
     defineField({
       name: "seoDescription",
       title: "Default SEO description",
-      type: "text",
-      rows: 3,
+      type: "localizedText",
       group: "seo",
-      validation: (rule) => rule.max(160),
     }),
     defineField({
       name: "shareImage",

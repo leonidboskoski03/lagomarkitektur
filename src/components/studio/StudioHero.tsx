@@ -7,6 +7,7 @@ import { motionEases } from "../../lib/motion";
 import { ProjectTransitionLink } from "../transition/ProjectTransitionLink";
 import { StudioImageReveal } from "./StudioImageReveal";
 import { StudioProjectCaption } from "./StudioProjectCaption";
+import { useLanguage, useLocalizedContent } from "../../i18n/LanguageContext";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -15,6 +16,7 @@ interface StudioHeroProps {
 }
 
 export function StudioHero({ isReady }: StudioHeroProps) {
+  const { language } = useLanguage();
   const sectionRef = useRef<HTMLElement | null>(null);
   const copyRef = useRef<HTMLDivElement | null>(null);
   const apertureRef = useRef<HTMLSpanElement | null>(null);
@@ -22,7 +24,7 @@ export function StudioHero({ isReady }: StudioHeroProps) {
   const featuredMediaRef = useRef<HTMLDivElement | null>(null);
   const introTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const isReadyRef = useRef(false);
-  const { hero } = studioContent;
+  const { hero } = useLocalizedContent(studioContent);
 
   useGSAP(() => {
     const section = sectionRef.current;
@@ -235,7 +237,7 @@ export function StudioHero({ isReady }: StudioHeroProps) {
       introTimelineRef.current = null;
       matchMedia.revert();
     };
-  }, { scope: sectionRef });
+  }, { scope: sectionRef, dependencies: [language], revertOnUpdate: true });
 
   useLayoutEffect(() => {
     isReadyRef.current = isReady;
@@ -326,7 +328,7 @@ export function StudioHero({ isReady }: StudioHeroProps) {
               data-studio-hero-bottom-meta
               className="shrink-0 font-semibold uppercase tracking-[0.06em] text-black/48 will-change-[transform,clip-path,opacity]"
             >
-              Architecture / Interiors
+              {hero.meta}
             </p>
             <p
               data-studio-hero-bottom-meta
@@ -343,7 +345,7 @@ export function StudioHero({ isReady }: StudioHeroProps) {
         >
           <ProjectTransitionLink
             projectSlug={hero.media.projectSlug}
-            aria-label={`View ${hero.media.projectTitle}`}
+            aria-label={`${language === "sv" ? "Se" : "View"} ${hero.media.projectTitle}`}
             className="group block"
             data-cursor=""
           >

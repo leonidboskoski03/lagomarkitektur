@@ -7,6 +7,8 @@ import { motionEases } from "../../lib/motion";
 import type { Project, ProjectGalleryMedia } from "../../types/project";
 import styles from "./ProjectDetail.module.css";
 import { ProjectTransitionLink } from "../transition/ProjectTransitionLink";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
@@ -16,6 +18,8 @@ interface NextProjectFeatureProps {
 }
 
 export function NextProjectFeature({ project, media }: NextProjectFeatureProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].project;
   const sectionRef = useRef<HTMLAnchorElement | null>(null);
 
   useGSAP(() => {
@@ -155,7 +159,7 @@ export function NextProjectFeature({ project, media }: NextProjectFeatureProps) 
       projectSlug={project.slug}
       data-next-project
       data-cursor="open"
-      aria-label={`View next project: ${project.title}`}
+      aria-label={`${copy.nextProjectPrefix}: ${project.title}`}
       className={styles.nextProject}
     >
       <div className={styles.nextProjectInner}>
@@ -182,14 +186,14 @@ export function NextProjectFeature({ project, media }: NextProjectFeatureProps) 
 
         <div className={styles.nextCopy}>
           <span data-next-project-label className={styles.sectionLabel}>
-            Next project
+            {copy.nextProject}
           </span>
           <h2 data-next-project-title className={styles.nextTitle}>
             {project.title}
           </h2>
           <div data-next-project-meta className={styles.nextMeta}>
             <span>{project.category}</span>
-            <span>{project.year} / View project →</span>
+            <span>{project.year} / {copy.viewProject} →</span>
           </div>
         </div>
       </div>

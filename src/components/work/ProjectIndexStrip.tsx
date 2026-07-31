@@ -4,6 +4,8 @@ import gsap from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
 import type { WorkProjectImage } from "../../hooks/useWorkProjects";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 
@@ -13,6 +15,8 @@ interface ProjectIndexStripProps {
 }
 
 export function ProjectIndexStrip({ projectId, images }: ProjectIndexStripProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].work;
   const viewportRef = useRef<HTMLSpanElement | null>(null);
   const trackRef = useRef<HTMLSpanElement | null>(null);
 
@@ -127,9 +131,9 @@ export function ProjectIndexStrip({ projectId, images }: ProjectIndexStripProps)
     <span
       ref={viewportRef}
       data-index-strip={projectId}
-      data-cursor="Drag"
+      data-cursor="drag"
       role="group"
-      aria-label="Drag to explore project images"
+      aria-label={copy.dragImages}
       className="relative z-[1] block min-w-0 touch-none overflow-hidden data-[strip-dragging=true]:cursor-grabbing"
     >
       <span ref={trackRef} className="flex w-max items-end gap-3 will-change-transform">

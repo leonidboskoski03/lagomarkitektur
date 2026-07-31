@@ -291,6 +291,75 @@ const projects = [
   },
 ];
 
+const swedishProjectCopy = {
+  "quiet-mid-modernity": {
+    title: "A|N - The Quiet Mid-Modernity",
+    excerpt: "En samtida lägenhet i Malmö som förenar moderna influenser med mid-century-design, naturligt ljus, metalldetaljer och varma träinslag.",
+    description: "I hjärtat av Malmö ligger denna samtida lägenhet, där moderna influenser och mid-century-design förenas till ett stilfullt men ombonat hem. Den öppna planlösningen tar till vara på dagsljuset, och stora fönster fyller varje rum med sol och förstärker känslan av rymd och stillhet. Träinslag tillför värme och bildar en harmonisk kontrast mot lägenhetens metalldetaljer.",
+    location: "Malmö, Sverige",
+  },
+  "serene-luxe-residence": {
+    title: "Serene Luxe Residence",
+    excerpt: "Ett förfinat bostadskoncept där öppen planlösning, naturliga material och ljussättning i flera lager skapar en stillsam vardagslyx.",
+    description: "Projektet presenterar ett förfinat, modernt och harmoniskt bostadskoncept där arkitektur, ljus och materialitet samverkar för att skapa lugna och eleganta livsmiljöer. Den öppna planlösningen binder samman vardagsrum, matplats och kök till en kontinuerlig rumslig upplevelse, förstärkt av stora glaspartier som ramar in noggrant utvalda vyer över stad och landskap. En mjuk, naturlig palett av trä, sten och texturerade ytor kombineras med arkitektonisk ljussättning i flera lager för att bevara värme och tydlighet under hela dagen.",
+    location: "Štip, Nordmakedonien",
+  },
+  "gentlemans-loft-cave": {
+    title: "Gentleman's Loft Cave",
+    excerpt: "En mörk och taktil lägenhetsinteriör som balanserar antracitfärgade ytor, körsbärsträ, orange klädsel och utvalda möbler.",
+    description: "Lägenheten är utformad som en förfinad, samtida man cave där en mörk, rökig atmosfär balanseras med omsorgsfull elegans. Ett antracitfärgat mikrocementgolv bildar en sammanhängande, monolitisk bas och sätter en dramatisk ton, samtidigt som det avsiktligt kontrasterar mot kökets varma körsbärsträ och den djärva orange klädseln. Resultatet är ett rum som känns maskulint och intimt, men samtidigt elegant, tidlöst och estetiskt välkomponerat.",
+    location: "Skopje, Nordmakedonien",
+  },
+  "l-28-stoneframe-villa": {
+    title: "L-28 Stoneframe Villa",
+    excerpt: "Ett samtida gårdshus inramat av natursten, puts, varmt trä och privata uteplatser.",
+    description: "L-28 Stoneframe Villa är ett samtida gårdshus som förenar arkitektonisk tydlighet med vardaglig komfort. Rena horisontella volymer ramas in av natursten, puts och varmt trä och skapar ett tidlöst, välkomnande uttryck. Stora glaspartier förbinder interiören med privata uteplatser och låter ljus och landskap forma boendeupplevelsen.",
+    location: "Prilep, Nordmakedonien",
+  },
+  "lounge-bar-aviator": {
+    title: "Lounge Bar Aviator 2.0",
+    excerpt: "En samtida restauranginteriör formad av varmt trä, stenens textur, mjukt ljus och en lugn, urban öppenhet.",
+    description: "Denna samtida restauranginteriör är utformad som en förfinad förlängning av stadens köpcentrum och förenar gästfrihet med arkitektonisk karaktär. Varmt trä, texturerade stenytor och mjuk integrerad belysning skapar en inbjudande atmosfär för vardagliga måltider och sociala möten. Omsorgsfullt komponerade sittzoner balanserar öppenhet med komfort och avskildhet, medan grönska mjukar upp materialpaletten och förhöjer gästupplevelsen.",
+    location: "Skopje, Nordmakedonien",
+  },
+  "archmood-interior-concept": {
+    title: "ArchMood Interior Concept",
+    excerpt: "Ett kompakt delat sovrum omvandlat till varma, funktionella zoner för vila, skönhetsrutiner, läsning och vardagliga ritualer.",
+    description: "Omvandlingen av detta kompakta rum innebar en utmaning både vad gäller ytoptimering och estetisk balans. Utgångspunkten var en mycket liten och begränsad yta, och målet var att omgestalta den till ett varmt, funktionellt och stilfullt delat sovrum för två tonårsflickor. Två bekväma enkelsängar, en särskild plats för smink och skönhetsrutiner samt en mysig läshörna ger var och en en personlig zon i en lugn, gemensam interiör.",
+    location: "Skopje, Nordmakedonien",
+  },
+  "warm-minimal-open-concept": {
+    title: "Warm Minimal Open Concept",
+    excerpt: "En kompakt lägenhet där kök, matplats och vardagsrum flyter samman genom mjuk geometri och neutral materialitet.",
+    description: "Lägenheten är utformad som en varm och modern tillflyktsplats för två, där öppen planering och mjuk geometri skapar en sammanhängande boendeupplevelse. Kök, matplats och vardagsrum flyter naturligt samman, förstärkta av neutrala paletter, trätexturer och stenytor. Inbyggd förvaring och specialritade möbler optimerar den kompakta ytan, medan stora öppningar och reflekterande ytor förstärker dagsljuset och den visuella kontinuiteten.",
+    location: "Prilep, Nordmakedonien",
+  },
+  "contrast-cohesion-interior": {
+    title: "Contrast & Cohesion Interior",
+    excerpt: "En sober och modern vardags- och matsalsinteriör uppbyggd kring pepitamönster, svart läder, brunt läder och en konstnärligt komponerad vägg.",
+    description: "På kundernas önskemål hjälpte denna gestaltning till att ange riktningen för ett vardagsrum och en matplats med en mer sober karaktär och moderna inslag. Möblernas material och färger samt dekorationen av matsalens vägg bär konceptet. Pepitamönstret och de svarta läderfåtöljerna skapar tillsammans med den bruna lädersoffan en välavvägd kontrast som ger rummet djup och pondus.",
+    location: "Skopje, Nordmakedonien",
+  },
+  "oak-shadow-cohesion": {
+    title: "The Oak and Shadow Cohesion",
+    excerpt: "En samtida lägenhetsinteriör där varm ek, natursten, mattsvarta element och nordiskt blå accenter ramar in ett flexibelt boende.",
+    description: "Denna samtida lägenhetsinteriör definieras av materialkontrast, rumslig flexibilitet och en förfinad arkitektonisk komposition. Volymer i varm ek och ytor av natursten ramas in av djupa mattsvarta element och skapar en skiktad dialog mellan ljus och skugga. Ett föränderligt vardags- och matrum, en arbetsplats i burspråket och ett sovrum med boutiquehotellkänsla bildar en lugn och flexibel bostadsmiljö.",
+    location: "Bitola, Nordmakedonien",
+  },
+  "childs-mini-creative-space": {
+    title: "Child's Mini Creative Space",
+    excerpt: "Ett barnrum format som en liten personlig studio för studier, teckning, vila, gemensam lek och självständighet.",
+    description: "Projektet förvandlar ett rum till barnets personliga studio för kreativitet och komfort. Med utgångspunkt i garderobens fasta placering delas interiören in i funktionella zoner för studier, teckning, vila och gemensam lek. Varma material, lekfulla texturer och balanserade proportioner ger rummet arkitektonisk tydlighet samtidigt som det förblir inbjudande och mjukt.",
+    location: "Prilep, Nordmakedonien",
+  },
+  "blue-nest-4y": {
+    title: "Blue Nest 4Y",
+    excerpt: "En lugn och lekfull barninteriör som förenar nordisk minimalism, mjuk geometri, naturligt trä och dämpade blå accenter.",
+    description: "Projektet Blue Nest är en lugn, lekfull och arkitektonisk barninteriör utformad för en fyraårig pojke. Rummet förenar nordisk minimalism med mjuk geometri, naturligt trä och dämpade blå accenter och skapar en balanserad miljö för sömn, lek och kreativitet. Rena linjer, inbyggd förvaring och skulpturala former förvandlar rummet till ett litet arkitektoniskt landskap där funktion möter fantasi.",
+    location: "Skopje, Nordmakedonien",
+  },
+};
+
 const assetCache = new Map();
 
 console.log(`${dryRun ? "Dry run: " : ""}Importing ${projects.length} projects to ${projectId}/${dataset}`);
@@ -300,10 +369,19 @@ if (!dryRun) {
 }
 
 for (const project of projects) {
+  const swedish = swedishProjectCopy[project.slug];
+  if (!swedish) throw new Error(`Missing Swedish copy for ${project.slug}`);
   const folder = resolveProjectFolder(project.folderNumber);
-  const featuredImage = await createProjectImage(folder, project.featuredImage, project.title);
+  const featuredImage = await createProjectImage(
+    folder,
+    project.featuredImage,
+    { sv: swedish.title, en: project.title },
+  );
   const thumbnailImage = project.thumbnailImage
-    ? await createProjectImage(folder, project.thumbnailImage, `${project.title} thumbnail`)
+    ? await createProjectImage(folder, project.thumbnailImage, {
+      sv: `${swedish.title} miniatyrbild`,
+      en: `${project.title} thumbnail`,
+    })
     : undefined;
   const gallery = [];
 
@@ -311,7 +389,10 @@ for (const project of projects) {
     gallery.push(await createProjectImage(
       folder,
       imagePath,
-      `${project.title} ${path.basename(imagePath, path.extname(imagePath))}`,
+      {
+        sv: `${swedish.title} bild ${index + 1}`,
+        en: `${project.title} image ${index + 1}`,
+      },
       `galleryImage${index}`,
     ));
   }
@@ -319,12 +400,15 @@ for (const project of projects) {
   const document = {
     _id: `project-${project.slug}`,
     _type: "project",
-    title: project.title,
+    title: { sv: swedish.title, en: project.title },
     slug: { _type: "slug", current: project.slug },
-    excerpt: project.excerpt,
-    description: toPortableText(project.description),
+    excerpt: { sv: swedish.excerpt, en: project.excerpt },
+    description: {
+      sv: toPortableText([swedish.description]),
+      en: toPortableText(project.description),
+    },
     year: project.year,
-    location: project.location,
+    location: { sv: swedish.location, en: project.location },
     category: project.category,
     siteSize: project.siteSize,
     services: project.services,
@@ -333,8 +417,8 @@ for (const project of projects) {
     gallery,
     isPublished: true,
     orderRank: project.orderRank,
-    seoTitle: project.title,
-    seoDescription: project.excerpt,
+    seoTitle: { sv: swedish.title, en: project.title },
+    seoDescription: { sv: swedish.excerpt, en: project.excerpt },
   };
 
   if (dryRun) {

@@ -6,6 +6,8 @@ import type { WorkProjectItem } from "../../hooks/useWorkProjects";
 import { motionEases } from "../../lib/motion";
 import { ProjectIndexStrip } from "./ProjectIndexStrip";
 import { ProjectTransitionLink } from "../transition/ProjectTransitionLink";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,6 +16,8 @@ interface ProjectIndexProps {
 }
 
 export function ProjectIndex({ projects }: ProjectIndexProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].work;
   const indexRef = useRef<HTMLElement | null>(null);
   const hasInteractedRef = useRef(false);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
@@ -101,14 +105,14 @@ export function ProjectIndex({ projects }: ProjectIndexProps) {
   return (
     <section
       ref={indexRef}
-      aria-label="Project index"
+      aria-label={copy.projectIndexLabel}
       onPointerLeave={restoreProjects}
       className="viewport-container pb-40 pt-14 md:pb-64 md:pt-24"
     >
       <div className="mb-8 grid grid-cols-[2.5rem_minmax(0,1fr)_auto] gap-3 border-b border-black/20 pb-3 text-[0.6rem] uppercase tracking-[0.15em] text-text-muted md:grid-cols-[4rem_minmax(13rem,0.68fr)_minmax(0,2fr)] md:gap-8">
-        <span>No.</span>
-        <span>Project register</span>
-        <span className="text-right md:text-left">Archive</span>
+        <span>{copy.number}</span>
+        <span>{copy.projectIndex}</span>
+        <span className="text-right md:text-left">{copy.archive}</span>
       </div>
 
       <ol>
@@ -128,7 +132,7 @@ export function ProjectIndex({ projects }: ProjectIndexProps) {
               <ProjectTransitionLink
                 projectSlug={project.slug}
                 data-cursor="open"
-                aria-label={`View ${project.title}`}
+                aria-label={`${copy.viewPrefix} ${project.title}`}
                 className="col-span-2 grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-3 md:grid-cols-[4rem_minmax(13rem,0.68fr)] md:gap-8"
               >
                 <span className="text-[0.64rem] tabular-nums tracking-[0.12em] text-text-muted">

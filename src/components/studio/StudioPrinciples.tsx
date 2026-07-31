@@ -7,13 +7,14 @@ import { ProjectTransitionLink } from "../transition/ProjectTransitionLink";
 import { StudioImageReveal } from "./StudioImageReveal";
 import { StudioProjectCaption } from "./StudioProjectCaption";
 import { useStudioTextReveals } from "./useStudioTextReveals";
+import { useLocalizedContent } from "../../i18n/LanguageContext";
 
 gsap.registerPlugin(useGSAP);
 
 export function StudioPrinciples() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const { principles } = studioContent;
+  const { principles } = useLocalizedContent(studioContent);
   const activePrinciple = principles.items[activeIndex];
 
   useStudioTextReveals(sectionRef);
@@ -44,7 +45,7 @@ export function StudioPrinciples() {
           <div className="grid grid-flow-dense grid-cols-1 border-l border-t border-black/18 lg:grid-cols-12">
             <div
               role="tablist"
-              aria-label="Studio principles"
+              aria-label={principles.tabLabel}
               className="grid grid-flow-dense grid-cols-2 lg:col-span-4 lg:grid-cols-1 lg:grid-rows-4"
             >
               {principles.items.map((principle, index) => (
@@ -63,6 +64,7 @@ export function StudioPrinciples() {
                 key={activePrinciple.index}
                 id="studio-principle-panel"
                 principle={activePrinciple}
+                viewPrefix={principles.viewProject}
               />
             </div>
           </div>
@@ -116,11 +118,13 @@ function PrincipleButton({
 interface StudioPrinciplePanelProps {
   id: string;
   principle: StudioPrinciple;
+  viewPrefix: string;
 }
 
 function StudioPrinciplePanel({
   id,
   principle,
+  viewPrefix,
 }: StudioPrinciplePanelProps) {
   const panelRef = useRef<HTMLDivElement | null>(null);
 
@@ -231,7 +235,7 @@ function StudioPrinciplePanel({
 
       <ProjectTransitionLink
         projectSlug={principle.media.projectSlug}
-        aria-label={`View ${principle.media.projectTitle}`}
+        aria-label={`${viewPrefix} ${principle.media.projectTitle}`}
         data-cursor=""
         className="group block min-w-0"
       >

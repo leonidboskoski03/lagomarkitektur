@@ -4,10 +4,13 @@ import { ProjectTransitionLink } from "../transition/ProjectTransitionLink";
 import { StudioImageReveal } from "./StudioImageReveal";
 import { StudioProjectCaption } from "./StudioProjectCaption";
 import { useStudioTextReveals } from "./useStudioTextReveals";
+import { useLanguage, useLocalizedContent } from "../../i18n/LanguageContext";
 
 export function StudioOverview() {
+  const { language } = useLanguage();
+  const viewPrefix = language === "sv" ? "Se" : "View";
   const sectionRef = useRef<HTMLElement | null>(null);
-  const { studio } = studioContent;
+  const { studio } = useLocalizedContent(studioContent);
   const [primaryProject, narrativeProject] = studio.media;
 
   useStudioTextReveals(sectionRef);
@@ -38,7 +41,7 @@ export function StudioOverview() {
 
           <ProjectTransitionLink
             projectSlug={narrativeProject.projectSlug}
-            aria-label={`View ${narrativeProject.projectTitle}`}
+            aria-label={`${viewPrefix} ${narrativeProject.projectTitle}`}
             data-cursor=""
             className="group w-full justify-self-end md:col-span-1 xl:col-span-3 xl:col-start-7"
           >
@@ -73,7 +76,7 @@ export function StudioOverview() {
 
         <ProjectTransitionLink
           projectSlug={primaryProject.projectSlug}
-          aria-label={`View ${primaryProject.projectTitle}`}
+          aria-label={`${viewPrefix} ${primaryProject.projectTitle}`}
           data-cursor=""
           className="group mt-[clamp(5rem,8vw,8rem)] block"
         >

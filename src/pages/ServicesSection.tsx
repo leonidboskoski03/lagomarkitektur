@@ -2,9 +2,11 @@ import {useEffect, useRef, useState} from "react";
 import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
-import {services} from "../data/services";
+import {services, type ServiceItem} from "../data/services";
 import {motionEases} from "../lib/motion";
 import {ArchitecturalProcessStory} from "../components/services/ArchitecturalProcessStory";
+import {useLanguage, useLocalizedContent} from "../i18n/LanguageContext";
+import {siteCopy} from "../i18n/siteCopy";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,10 +15,11 @@ const getServiceLayout = (
     headerHeight: number,
     compactHeight: number,
     expandedHeight: number,
+    serviceCount: number,
 ) => {
     let top = headerHeight;
 
-    return services.map((_, index) => {
+    return Array.from({length: serviceCount}, (_, index) => {
         const height = index === activeIndex ? expandedHeight : compactHeight;
         const layout = {top, height};
         top += height;
@@ -26,17 +29,24 @@ const getServiceLayout = (
 };
 
 interface ServicesAccordionProps {
+    items: ServiceItem[];
+    heading: string;
     initialActiveIndex?: number;
 }
 
-export const ServicesSection = () => (
-    <>
-        <ServicesAccordion initialActiveIndex={services.length - 1}/>
-        <ArchitecturalProcessStory/>
-    </>
-);
+export const ServicesSection = () => {
+    const {language} = useLanguage();
+    const items = useLocalizedContent(services);
 
-const ServicesAccordion = ({initialActiveIndex = services.length - 1}: ServicesAccordionProps) => {
+    return (
+        <>
+            <ServicesAccordion items={items} heading={siteCopy[language].home.services} initialActiveIndex={items.length - 1}/>
+            <ArchitecturalProcessStory/>
+        </>
+    );
+};
+
+const ServicesAccordion = ({items, heading, initialActiveIndex = items.length - 1}: ServicesAccordionProps) => {
     const sectionRef = useRef<HTMLElement | null>(null);
     const stageRef = useRef<HTMLDivElement | null>(null);
     const openTimelineRef = useRef<gsap.core.Timeline | null>(null);
@@ -84,8 +94,8 @@ const ServicesAccordion = ({initialActiveIndex = services.length - 1}: ServicesA
                 const expandedHeight = desktop
                     ? gsap.utils.clamp(300, 360, window.innerHeight * 0.38)
                     : gsap.utils.clamp(360, 480, window.innerHeight * 0.56);
-                const layout = getServiceLayout(activeIndexRef.current, headerHeight, compactHeight, expandedHeight);
-                const panelHeight = headerHeight + expandedHeight + compactHeight * (services.length - 1);
+                const layout = getServiceLayout(activeIndexRef.current, headerHeight, compactHeight, expandedHeight, items.length);
+                const panelHeight = headerHeight + expandedHeight + compactHeight * (items.length - 1);
                 layoutRef.current = {
                     compactHeight,
                     expandedHeight,
@@ -291,7 +301,7 @@ const ServicesAccordion = ({initialActiveIndex = services.length - 1}: ServicesA
             openTimelineRef.current?.kill();
             matchMedia.revert();
         };
-    }, {scope: sectionRef});
+    }, {scope: sectionRef, dependencies: [items], revertOnUpdate: true});
 
     useEffect(() => {
         activeIndexRef.current = activeIndex;
@@ -305,7 +315,7 @@ const ServicesAccordion = ({initialActiveIndex = services.length - 1}: ServicesA
         if (rows.length === 0) return;
 
         const {compactHeight, expandedHeight, headerHeight, reduceMotion} = layoutRef.current;
-        const layout = getServiceLayout(activeIndex, headerHeight, compactHeight, expandedHeight);
+        const layout = getServiceLayout(activeIndex, headerHeight, compactHeight, expandedHeight, items.length);
 
         openTimelineRef.current?.kill();
 
@@ -346,7 +356,7 @@ const ServicesAccordion = ({initialActiveIndex = services.length - 1}: ServicesA
         return () => {
             openTimelineRef.current?.kill();
         };
-    }, [activeIndex]);
+    }, [activeIndex, items.length]);
 
     const handleOpen = (nextIndex: number) => {
         if (nextIndex === activeIndex) return;
@@ -369,12 +379,12 @@ const ServicesAccordion = ({initialActiveIndex = services.length - 1}: ServicesA
                         className="absolute left-0 right-0 top-0 flex items-center px-5 md:px-6"
                     >
                         <h2 data-services-heading className="text-[34px] font-normal leading-none tracking-[-0.045em] md:text-[36px]">
-                            Services
+                            {heading}
                         </h2>
                         <span data-services-header-line className="absolute bottom-0 left-0 h-px w-full bg-black/34"/>
                     </div>
 
-                    {services.map((service, index) => {
+                    {items.map((service, index) => {
                         const isOpen = index === activeIndex;
 
                         return (

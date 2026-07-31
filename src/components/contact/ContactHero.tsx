@@ -266,7 +266,7 @@ export function ContactHero({ content }: ContactHeroProps) {
   return (
     <section
       ref={sectionRef}
-      aria-label="Lagom Arkitektur contact directory"
+      aria-label={content.hero.directoryLabel}
       className="bg-white pb-[clamp(5rem,9vw,9rem)] pt-[15vh] text-brand-ink"
     >
       <div className="viewport-container">
@@ -281,7 +281,7 @@ export function ContactHero({ content }: ContactHeroProps) {
             data-contact-hero-edge="right"
             className="text-right will-change-[transform,clip-path,opacity]"
           >
-            Malmö, Sweden
+            {content.direct.location}
           </p>
         </div>
 

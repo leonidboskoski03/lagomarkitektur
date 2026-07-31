@@ -27,6 +27,7 @@ import {
     SMOOTH_SCROLL_EVENT,
     type SmoothScrollRequest,
 } from "./lib/smoothScroll";
+import {LanguageProvider} from "./i18n/LanguageProvider.tsx";
 
 function HomepageLoader() {
     const {pathname} = useLocation();
@@ -144,15 +145,17 @@ function AppContent() {
 
 function App() {
     return (
-        <BrowserRouter basename={import.meta.env.BASE_URL}>
-            <ProjectTransitionProvider>
-                <WorkTransitionProvider>
-                    <ContactTransitionProvider>
-                        <AppContent/>
-                    </ContactTransitionProvider>
-                </WorkTransitionProvider>
-            </ProjectTransitionProvider>
-        </BrowserRouter>
+        <LanguageProvider>
+            <BrowserRouter basename={import.meta.env.BASE_URL}>
+                <ProjectTransitionProvider>
+                    <WorkTransitionProvider>
+                        <ContactTransitionProvider>
+                            <AppContent/>
+                        </ContactTransitionProvider>
+                    </WorkTransitionProvider>
+                </ProjectTransitionProvider>
+            </BrowserRouter>
+        </LanguageProvider>
     );
 }
 

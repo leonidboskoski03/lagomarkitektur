@@ -8,6 +8,7 @@ import { FooterLink } from "./footer/FooterLink";
 import { FooterMotionMask } from "./footer/FooterMotionMask";
 import { FooterWordmark } from "./footer/FooterWordmark";
 import { useFooterMotion } from "./footer/useFooterMotion";
+import { useLocalizedContent } from "../../i18n/LanguageContext";
 
 interface FooterProps {
   content?: FooterContent;
@@ -18,12 +19,14 @@ interface FooterProps {
 }
 
 export function Footer({
-  content = footerContent,
+  content: contentOverride,
   className,
   showEnquiry = true,
   showStudioInformation = true,
   showCompactNavigation = false,
 }: FooterProps) {
+  const localizedContent = useLocalizedContent(footerContent);
+  const content = contentOverride ?? localizedContent;
   const footerRef = useRef<HTMLElement | null>(null);
   const { pathname } = useLocation();
   const currentYear = new Date().getFullYear();
@@ -43,14 +46,15 @@ export function Footer({
         className,
       )}
       aria-labelledby={showEnquiry ? "footer-heading" : undefined}
-      aria-label={showEnquiry ? undefined : "Lagom Arkitektur footer"}
+      aria-label={showEnquiry ? undefined : content.labels.footer}
     >
       <div className="w-full px-[var(--spacing-viewport-gutter)]">
         {showEnquiry ? (
           <section
             data-footer-section
+            data-footer-section-kind="enquiry"
             className="pt-[clamp(5rem,8vw,8rem)]"
-            aria-label="Project enquiries"
+            aria-label={content.labels.enquiries}
           >
             <div className="grid grid-cols-1 gap-10 pb-[clamp(4.5rem,7vw,7.5rem)] md:grid-cols-12 md:gap-x-6">
               <FooterMotionMask kind="eyebrow" className="md:col-span-3">
@@ -88,9 +92,9 @@ export function Footer({
               "grid grid-cols-2 gap-x-6 gap-y-12 pb-[clamp(4rem,5.5vw,6rem)] md:grid-cols-12",
               !showEnquiry && "pt-[clamp(5rem,8vw,8rem)]",
             )}
-            aria-label="Studio information"
+            aria-label={content.labels.studioInformation}
           >
-            <FooterColumn label="Studio" className="col-span-2 md:col-span-4">
+            <FooterColumn label={content.labels.studio} className="col-span-2 md:col-span-4">
               <p className="max-w-[29rem] text-[clamp(1.1rem,1.55vw,1.55rem)] leading-[1.18] tracking-[-0.025em]">
                 {content.studio.description}
               </p>
@@ -99,8 +103,8 @@ export function Footer({
               </p>
             </FooterColumn>
 
-            <FooterColumn label="Navigate" className="md:col-span-2 md:col-start-6">
-              <nav aria-label="Footer navigation">
+            <FooterColumn label={content.labels.navigate} className="md:col-span-2 md:col-start-6">
+              <nav aria-label={content.labels.footerNavigation}>
                 <ul className="space-y-0.5 text-sm font-medium">
                   {content.navigation.map((item) => (
                     <li key={item.href}>
@@ -111,7 +115,7 @@ export function Footer({
               </nav>
             </FooterColumn>
 
-            <FooterColumn label="Follow" className="md:col-span-2 md:col-start-8">
+            <FooterColumn label={content.labels.follow} className="md:col-span-2 md:col-start-8">
               <ul className="space-y-0.5 text-sm font-medium">
                 {content.social.map((item) => (
                   <li key={item.href}>
@@ -122,7 +126,7 @@ export function Footer({
             </FooterColumn>
 
             <FooterColumn
-              label="Find us"
+              label={content.labels.findUs}
               className="col-span-2 md:col-span-3 md:col-start-10 md:text-right"
             >
               <address className="space-y-1 text-sm font-medium not-italic md:flex md:flex-col md:items-end">
@@ -137,13 +141,13 @@ export function Footer({
           <section
             data-footer-section
             className="grid grid-cols-2 gap-x-6 gap-y-12 pb-[clamp(4rem,6vw,6.5rem)] pt-[clamp(3.5rem,5vw,5rem)] md:grid-cols-12"
-            aria-label="Footer navigation"
+            aria-label={content.labels.footerNavigation}
           >
             <FooterColumn
-              label="Navigate"
+              label={content.labels.navigate}
               className="col-span-2 md:col-span-3"
             >
-              <nav aria-label="Footer navigation">
+              <nav aria-label={content.labels.footerNavigation}>
                 <ul className="grid grid-cols-2 gap-x-5 gap-y-0.5 text-sm font-medium">
                   {content.navigation.map((item) => (
                     <li key={item.href}>
@@ -155,7 +159,7 @@ export function Footer({
             </FooterColumn>
 
             <FooterColumn
-              label="Follow"
+              label={content.labels.follow}
               className="md:col-span-2 md:col-start-6"
             >
               <ul className="space-y-0.5 text-sm font-medium">
@@ -168,7 +172,7 @@ export function Footer({
             </FooterColumn>
 
             <FooterColumn
-              label="Direct"
+              label={content.labels.direct}
               className="col-span-2 md:col-span-3 md:col-start-8"
             >
               <FooterLink
@@ -178,7 +182,7 @@ export function Footer({
             </FooterColumn>
 
             <FooterColumn
-              label="Studio"
+              label={content.labels.studio}
               className="col-span-2 md:col-span-2 md:col-start-11 md:text-right"
             >
               <p className="text-sm font-medium">{content.studio.location}</p>
@@ -200,7 +204,7 @@ export function Footer({
         <section
           data-footer-utility-section
           className="pb-[clamp(1.25rem,2vw,2rem)]"
-          aria-label="Legal and utilities"
+          aria-label={content.labels.legalUtilities}
         >
           <div
             data-footer-utility-content

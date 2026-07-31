@@ -46,7 +46,7 @@ export function useFooterMotion(
     sections.forEach((section) => {
       const sectionItems = gsap.utils.toArray<HTMLElement>("[data-footer-motion]", section);
       const sectionMasks = gsap.utils.toArray<HTMLElement>("[data-footer-mask]", section);
-      const isEnquiry = section.getAttribute("aria-label") === "Project enquiries";
+      const isEnquiry = section.dataset.footerSectionKind === "enquiry";
       const sectionTimeline = gsap.timeline({
         scrollTrigger: {
           trigger: section,

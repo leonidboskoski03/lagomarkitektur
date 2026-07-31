@@ -15,6 +15,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motionEases } from "../../lib/motion";
 import type { ProjectGalleryMedia } from "../../types/project";
 import styles from "./ProjectDetail.module.css";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 import {
   ProjectGalleryModeRail,
   type ProjectGalleryMode,
@@ -28,6 +30,8 @@ interface ProjectGalleryProps {
 }
 
 export function ProjectGallery({ projectTitle, media }: ProjectGalleryProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].project;
   const shellRef = useRef<HTMLElement | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -422,7 +426,7 @@ export function ProjectGallery({ projectTitle, media }: ProjectGalleryProps) {
       className={styles.galleryShell}
     >
       <h2 id="project-gallery-heading" className="sr-only">
-        {projectTitle} project gallery
+        {projectTitle} {copy.gallery}
       </h2>
 
       <div
@@ -432,8 +436,8 @@ export function ProjectGallery({ projectTitle, media }: ProjectGalleryProps) {
       >
         <div
           ref={listRef}
-          data-cursor={mode === "rail" ? "Drag" : undefined}
-          aria-label={mode === "rail" ? `${projectTitle} draggable image rail` : undefined}
+          data-cursor={mode === "rail" ? "drag" : undefined}
+          aria-label={mode === "rail" ? `${projectTitle} ${copy.draggableRail}` : undefined}
           role={mode === "rail" ? "region" : undefined}
           className={styles.mediaList}
         >

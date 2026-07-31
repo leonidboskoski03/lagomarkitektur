@@ -9,6 +9,8 @@ import { useGSAP } from "@gsap/react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import gsap from "gsap";
 import { motionEases } from "../../lib/motion";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 gsap.registerPlugin(useGSAP);
 
@@ -194,6 +196,8 @@ export function ProjectGalleryModeRail({
   visible,
   onChange,
 }: ProjectGalleryModeRailProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].project;
   const railRef = useRef<HTMLDivElement | null>(null);
   const surfaceRef = useRef<HTMLElement | null>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
@@ -201,9 +205,13 @@ export function ProjectGalleryModeRail({
   const closeTimerRef = useRef(0);
   const [expanded, setExpanded] = useState(false);
   const reduceMotion = useReducedMotion();
+  const localizedModes = modes.map((item) => ({
+    ...item,
+    label: copy.galleryModes[item.id],
+  }));
   const activeIndex = Math.max(
     0,
-    modes.findIndex((item) => item.id === mode),
+    localizedModes.findIndex((item) => item.id === mode),
   );
 
   const open = useCallback((delay = 85) => {
@@ -222,10 +230,6 @@ export function ProjectGalleryModeRail({
     window.clearTimeout(openTimerRef.current);
     window.clearTimeout(closeTimerRef.current);
   }, []);
-
-  useEffect(() => {
-    if (!visible) setExpanded(false);
-  }, [visible]);
 
   useEffect(() => {
     if (!expanded) return;
@@ -334,7 +338,7 @@ export function ProjectGalleryModeRail({
   };
 
   return (
-    <AnimatePresence>
+    <AnimatePresence onExitComplete={() => setExpanded(false)}>
       {visible ? (
         <motion.div
           className="pointer-events-none fixed inset-y-0 right-[var(--spacing-viewport-gutter)] z-[120] flex items-center"
@@ -353,7 +357,7 @@ export function ProjectGalleryModeRail({
             <nav
               ref={surfaceRef}
               data-expanded={expanded}
-              aria-label="Choose project gallery view"
+              aria-label={copy.gallerySelector}
               aria-expanded={expanded}
               className="pointer-events-auto absolute right-0 top-1/2 h-10 w-11 -translate-y-1/2 overflow-hidden rounded-[9px] border border-white/14 bg-[#292824] text-[#f4f0e8] shadow-[0_8px_24px_rgba(19,18,15,0.16)] will-change-[height] [contain:layout_paint]"
               onPointerEnter={() => open()}
@@ -362,7 +366,7 @@ export function ProjectGalleryModeRail({
               onBlurCapture={handleBlur}
             >
               <div className="absolute left-1/2 top-1/2 flex h-[7.5rem] w-10 -translate-x-1/2 -translate-y-1/2 flex-col">
-                {modes.map((item) => (
+                {localizedModes.map((item) => (
                   <ModeOption
                     key={item.id}
                     item={item}

@@ -39,10 +39,10 @@ export const project = defineType({
     defineField({
       name: "title",
       title: "Project title",
-      type: "string",
+      type: "localizedString",
       description: "The public project name shown on the Work page and detail page.",
       group: "overview",
-      validation: (rule) => rule.required().min(2),
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "slug",
@@ -50,42 +50,23 @@ export const project = defineType({
       type: "slug",
       description: "Click Generate after adding the title. Keep this short and readable.",
       group: "overview",
-      options: { source: "title", maxLength: 96 },
+      options: { source: "title.sv", maxLength: 96 },
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: "excerpt",
       title: "Short intro",
-      type: "text",
-      rows: 3,
+      type: "localizedText",
       description: "One or two sentences used on project cards and preview panels.",
       group: "overview",
-      validation: (rule) => rule.required().min(40).max(260),
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "description",
       title: "Full project story",
-      type: "array",
+      type: "localizedBlockContent",
       description: "The main text for the project detail page. Use short paragraphs.",
       group: "overview",
-      of: [
-        defineArrayMember({
-          type: "block",
-          styles: [
-            { title: "Normal", value: "normal" },
-            { title: "Heading", value: "h3" },
-            { title: "Quote", value: "blockquote" },
-          ],
-          lists: [],
-          marks: {
-            decorators: [
-              { title: "Strong", value: "strong" },
-              { title: "Emphasis", value: "em" },
-            ],
-            annotations: [],
-          },
-        }),
-      ],
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -99,7 +80,7 @@ export const project = defineType({
     defineField({
       name: "location",
       title: "Location",
-      type: "string",
+      type: "localizedString",
       description: "Example: Skopje, N. Macedonia",
       group: "details",
       validation: (rule) => rule.required(),
@@ -174,16 +155,9 @@ export const project = defineType({
     defineField({
       name: "credits",
       title: "Credits / notes",
-      type: "array",
+      type: "localizedBlockContent",
       description: "Optional notes such as collaborators, photographer, or project scale.",
       group: "details",
-      of: [
-        defineArrayMember({
-          type: "block",
-          styles: [{ title: "Normal", value: "normal" }],
-          lists: [],
-        }),
-      ],
     }),
     defineField({
       name: "orderRank",
@@ -205,19 +179,16 @@ export const project = defineType({
     defineField({
       name: "seoTitle",
       title: "SEO title",
-      type: "string",
+      type: "localizedString",
       description: "Optional. If empty, the project title is used.",
       group: "seo",
-      validation: (rule) => rule.max(70),
     }),
     defineField({
       name: "seoDescription",
       title: "SEO description",
-      type: "text",
-      rows: 3,
+      type: "localizedText",
       description: "Optional search/social description.",
       group: "seo",
-      validation: (rule) => rule.max(160),
     }),
   ],
   initialValue: {
@@ -239,14 +210,14 @@ export const project = defineType({
     {
       title: "Title A-Z",
       name: "titleAsc",
-      by: [{ field: "title", direction: "asc" }],
+      by: [{ field: "title.sv", direction: "asc" }],
     },
   ],
   preview: {
     select: {
-      title: "title",
+      title: "title.sv",
       year: "year",
-      location: "location",
+      location: "location.sv",
       isPublished: "isPublished",
       media: "featuredImage",
     },

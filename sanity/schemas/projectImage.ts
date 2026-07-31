@@ -11,21 +11,21 @@ export const projectImage = defineType({
     defineField({
       name: "alt",
       title: "Alt text",
-      type: "string",
+      type: "localizedString",
       description: "Short description for accessibility. Example: Warm oak kitchen and dining area.",
-      validation: (rule) => rule.required().warning("Alt text helps the website stay accessible."),
+      validation: (rule) => rule.required().error("Swedish and English alt text are required."),
     }),
     defineField({
       name: "caption",
       title: "Caption",
-      type: "string",
+      type: "localizedString",
       description: "Optional caption shown only where the design needs it.",
     }),
   ],
   preview: {
     select: {
-      title: "alt",
-      subtitle: "caption",
+      title: "alt.sv",
+      subtitle: "caption.sv",
       media: "asset",
     },
   },
