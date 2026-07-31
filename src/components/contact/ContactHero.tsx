@@ -1,9 +1,15 @@
-import { useRef, useState, type ReactNode } from "react";
+import {
+  useRef,
+  useState,
+  type MouseEventHandler,
+  type ReactNode,
+} from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { ContactPageContent } from "../../data/contact";
 import { motionEases } from "../../lib/motion";
+import { requestSmoothScroll } from "../../lib/smoothScroll";
 import { ClipMaskTextAnimation } from "../animation/ClipMaskTextAnimation";
 import { CONTACT_CONTENT_REVEAL_EVENT } from "../../lib/revealEvents";
 
@@ -26,6 +32,7 @@ interface ContactDirectoryLinkProps {
   target?: "_blank";
   rel?: string;
   trailing?: ReactNode;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
 export function ContactHero({ content }: ContactHeroProps) {
@@ -61,6 +68,7 @@ export function ContactHero({ content }: ContactHeroProps) {
       matchMedia.add(
         {
           desktop: "(min-width: 768px)",
+          mobile: "(max-width: 767px)",
           reduceMotion: "(prefers-reduced-motion: reduce)",
         },
         (context) => {
@@ -223,6 +231,38 @@ export function ContactHero({ content }: ContactHeroProps) {
     { scope: sectionRef },
   );
 
+  const handleEnquiryClick: MouseEventHandler<HTMLAnchorElement> = (event) => {
+    if (
+      event.button !== 0
+      || event.metaKey
+      || event.ctrlKey
+      || event.shiftKey
+      || event.altKey
+    ) {
+      return;
+    }
+
+    const target = document.getElementById("contact-enquiry");
+    if (!target) return;
+
+    event.preventDefault();
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    requestSmoothScroll({
+      target,
+      immediate: reduceMotion,
+    });
+
+    window.history.replaceState(
+      window.history.state,
+      "",
+      "#contact-enquiry",
+    );
+  };
+
   return (
     <section
       ref={sectionRef}
@@ -286,17 +326,17 @@ export function ContactHero({ content }: ContactHeroProps) {
           </figcaption>
         </figure>
 
-        <div className="mt-[clamp(2.25rem,3.2vw,3.5rem)] grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-12">
+        <div className="mt-[clamp(2.25rem,3.2vw,3.5rem)] grid grid-cols-2 items-start gap-x-5 gap-y-7 sm:gap-x-8 md:gap-x-12 md:gap-y-8 lg:grid-cols-12 lg:gap-x-6 lg:gap-y-0">
           <DirectoryItem
             label={content.direct.locationLabel}
-            className="md:col-span-3"
+            className="lg:col-span-3"
           >
             {content.direct.location}
           </DirectoryItem>
 
           <DirectoryItem
             label={content.direct.label}
-            className="col-span-2 md:col-span-3"
+            className="col-span-2 min-[400px]:col-span-1 lg:col-span-3"
           >
             <ContactDirectoryLink
               href={`mailto:${content.direct.email}`}
@@ -307,7 +347,7 @@ export function ContactHero({ content }: ContactHeroProps) {
 
           <DirectoryItem
             label={content.social.label}
-            className="md:col-span-2"
+            className="lg:col-span-2"
           >
             <ul className="flex flex-wrap gap-x-4 gap-y-1">
               {content.social.links.map((link) => (
@@ -325,19 +365,20 @@ export function ContactHero({ content }: ContactHeroProps) {
 
           <DirectoryItem
             label={content.direct.responseLabel}
-            className="md:col-span-2"
+            className="lg:col-span-2"
           >
             {content.direct.responseTime}
           </DirectoryItem>
 
-          <div className="col-span-2 overflow-hidden pb-[0.08em] md:col-span-2">
+          <div className="col-span-2 overflow-hidden pb-[0.08em] lg:col-span-2">
             <div
               data-contact-directory-item
-              className="flex h-full items-end will-change-transform md:justify-end"
+              className="flex h-full items-start will-change-transform lg:justify-end lg:pt-[1.2rem]"
             >
               <ContactDirectoryLink
                 href="#contact-enquiry"
                 text={content.hero.scrollLabel}
+                onClick={handleEnquiryClick}
                 className="text-[0.64rem] font-semibold uppercase tracking-[0.08em]"
                 trailing={
                   <span
@@ -381,6 +422,7 @@ function ContactDirectoryLink({
   target,
   rel,
   trailing,
+  onClick,
 }: ContactDirectoryLinkProps) {
   const [active, setActive] = useState(false);
 
@@ -389,6 +431,7 @@ function ContactDirectoryLink({
       href={href}
       target={target}
       rel={rel}
+      onClick={onClick}
       data-cursor=""
       data-contact-directory-link
       onMouseEnter={() => setActive(true)}

@@ -1,6 +1,7 @@
 import hero1 from '../assets/images/hero.avif'
+import heroMobile from '../assets/images/hero-mobile-v2.avif'
 import hero2 from '../assets/images/hero2.avif'
-import heroPortal from '../assets/images/hero-portal-v4.png'
+import heroPortal from '../assets/images/hero-portal-v5.png'
 import heroWordmark from '../assets/branding/lagom-wordmark.svg'
 import {motion} from "motion/react";
 import { useRef, useState} from "react";
@@ -15,6 +16,41 @@ import {
 } from "../lib/revealEvents";
 import { motionEaseCurves, motionEases } from "../lib/motion";
 import { WorkTransitionLink } from "../components/transition/WorkTransitionLink";
+
+const HERO_PORTAL_GEOMETRY = {
+    width: 1672,
+    height: 941,
+    aperture: {
+        left: 256,
+        right: 1415,
+        top: 186,
+        bottom: 791,
+    },
+};
+const HERO_PORTAL_REVEAL_OVERSCAN = 1.24;
+const HERO_PORTAL_REVEAL_DELAY = 0.085;
+const HERO_PORTAL_FADE_DURATION = 0.24;
+
+const getHeroPortalRevealScale = (viewportWidth: number, viewportHeight: number) => {
+    const imageAspectRatio = HERO_PORTAL_GEOMETRY.width / HERO_PORTAL_GEOMETRY.height;
+    const renderedWidth = Math.max(viewportWidth, viewportHeight * imageAspectRatio);
+    const renderedHeight = Math.max(viewportHeight, viewportWidth / imageAspectRatio);
+    const {aperture, width, height} = HERO_PORTAL_GEOMETRY;
+
+    const requiredScale = Math.max(
+        viewportWidth / (2 * (0.5 - aperture.left / width) * renderedWidth),
+        viewportWidth / (2 * (aperture.right / width - 0.5) * renderedWidth),
+        viewportHeight / (2 * (0.5 - aperture.top / height) * renderedHeight),
+        viewportHeight / (2 * (aperture.bottom / height - 0.5) * renderedHeight),
+    );
+
+    return requiredScale * HERO_PORTAL_REVEAL_OVERSCAN;
+};
+
+const getVisualViewportSize = () => ({
+    width: Math.max(1, Math.round(window.visualViewport?.width ?? window.innerWidth)),
+    height: Math.max(1, Math.round(window.visualViewport?.height ?? window.innerHeight)),
+});
 
 const descriptionLines = [
     "Sustainable architecture shaped by",
@@ -80,7 +116,7 @@ export const Hero = () => {
             gsap.set(descriptionLines, { yPercent: 115 });
             gsap.set(projectItems, { yPercent: 115 });
             gsap.set(wordmark, { yPercent: 115, rotation: 0.75 });
-            gsap.set([heroRef.current, heroRef2.current], { scale: 0.8 });
+            gsap.set([heroRef.current, heroRef2.current], { scale: 1 });
             gsap.set(heroPortalRef.current, { scale: 1 });
         }
 
@@ -90,23 +126,26 @@ export const Hero = () => {
             }
 
             const { imageDuration } = (event as CustomEvent<LoaderRevealEventDetail>).detail;
+            const {width, height} = getVisualViewportSize();
+            const revealTimeline = gsap.timeline();
 
-            gsap.to([heroRef.current, heroRef2.current], {
+            revealTimeline.to([heroRef.current, heroRef2.current], {
                 scale: 1.15,
                 duration: imageDuration,
                 ease: motionEases.reveal,
                 force3D: true,
-            });
-            gsap.to(heroPortalRef.current, {
-                scale: 1.5,
-                duration: imageDuration,
+            }, 0);
+            revealTimeline.to(heroPortalRef.current, {
+                scale: getHeroPortalRevealScale(width, height),
+                duration: imageDuration - HERO_PORTAL_REVEAL_DELAY,
                 ease: motionEases.reveal,
                 force3D: true,
-                delay: 0.085,
-                onComplete: () => {
-                    if(heroPortalRef.current !== null) heroPortalRef.current.style.display = "none";
-                }
-            });
+            }, HERO_PORTAL_REVEAL_DELAY);
+            revealTimeline.to(heroPortalRef.current, {
+                autoAlpha: 0,
+                duration: HERO_PORTAL_FADE_DURATION,
+                ease: "power1.out",
+            }, imageDuration - HERO_PORTAL_FADE_DURATION);
         });
 
         const revealContent = contextSafe!(() => {
@@ -166,24 +205,33 @@ export const Hero = () => {
     }, { scope: sectionRef });
 
     return (
-        <section ref={sectionRef} className="relative z-[1] h-[200vh] bg-white">
-            <div className="sticky top-0 h-screen overflow-hidden">
+        <section ref={sectionRef} className="relative z-[1] h-[200svh] bg-white">
+            <div className="sticky top-0 h-svh overflow-hidden">
 
                 <div
                     ref={heroPortalRef}
+                    data-hero-portal
                     className="absolute inset-0 z-20 h-full w-full bg-cover bg-center will-change-transform"
                     style={{ backgroundImage: `url(${heroPortal})` }}
                     aria-hidden="true"
                 />
 
-                <div className={"absolute top-0 z-10"} ref={heroRef} style={{
-                    backgroundImage: `url(${hero1})`,
-                    backgroundSize: "cover",
-                    width: "100%",
-                    height: "100%",
-                    filter: "brightness(0.55)",
-                    scale: 1.06
-                }}/>
+                <div
+                    ref={heroRef}
+                    aria-hidden="true"
+                    className="absolute inset-0 z-10 overflow-hidden"
+                    style={{filter: "brightness(0.55)"}}
+                >
+                    <picture>
+                        <source media="(max-width: 767px)" srcSet={heroMobile}/>
+                        <img
+                            src={hero1}
+                            alt=""
+                            fetchPriority="high"
+                            className="!h-full w-full object-cover object-center"
+                        />
+                    </picture>
+                </div>
 
                 <div className={"absolute top-0 z-[1]"} ref={heroRef2} style={{
                     backgroundImage: `url(${hero2})`,
@@ -192,7 +240,6 @@ export const Hero = () => {
                     width: "100%",
                     height: "100%",
                     filter: "brightness(0.45)",
-                    scale: 1.10
                 }}/>
 
                 <div className="absolute inset-x-0 top-1/2 z-10 -translate-y-1/2 px-[var(--spacing-viewport-gutter)]">

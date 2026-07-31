@@ -129,10 +129,12 @@ body {
   padding-block: var(--spacing-section-lg);
 }
 
-img {
-  display: block;
-  max-width: 100%;
-  height: auto;
+@layer base {
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 [data-contact-hero-frame] {

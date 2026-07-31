@@ -63,6 +63,9 @@ export function ProjectGallery({ projectTitle, media }: ProjectGalleryProps) {
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+    const usesCompactStoryLayout = window.matchMedia(
+      "(max-width: 640px)",
+    ).matches;
 
     if (reduceMotion) {
       gsap.set(images, { clearProps: "transform" });
@@ -133,30 +136,34 @@ export function ProjectGallery({ projectTitle, media }: ProjectGalleryProps) {
       });
     }
 
-    figures.forEach((figure) => {
-      const image = figure.querySelector<HTMLImageElement>(
-        "[data-project-media-image]",
-      );
-      if (!image) return;
+    if (usesCompactStoryLayout) {
+      gsap.set(images, { clearProps: "transform" });
+    } else {
+      figures.forEach((figure) => {
+        const image = figure.querySelector<HTMLImageElement>(
+          "[data-project-media-image]",
+        );
+        if (!image) return;
 
-      gsap.fromTo(
-        image,
-        {
-          y: 40,
-        },
-        {
-          y: -40,
-          ease: "none",
-          scrollTrigger: {
-            trigger: figure,
-            start: "clamp(top bottom)",
-            end: "clamp(bottom top)",
-            scrub: 1.1,
-            invalidateOnRefresh: true,
+        gsap.fromTo(
+          image,
+          {
+            y: 40,
           },
-        },
-      );
-    });
+          {
+            y: -40,
+            ease: "none",
+            scrollTrigger: {
+              trigger: figure,
+              start: "clamp(top bottom)",
+              end: "clamp(bottom top)",
+              scrub: 1.1,
+              invalidateOnRefresh: true,
+            },
+          },
+        );
+      });
+    }
 
     return () => {
       loadCleanups.forEach((cleanup) => cleanup());

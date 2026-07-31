@@ -7,6 +7,8 @@ import {
     CONTACT_CONTENT_REVEAL_EVENT,
     NAVBAR_REVEAL_EVENT,
     WORK_CONTENT_REVEAL_EVENT,
+    WORK_VIEW_MODE_CHANGE_EVENT,
+    type WorkViewModeChangeEventDetail,
 } from "../../lib/revealEvents";
 import {motionEaseCurves, motionEases} from "../../lib/motion";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
@@ -25,7 +27,7 @@ gsap.registerPlugin(ScrollTrigger);
 const links = [
     {href: "/", label: "Home"},
     {href: "/work", label: "Work"},
-    {href: "/studio", label: "About"},
+    {href: "/about", label: "About"},
     {href: "/contact", label: "Contact"},
 ];
 
@@ -64,6 +66,7 @@ export function Navbar() {
     const {startContactTransition} = useContactTransition();
     const usesProcessNavSequence = pathname === "/" || pathname === "/process";
     const usesLightPrimaryNav = pathname === "/work"
+        || pathname === "/about"
         || pathname === "/studio"
         || pathname === "/om-oss"
         || pathname === "/contact"
@@ -74,6 +77,7 @@ export function Navbar() {
     const primaryNavContentRef = useRef<HTMLDivElement | null>(null);
     const logoMarkRef = useRef<HTMLAnchorElement | null>(null);
     const buttonRef = useRef<HTMLDivElement | null>(null);
+    const primaryMenuButtonRef = useRef<HTMLButtonElement | null>(null);
     const secondaryNavRef = useRef<HTMLDivElement | null>(null);
     const menuButtonRef = useRef<HTMLButtonElement | null>(null);
     const contactButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -101,14 +105,16 @@ export function Navbar() {
     }, [navigate, pathname, startContactTransition, startWorkTransition]);
 
     useEffect(() => {
-        const homeLoader = pathname === "/"
+        const pageLoader = pathname === "/"
             ? document.querySelector<HTMLElement>("[data-lagom-loader]")
-            : null;
-        const waitsForHomeLoader = homeLoader
-            ? window.getComputedStyle(homeLoader).display !== "none"
+            : pathname === "/about"
+                ? document.querySelector<HTMLElement>("[data-studio-page-loader]")
+                : null;
+        const waitsForPageLoader = pageLoader
+            ? window.getComputedStyle(pageLoader).display !== "none"
             : false;
 
-        if (waitsForHomeLoader || locationKey === "default") return;
+        if (waitsForPageLoader || locationKey === "default") return;
 
         let restoreFrame = 0;
         const restoreNavbar = () => {
@@ -116,7 +122,12 @@ export function Navbar() {
                 "[data-navbar-item]",
                 headerRef.current,
             );
-            const animatedItems = [logoMarkRef.current, ...navItems, buttonRef.current].filter(Boolean);
+            const animatedItems = [
+                logoMarkRef.current,
+                ...navItems,
+                buttonRef.current,
+                primaryMenuButtonRef.current,
+            ].filter(Boolean);
 
             gsap.killTweensOf([primaryNavContentRef.current, ...animatedItems]);
             gsap.set(primaryNavContentRef.current, {
@@ -142,9 +153,15 @@ export function Navbar() {
             "[data-navbar-item]",
             headerRef.current,
         );
-        const animatedItems = [logoMarkRef.current, ...navItems, buttonRef.current].filter(Boolean);
+        const animatedItems = [
+            logoMarkRef.current,
+            ...navItems,
+            buttonRef.current,
+            primaryMenuButtonRef.current,
+        ].filter(Boolean);
         const secondaryNavTargets = [secondaryNavRef.current].filter(Boolean);
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        let workViewSuppressesNavbar = false;
 
         if (!reduceMotion) {
             gsap.set(animatedItems, {clearProps: "transform"});
@@ -158,6 +175,7 @@ export function Navbar() {
         });
 
         const revealNavbar = contextSafe!(() => {
+            if (workViewSuppressesNavbar) return;
             if (reduceMotion) return;
 
             const timeline = gsap.timeline({ defaults: { ease: motionEases.enter } })
@@ -171,7 +189,11 @@ export function Navbar() {
                 duration: 0.54,
                 stagger: 0.035,
             }, "links");
-            timeline.to(buttonRef.current, { yPercent: 0, duration: 0.6 }, "action");
+            timeline.to(
+                [buttonRef.current, primaryMenuButtonRef.current].filter(Boolean),
+                { yPercent: 0, duration: 0.6 },
+                "action",
+            );
         });
 
         const hideNavbar = contextSafe!(() => {
@@ -187,6 +209,7 @@ export function Navbar() {
         });
 
         const showNavbar = contextSafe!(() => {
+            if (workViewSuppressesNavbar) return;
             gsap.to(primaryNavContentRef.current, {
                 yPercent: 0,
                 duration: reduceMotion ? 0 : 0.64,
@@ -199,6 +222,7 @@ export function Navbar() {
         });
 
         const showSecondaryNavbar = contextSafe!(() => {
+            if (workViewSuppressesNavbar) return;
             gsap.to(secondaryNavTargets, {
                 yPercent: 0,
                 clipPath: "inset(0% 0% 0% 0%)",
@@ -242,6 +266,7 @@ export function Navbar() {
         });
 
         const revealWorkNavbar = contextSafe!(() => {
+            if (workViewSuppressesNavbar) return;
             const currentNavItems = gsap.utils.toArray<HTMLElement>(
                 "[data-navbar-item]",
                 headerRef.current,
@@ -250,6 +275,7 @@ export function Navbar() {
                 logoMarkRef.current,
                 ...currentNavItems,
                 buttonRef.current,
+                primaryMenuButtonRef.current,
             ].filter(Boolean);
 
             gsap.killTweensOf([primaryNavContentRef.current, ...currentAnimatedItems]);
@@ -258,6 +284,28 @@ export function Navbar() {
                 pointerEvents: "auto",
             });
             gsap.set(currentAnimatedItems, {clearProps: "transform"});
+        });
+
+        const syncWorkViewNavbar = contextSafe!((event: Event) => {
+            const {mode} = (
+                event as CustomEvent<WorkViewModeChangeEventDetail>
+            ).detail;
+            workViewSuppressesNavbar = mode !== "composition";
+
+            if (workViewSuppressesNavbar) {
+                hideNavbar();
+                hideSecondaryNavbar();
+                return;
+            }
+
+            if (window.scrollY < window.innerHeight * 0.12) {
+                showNavbar();
+                hideSecondaryNavbar();
+                return;
+            }
+
+            hideNavbar();
+            showSecondaryNavbar();
         });
 
         ScrollTrigger.create({
@@ -335,17 +383,24 @@ export function Navbar() {
 
         const loader = pathname === "/"
             ? document.querySelector<HTMLElement>("[data-lagom-loader]")
-            : null;
+            : pathname === "/about"
+                ? document.querySelector<HTMLElement>("[data-studio-page-loader]")
+                : null;
         const loaderIsHidden = !loader || window.getComputedStyle(loader).display === "none";
 
         window.addEventListener(NAVBAR_REVEAL_EVENT, revealNavbar);
         window.addEventListener(CONTACT_CONTENT_REVEAL_EVENT, revealContactNavbar);
         window.addEventListener(WORK_CONTENT_REVEAL_EVENT, revealWorkNavbar);
+        window.addEventListener(WORK_VIEW_MODE_CHANGE_EVENT, syncWorkViewNavbar);
         if (loaderIsHidden) revealNavbar();
 
         return () => {
             window.removeEventListener(NAVBAR_REVEAL_EVENT, revealNavbar);
             window.removeEventListener(WORK_CONTENT_REVEAL_EVENT, revealWorkNavbar);
+            window.removeEventListener(
+                WORK_VIEW_MODE_CHANGE_EVENT,
+                syncWorkViewNavbar,
+            );
             window.removeEventListener(
                 CONTACT_CONTENT_REVEAL_EVENT,
                 revealContactNavbar,
@@ -357,7 +412,7 @@ export function Navbar() {
       <>
         <header
           ref={headerRef}
-          className="fixed top-0 z-[100] h-[15vh] w-full overflow-hidden"
+          className="fixed inset-x-0 top-8 z-[100] h-10 overflow-hidden md:top-10"
         >
           <div
             ref={primaryNavContentRef}
@@ -380,7 +435,7 @@ export function Navbar() {
                     <LogoMark animatedParts className="h-8 w-auto shrink-0" />
                     <span
                         aria-hidden="true"
-                        className="hidden flex-col justify-center text-[0.68rem] font-semibold uppercase leading-[0.9] tracking-[0.055em] sm:flex"
+                        className="flex flex-col justify-center text-[0.68rem] font-semibold uppercase leading-[0.9] tracking-[0.055em]"
                     >
                         <span>Lagom</span>
                         <span>Arkitektur</span>
@@ -443,12 +498,14 @@ export function Navbar() {
             </div>
 
             <button
+                ref={primaryMenuButtonRef}
                 type="button"
                 onClick={(event) => {
                     menuButtonRef.current = event.currentTarget;
                     setIsMenuOpen(true);
                 }}
-                className="col-start-3 row-start-1 h-10 justify-self-end rounded-lg bg-[#f4f1ea] px-4 text-sm font-medium text-black md:hidden"
+                className="col-start-3 row-start-1 h-10 justify-self-end rounded-lg bg-[#f4f1ea] px-4 text-sm font-medium leading-none text-black will-change-transform md:hidden"
+                data-navbar-mobile-menu
                 aria-label="Open menu"
                 aria-expanded={isMenuOpen}
                 aria-controls="site-menu"
@@ -460,7 +517,7 @@ export function Navbar() {
         <div
             ref={secondaryNavRef}
             className={clsx(
-                "fixed top-5 right-[var(--spacing-viewport-gutter)] z-[100] flex items-center gap-1 p-2 will-change-[transform,clip-path,opacity]",
+                "fixed top-8 right-[var(--spacing-viewport-gutter)] z-[100] flex items-center gap-2 will-change-[transform,clip-path,opacity] md:top-10",
             )}
             role="navigation"
             aria-label="Secondary navigation"
@@ -475,7 +532,7 @@ export function Navbar() {
                 ref={menuButtonRef}
                 type="button"
                 onClick={() => setIsMenuOpen(true)}
-                className="h-10 rounded-lg bg-[#f4f1ea] px-4 text-black"
+                className="h-10 rounded-lg bg-[#f4f1ea] px-4 text-sm font-medium leading-none text-black"
                 aria-label="Open menu"
                 aria-expanded={isMenuOpen}
                 aria-controls="site-menu"
@@ -513,13 +570,13 @@ function GetInTouchButton({
             type="button"
             onClick={onClick}
             className={clsx(
-                "h-10 rounded-lg px-4 flex gap-2 items-center",
+                "flex h-10 items-center gap-2 rounded-lg px-4 font-medium",
                 isDark ? "bg-black text-white" : "bg-white text-black"
             )}
             onHoverStart={() => setHovered(true)}
             onHoverEnd={() => setHovered(false)}
         >
-            <div className="relative overflow-hidden text-sm  uppercase leading-none">
+            <div className="relative overflow-hidden text-sm uppercase leading-none">
                 <motion.div
                     className="relative"
                     animate={hovered ? {y: "-100%"} : {y: "0%"}}

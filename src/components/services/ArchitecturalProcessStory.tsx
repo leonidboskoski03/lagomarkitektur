@@ -49,18 +49,6 @@ const splitIntoSentences = (text: string) => (
     ?? [text]
 );
 
-interface CachedFrame {
-    image: ImageBitmap | HTMLImageElement;
-    width: number;
-    height: number;
-    lastUsed: number;
-}
-
-interface ActiveFrameLoad {
-    controller: AbortController;
-    startedAt: number;
-}
-
 interface FrameSequenceRenderer {
     requestFrame: (index: number) => void;
     resize: () => void;
@@ -68,11 +56,13 @@ interface FrameSequenceRenderer {
 }
 
 interface CreateFrameSequenceRendererOptions {
-    canvas: HTMLCanvasElement;
+    video: HTMLVideoElement;
     backdropCanvas: HTMLCanvasElement;
     tier: SequenceTier;
     frameCount: number;
-    basePath: string;
+    durationSeconds: number;
+    fps: number;
+    sourceUrl: string;
     onFirstDraw: () => void;
 }
 
@@ -116,389 +106,164 @@ const frameUrl = (basePath: string, zeroBasedIndex: number) => (
 );
 
 const createFrameSequenceRenderer = ({
-    canvas,
+    video,
     backdropCanvas,
     tier,
     frameCount,
-    basePath,
+    durationSeconds,
+    fps,
+    sourceUrl,
     onFirstDraw,
 }: CreateFrameSequenceRendererOptions): FrameSequenceRenderer => {
-    const context = canvas.getContext("2d");
     const backdropContext = backdropCanvas.getContext("2d", {alpha: false});
-    if (!context || !backdropContext) {
+    if (!backdropContext) {
         return {
             requestFrame: () => undefined,
             resize: () => undefined,
             dispose: () => undefined,
         };
     }
+    const context = backdropContext;
 
     const deviceMemory = (
         navigator as Navigator & {deviceMemory?: number}
     ).deviceMemory ?? 4;
-    const processorCount = navigator.hardwareConcurrency || 4;
-    const constrainedDevice = deviceMemory <= 4 || processorCount <= 4;
-    const densePreloadAhead = constrainedDevice
-        ? (tier === "desktop" ? 9 : 7)
-        : (tier === "desktop" ? 16 : 12);
-    const sparsePreloadDistance = constrainedDevice
-        ? (tier === "desktop" ? 42 : 32)
-        : (tier === "desktop" ? 64 : 48);
-    const sparsePreloadStep = constrainedDevice ? 8 : 10;
-    const preloadBehind = constrainedDevice
-        ? (tier === "desktop" ? 4 : 3)
-        : (tier === "desktop" ? 7 : 5);
-    const cacheLimit = constrainedDevice
-        ? (tier === "desktop" ? 18 : 14)
-        : (tier === "desktop" ? 28 : 20);
-    const maxConcurrentLoads = constrainedDevice
-        ? 3
-        : (tier === "desktop" ? 6 : 4);
-    const maxCanvasWidth = tier === "desktop" ? 1920 : 1280;
-    const maxBackdropWidth = constrainedDevice ? 420 : 640;
-    const sourceWidth = tier === "desktop" ? 1920 : 1280;
-    const sourceHeight = tier === "desktop" ? 1080 : 720;
-    const pixelRatioLimit = constrainedDevice ? 1 : 1.25;
-    const cache = new Map<number, CachedFrame>();
-    const loading = new Map<number, ActiveFrameLoad>();
-    const queued = new Set<number>();
-    let queue: number[] = [];
+    const maxBackdropWidth = deviceMemory <= 4 ? 420 : 640;
     let desiredFrame = 0;
-    let direction: -1 | 1 = 1;
-    let drawnPosition = -1;
-    let drawRequest = 0;
-    let forceNextDraw = false;
+    let seekRequest = 0;
     let disposed = false;
     let hasDrawn = false;
 
     const resize = () => {
-        const cssWidth = Math.max(1, canvas.clientWidth);
-        const cssHeight = Math.max(1, canvas.clientHeight);
-        const pixelRatio = Math.min(
-            window.devicePixelRatio,
-            maxCanvasWidth / cssWidth,
-            pixelRatioLimit,
-        );
-        const nextWidth = Math.max(1, Math.round(cssWidth * pixelRatio));
-        const nextHeight = Math.max(1, Math.round(cssHeight * pixelRatio));
+        const cssWidth = Math.max(1, backdropCanvas.clientWidth);
+        const cssHeight = Math.max(1, backdropCanvas.clientHeight);
         const backdropRatio = Math.min(1, maxBackdropWidth / cssWidth);
         const nextBackdropWidth = Math.max(1, Math.round(cssWidth * backdropRatio));
         const nextBackdropHeight = Math.max(1, Math.round(cssHeight * backdropRatio));
 
-        if (canvas.width !== nextWidth || canvas.height !== nextHeight) {
-            canvas.width = nextWidth;
-            canvas.height = nextHeight;
-            forceNextDraw = true;
-            scheduleDraw();
-        }
         if (
             backdropCanvas.width !== nextBackdropWidth
             || backdropCanvas.height !== nextBackdropHeight
         ) {
             backdropCanvas.width = nextBackdropWidth;
             backdropCanvas.height = nextBackdropHeight;
-            forceNextDraw = true;
-            scheduleDraw();
+            drawBackdrop();
         }
     };
 
-    const drawImage = (
-        targetContext: CanvasRenderingContext2D,
-        targetCanvas: HTMLCanvasElement,
-        frame: CachedFrame,
-        frameIndex: number,
-        mode: "cover" | "contain",
-    ) => {
-        const canvasWidth = targetCanvas.width;
-        const canvasHeight = targetCanvas.height;
-        const imageRatio = frame.width / frame.height;
+    function drawBackdrop() {
+        if (
+            disposed
+            || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA
+            || !video.videoWidth
+            || !video.videoHeight
+        ) return;
+
+        const canvasWidth = backdropCanvas.width;
+        const canvasHeight = backdropCanvas.height;
+        const imageRatio = video.videoWidth / video.videoHeight;
         const canvasRatio = canvasWidth / canvasHeight;
-        const renderWidth = mode === "cover"
-            ? (
-                canvasRatio > imageRatio
-                    ? canvasWidth
-                    : canvasHeight * imageRatio
-            )
-            : (
-                canvasRatio > imageRatio
-                    ? canvasHeight * imageRatio
-                    : canvasWidth
-            );
+        const renderWidth = canvasRatio > imageRatio
+            ? canvasWidth
+            : canvasHeight * imageRatio;
         const renderHeight = renderWidth / imageRatio;
         const offsetX = (canvasWidth - renderWidth) * 0.5;
         const focalY = tier === "mobile"
             ? 0.26
-            : getDesktopSequenceFocalY(frameIndex, frameCount);
-        const offsetY = (canvasHeight - renderHeight) * (
-            mode === "cover" ? focalY : 0.5
-        );
+            : getDesktopSequenceFocalY(desiredFrame, frameCount);
+        const offsetY = (canvasHeight - renderHeight) * focalY;
 
-        targetContext.drawImage(frame.image, offsetX, offsetY, renderWidth, renderHeight);
-        frame.lastUsed = performance.now();
-        if (targetCanvas === canvas) {
-            targetCanvas.dataset.processFocalY = focalY.toFixed(3);
-            targetCanvas.dataset.processFit = mode;
-        }
-    };
-
-    const draw = (frame: CachedFrame, frameIndex: number) => {
-        const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
-        backdropContext.fillStyle = "#11110f";
-        backdropContext.fillRect(
-            0,
-            0,
-            backdropCanvas.width,
-            backdropCanvas.height,
-        );
-        backdropContext.imageSmoothingEnabled = true;
-        backdropContext.imageSmoothingQuality = "medium";
-        drawImage(
-            backdropContext,
-            backdropCanvas,
-            frame,
-            frameIndex,
-            "cover",
-        );
-
-        context.clearRect(0, 0, canvasWidth, canvasHeight);
+        context.fillStyle = "#11110f";
+        context.fillRect(0, 0, canvasWidth, canvasHeight);
         context.imageSmoothingEnabled = true;
-        context.imageSmoothingQuality = "high";
-        drawImage(
-            context,
-            canvas,
-            frame,
-            frameIndex,
-            tier === "desktop" ? "contain" : "cover",
+        context.imageSmoothingQuality = "medium";
+        context.drawImage(
+            video,
+            offsetX,
+            offsetY,
+            renderWidth,
+            renderHeight,
         );
 
         if (!hasDrawn) {
             hasDrawn = true;
             onFirstDraw();
         }
-    };
+        video.dataset.processFrame = String(desiredFrame + 1);
+    }
 
-    const drawClosestFrame = (force = false) => {
-        const exactIndex = clampFrameIndex(desiredFrame, frameCount);
-        const exactFrame = cache.get(exactIndex);
-        if (exactFrame) {
-            if (!force && drawnPosition === exactIndex) return;
-            draw(exactFrame, exactIndex);
-            drawnPosition = exactIndex;
-            canvas.dataset.processFrame = String(exactIndex + 1);
-            canvas.dataset.processFrameGap = "0";
+    const seekToDesiredFrame = () => {
+        if (
+            disposed
+            || video.readyState < HTMLMediaElement.HAVE_METADATA
+            || video.seeking
+        ) return;
+
+        const targetTime = frameCount > 1
+            ? (desiredFrame / (frameCount - 1)) * durationSeconds
+            : 0;
+        const seekThreshold = 0.5 / fps;
+
+        if (Math.abs(video.currentTime - targetTime) <= seekThreshold) {
+            drawBackdrop();
             return;
         }
 
-        let nearestFrame: CachedFrame | undefined;
-        let nearestIndex = -1;
-        let nearestScore = Number.POSITIVE_INFINITY;
-        cache.forEach((frame, index) => {
-            const distance = Math.abs(index - desiredFrame);
-            const isAheadOfMotion = (index - desiredFrame) * direction > 0;
-            const score = distance + (isAheadOfMotion ? 0.35 : 0);
-            if (score < nearestScore) {
-                nearestScore = score;
-                nearestFrame = frame;
-                nearestIndex = index;
-            }
+        video.currentTime = Math.min(
+            Math.max(0, targetTime),
+            Math.max(0, video.duration - seekThreshold),
+        );
+    };
+
+    const scheduleSeek = () => {
+        if (seekRequest || disposed) return;
+        seekRequest = window.requestAnimationFrame(() => {
+            seekRequest = 0;
+            seekToDesiredFrame();
         });
-
-        if (
-            nearestFrame
-            && (force || drawnPosition !== nearestIndex)
-        ) {
-            draw(nearestFrame, nearestIndex);
-            drawnPosition = nearestIndex;
-            canvas.dataset.processFrame = String(nearestIndex + 1);
-            canvas.dataset.processFrameGap = String(Math.abs(nearestIndex - exactIndex));
-        }
     };
 
-    function scheduleDraw(force = false) {
-        forceNextDraw ||= force;
-        if (drawRequest || disposed) return;
-
-        drawRequest = window.requestAnimationFrame(() => {
-            drawRequest = 0;
-            const shouldForce = forceNextDraw;
-            forceNextDraw = false;
-            drawClosestFrame(shouldForce);
-        });
-    }
-
-    const releaseFrame = (frame: CachedFrame) => {
-        if (typeof ImageBitmap !== "undefined" && frame.image instanceof ImageBitmap) {
-            frame.image.close();
-        }
+    const handleLoadedData = () => {
+        drawBackdrop();
+        scheduleSeek();
     };
-
-    const trimCache = () => {
-        if (cache.size <= cacheLimit) return;
-
-        const exactIndex = clampFrameIndex(desiredFrame, frameCount);
-        const evictionCandidates = Array.from(cache.entries())
-            .filter(([index]) => index !== exactIndex)
-            .sort(([indexA, frameA], [indexB, frameB]) => {
-                const distanceDifference = Math.abs(indexB - desiredFrame) - Math.abs(indexA - desiredFrame);
-                return distanceDifference || frameA.lastUsed - frameB.lastUsed;
-            });
-
-        while (cache.size > cacheLimit && evictionCandidates.length > 0) {
-            const [index, frame] = evictionCandidates.shift()!;
-            cache.delete(index);
-            releaseFrame(frame);
-        }
-    };
-
-    const decodeFrame = async (index: number, signal: AbortSignal) => {
-        const response = await fetch(frameUrl(basePath, index), {
-            cache: "force-cache",
-            signal,
-        });
-        if (!response.ok) throw new Error(`Unable to load process frame ${index + 1}`);
-
-        const blob = await response.blob();
-        if (typeof window.createImageBitmap === "function") {
-            const sourceRatio = sourceWidth / sourceHeight;
-            const canvasRatio = canvas.width / Math.max(canvas.height, 1);
-            const coverWidth = canvasRatio > sourceRatio
-                ? canvas.width
-                : canvas.height * sourceRatio;
-            const coverHeight = coverWidth / sourceRatio;
-            const resizeScale = Math.min(
-                1,
-                sourceWidth / Math.max(coverWidth, 1),
-                sourceHeight / Math.max(coverHeight, 1),
-            );
-            const resizeWidth = Math.max(1, Math.round(coverWidth * resizeScale));
-            const resizeHeight = Math.max(1, Math.round(coverHeight * resizeScale));
-            let image: ImageBitmap;
-
-            try {
-                image = await window.createImageBitmap(blob, {
-                    resizeWidth,
-                    resizeHeight,
-                    resizeQuality: "high",
-                });
-            } catch {
-                image = await window.createImageBitmap(blob);
-            }
-            return {image, width: image.width, height: image.height};
-        }
-
-        const objectUrl = URL.createObjectURL(blob);
-        try {
-            const image = new Image();
-            image.decoding = "async";
-            image.src = objectUrl;
-            await image.decode();
-            return {image, width: image.naturalWidth, height: image.naturalHeight};
-        } finally {
-            URL.revokeObjectURL(objectUrl);
-        }
-    };
-
-    const pumpQueue = () => {
-        if (disposed) return;
-
-        while (loading.size < maxConcurrentLoads && queue.length > 0) {
-            const index = queue.shift()!;
-            queued.delete(index);
-            if (cache.has(index) || loading.has(index)) continue;
-
-            const controller = new AbortController();
-            loading.set(index, {
-                controller,
-                startedAt: performance.now(),
-            });
-
-            void decodeFrame(index, controller.signal)
-                .then(({image, width, height}) => {
-                    if (disposed || controller.signal.aborted) {
-                        if (typeof ImageBitmap !== "undefined" && image instanceof ImageBitmap) image.close();
-                        return;
-                    }
-
-                    cache.set(index, {image, width, height, lastUsed: performance.now()});
-                    scheduleDraw();
-                    trimCache();
-                })
-                .catch((error: unknown) => {
-                    if (!(error instanceof DOMException && error.name === "AbortError")) {
-                        console.warn(error);
-                    }
-                })
-                .finally(() => {
-                    const activeLoad = loading.get(index);
-                    if (activeLoad?.controller === controller) loading.delete(index);
-                    pumpQueue();
-                });
-        }
-    };
-
-    const enqueue = (index: number) => {
-        const safeIndex = clampFrameIndex(index, frameCount);
-        if (cache.has(safeIndex) || loading.has(safeIndex) || queued.has(safeIndex)) return;
-        queued.add(safeIndex);
-        queue.push(safeIndex);
+    const handleSeeked = () => {
+        drawBackdrop();
+        scheduleSeek();
     };
 
     const requestFrame = (index: number) => {
-        const nextFrame = clampFrameIndex(index, frameCount);
-        if (nextFrame !== desiredFrame) direction = nextFrame > desiredFrame ? 1 : -1;
-        desiredFrame = nextFrame;
-        canvas.dataset.processRequestedFrame = String(nextFrame + 1);
-        if (drawnPosition >= 0) {
-            canvas.dataset.processFrameGap = String(Math.abs(drawnPosition - nextFrame));
-        }
-
-        loading.forEach(({controller, startedAt}, loadingIndex) => {
-            const signedDistance = (loadingIndex - desiredFrame) * direction;
-            const outsideCorridor = Math.abs(signedDistance) > sparsePreloadDistance;
-            const hasHadTimeToResolve = performance.now() - startedAt > 120;
-            if (outsideCorridor && hasHadTimeToResolve) controller.abort();
-        });
-
-        queue = [];
-        queued.clear();
-        enqueue(nextFrame);
-        for (let offset = 1; offset <= densePreloadAhead; offset += 1) {
-            enqueue(nextFrame + offset * direction);
-        }
-        for (
-            let offset = densePreloadAhead + sparsePreloadStep;
-            offset <= sparsePreloadDistance;
-            offset += sparsePreloadStep
-        ) {
-            enqueue(nextFrame + offset * direction);
-        }
-        for (let offset = 1; offset <= preloadBehind; offset += 1) {
-            enqueue(nextFrame - offset * direction);
-        }
-
-        scheduleDraw();
-        pumpQueue();
+        desiredFrame = clampFrameIndex(index, frameCount);
+        video.dataset.processRequestedFrame = String(desiredFrame + 1);
+        scheduleSeek();
     };
 
     const dispose = () => {
         disposed = true;
-        if (drawRequest) window.cancelAnimationFrame(drawRequest);
-        queue = [];
-        queued.clear();
-        loading.forEach(({controller}) => controller.abort());
-        loading.clear();
-        cache.forEach(releaseFrame);
-        cache.clear();
+        if (seekRequest) window.cancelAnimationFrame(seekRequest);
+        video.removeEventListener("loadedmetadata", scheduleSeek);
+        video.removeEventListener("loadeddata", handleLoadedData);
+        video.removeEventListener("seeked", handleSeeked);
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
     };
 
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = "auto";
+    video.addEventListener("loadedmetadata", scheduleSeek);
+    video.addEventListener("loadeddata", handleLoadedData);
+    video.addEventListener("seeked", handleSeeked);
+    video.src = sourceUrl;
+    video.load();
     resize();
     return {requestFrame, resize, dispose};
 };
 
 export function ArchitecturalProcessStory() {
     const rootRef = useRef<HTMLElement | null>(null);
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const videoRef = useRef<HTMLVideoElement | null>(null);
     const backdropCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const posterRef = useRef<HTMLDivElement | null>(null);
     const loaderRef = useRef<HTMLDivElement | null>(null);
@@ -565,20 +330,23 @@ export function ArchitecturalProcessStory() {
     }, [prefersReducedMotion]);
 
     useEffect(() => {
-        const canvas = canvasRef.current;
+        const video = videoRef.current;
         const backdropCanvas = backdropCanvasRef.current;
-        if (!canvas || !backdropCanvas || !isNearSequence || prefersReducedMotion) return;
+        if (!video || !backdropCanvas || !isNearSequence || prefersReducedMotion) return;
 
-        const basePath = tier === "desktop"
-            ? processStory.sequence.desktopBasePath
-            : processStory.sequence.mobileBasePath;
+        const sourceUrl = tier === "desktop"
+            ? processStory.sequence.desktopVideo
+            : processStory.sequence.mobileVideo;
         const renderer = createFrameSequenceRenderer({
-            canvas,
+            video,
             backdropCanvas,
             tier,
             frameCount: processStory.sequence.frameCount,
-            basePath,
+            durationSeconds: processStory.sequence.durationSeconds,
+            fps: processStory.sequence.fps,
+            sourceUrl,
             onFirstDraw: () => {
+                video.style.opacity = "1";
                 if (posterRef.current) posterRef.current.style.opacity = "0";
                 if (loaderRef.current) loaderRef.current.style.opacity = "0";
             },
@@ -587,7 +355,7 @@ export function ArchitecturalProcessStory() {
         renderer.requestFrame(desiredFrameRef.current);
 
         const resizeObserver = new ResizeObserver(renderer.resize);
-        resizeObserver.observe(canvas);
+        resizeObserver.observe(backdropCanvas);
 
         return () => {
             resizeObserver.disconnect();
@@ -985,7 +753,7 @@ export function ArchitecturalProcessStory() {
                         start: "top top",
                         end: () => `+=${timing.scrollLength}%`,
                         pin: stage,
-                        scrub: desktop ? 0.35 : 0.5,
+                        scrub: true,
                         anticipatePin: 1,
                         invalidateOnRefresh: true,
                     },
@@ -1353,10 +1121,13 @@ export function ArchitecturalProcessStory() {
                             aria-hidden="true"
                             className="absolute inset-[-2rem] h-[calc(100%+4rem)] w-[calc(100%+4rem)] scale-[1.03] opacity-75 blur-xl"
                         />
-                        <canvas
-                            ref={canvasRef}
+                        <video
+                            ref={videoRef}
                             aria-hidden="true"
-                            className="absolute inset-0 h-full w-full"
+                            muted
+                            playsInline
+                            preload="none"
+                            className="absolute inset-0 h-full w-full object-contain opacity-0 transition-opacity duration-150 [transform:translateZ(0)]"
                         />
                         <div
                             data-process-media-wash

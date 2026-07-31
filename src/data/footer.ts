@@ -1,4 +1,9 @@
-import { CONTACT_EMAIL, CONTACT_LOCATION } from "../lib/constants";
+import {
+  CONTACT_EMAIL,
+  CONTACT_LOCATION,
+  INSTAGRAM_URL,
+  LINKEDIN_URL,
+} from "../lib/constants";
 
 export interface FooterLinkItem {
   label: string;
@@ -44,18 +49,18 @@ export const footerContent: FooterContent = {
   navigation: [
     { label: "Home", href: "/" },
     { label: "Work", href: "/work" },
-    { label: "About", href: "/studio" },
+    { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
   ],
   social: [
     {
       label: "Instagram",
-      href: "https://www.instagram.com/lagomarkitektur/",
+      href: INSTAGRAM_URL,
       external: true,
     },
     {
       label: "LinkedIn",
-      href: "https://se.linkedin.com/company/lagomarkitektur",
+      href: LINKEDIN_URL,
       external: true,
     },
   ],

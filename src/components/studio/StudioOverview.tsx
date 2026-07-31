@@ -40,7 +40,7 @@ export function StudioOverview() {
             projectSlug={narrativeProject.projectSlug}
             aria-label={`View ${narrativeProject.projectTitle}`}
             data-cursor=""
-            className="group w-[78%] justify-self-end md:col-span-1 md:w-full xl:col-span-3 xl:col-start-7"
+            className="group w-full justify-self-end md:col-span-1 xl:col-span-3 xl:col-start-7"
           >
             <figure>
               <StudioImageReveal
@@ -49,8 +49,8 @@ export function StudioOverview() {
                 width={narrativeProject.width}
                 height={narrativeProject.height}
                 transitionImageId={narrativeProject.transitionImageId}
-                sizes="(max-width: 1023px) 78vw, 25vw"
-                className="aspect-[0.82/1]"
+                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 25vw"
+                className="aspect-[3/2] md:aspect-[0.82/1]"
               />
               <StudioProjectCaption
                 projectTitle={narrativeProject.projectTitle}
@@ -85,7 +85,7 @@ export function StudioOverview() {
               height={primaryProject.height}
               transitionImageId={primaryProject.transitionImageId}
               sizes="100vw"
-              className="aspect-[1.72/1] min-h-[24rem]"
+              className="aspect-[1.777/1] md:aspect-[1.72/1] md:min-h-[24rem]"
             />
             <StudioProjectCaption projectTitle={primaryProject.projectTitle} />
           </figure>

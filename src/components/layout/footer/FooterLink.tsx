@@ -9,6 +9,7 @@ import { ContactTransitionLink } from "../../transition/ContactTransitionLink";
 interface FooterLinkProps {
   item: FooterLinkItem;
   className?: string;
+  textClassName?: string;
   showArrow?: boolean;
   variant?: "default" | "menu-utility";
 }
@@ -16,6 +17,7 @@ interface FooterLinkProps {
 export function FooterLink({
   item,
   className,
+  textClassName,
   showArrow = false,
   variant = "default",
 }: FooterLinkProps) {
@@ -56,7 +58,7 @@ export function FooterLink({
           controlled
           active={isHovered || isFocused}
           uppercase={false}
-          className="leading-[1.25]"
+          className={cn("leading-[1.25]", textClassName)}
         />
       </span>
     </>

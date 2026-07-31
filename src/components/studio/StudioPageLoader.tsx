@@ -1,15 +1,27 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { studioContent } from "../../data/studio";
+import { NAVBAR_REVEAL_EVENT } from "../../lib/revealEvents";
 
 const veilEase = [0.83, 0, 0.17, 1] as const;
 const constructionEase = [0.16, 1, 0.3, 1] as const;
 
-export function StudioPageLoader() {
+interface StudioPageLoaderProps {
+  onComplete: () => void;
+}
+
+export function StudioPageLoader({ onComplete }: StudioPageLoaderProps) {
   const prefersReducedMotion = useReducedMotion();
   const [isComplete, setIsComplete] = useState(false);
   const unlockScrollRef = useRef<() => void>(() => undefined);
   const { loader, hero } = studioContent;
+
+  useEffect(() => {
+    if (!prefersReducedMotion) return;
+
+    onComplete();
+    window.dispatchEvent(new Event(NAVBAR_REVEAL_EVENT));
+  }, [onComplete, prefersReducedMotion]);
 
   useLayoutEffect(() => {
     if (prefersReducedMotion) return;
@@ -67,6 +79,8 @@ export function StudioPageLoader() {
       }}
       onAnimationComplete={() => {
         unlockScrollRef.current();
+        onComplete();
+        window.dispatchEvent(new Event(NAVBAR_REVEAL_EVENT));
         setIsComplete(true);
       }}
       className="fixed inset-0 z-[1000] overflow-hidden bg-white text-brand-ink will-change-[clip-path]"

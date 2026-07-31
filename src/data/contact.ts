@@ -1,6 +1,11 @@
 import contactHouseLandscape from "../assets/images/about/stoneframe-front.webp";
 import contactHousePortrait from "../assets/images/contact-house-portrait.avif";
-import { CONTACT_EMAIL, CONTACT_LOCATION } from "../lib/constants";
+import {
+  CONTACT_EMAIL,
+  CONTACT_LOCATION,
+  INSTAGRAM_URL,
+  LINKEDIN_URL,
+} from "../lib/constants";
 
 export interface ContactFormField {
   id: "name" | "email" | "location" | "message";
@@ -153,11 +158,11 @@ export const contactContent: ContactPageContent = {
     links: [
       {
         label: "Instagram",
-        href: "https://www.instagram.com/lagomarkitektur/",
+        href: INSTAGRAM_URL,
       },
       {
         label: "LinkedIn",
-        href: "https://se.linkedin.com/company/lagomarkitektur",
+        href: LINKEDIN_URL,
       },
     ],
   },

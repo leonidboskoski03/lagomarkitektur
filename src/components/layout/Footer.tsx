@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { footerContent, type FooterContent, type FooterLinkItem } from "../../data/footer";
 import { cn } from "../../lib/utils";
 import { FooterBackToTop } from "./footer/FooterBackToTop";
@@ -24,13 +25,14 @@ export function Footer({
   showCompactNavigation = false,
 }: FooterProps) {
   const footerRef = useRef<HTMLElement | null>(null);
+  const { pathname } = useLocation();
   const currentYear = new Date().getFullYear();
   const emailLink: FooterLinkItem = {
     label: content.studio.email,
     href: `mailto:${content.studio.email}`,
   };
 
-  useFooterMotion(footerRef);
+  useFooterMotion(footerRef, pathname);
 
   return (
     <footer
@@ -61,7 +63,7 @@ export function Footer({
                 <FooterMotionMask kind="display">
                   <h2
                     id="footer-heading"
-                    className="ml-auto max-w-[16ch] text-balance text-[clamp(2.5rem,5.9vw,7.2rem)] font-medium leading-[0.9] tracking-[-0.065em]"
+                    className="max-w-[16ch] text-balance text-[clamp(2.5rem,5.9vw,7.2rem)] font-medium leading-[0.9] tracking-[-0.065em] md:ml-auto"
                   >
                     {content.enquiry.title}
                   </h2>
@@ -202,22 +204,26 @@ export function Footer({
         >
           <div
             data-footer-utility-content
-            className="grid grid-cols-2 gap-x-6 gap-y-4 pt-[clamp(0.25rem,0.45vw,0.45rem)] text-[0.64rem] font-semibold uppercase tracking-[0.055em] md:grid-cols-4"
+            className="grid grid-cols-[auto_auto_auto_auto] items-center justify-between gap-x-[clamp(0.1rem,1vw,0.5rem)] pt-[clamp(0.25rem,0.45vw,0.45rem)] text-[clamp(0.39rem,1.95vw,0.64rem)] font-semibold uppercase leading-none tracking-[0.055em]"
           >
-            <FooterMotionMask kind="utility">
+            <FooterMotionMask kind="utility" className="min-w-max whitespace-nowrap">
               <p>© {currentYear} {content.studio.name}</p>
             </FooterMotionMask>
-            <FooterMotionMask kind="utility" className="md:text-center">
+            <FooterMotionMask kind="utility" className="min-w-max whitespace-nowrap text-center">
               <p>{content.studio.location}</p>
             </FooterMotionMask>
-            <FooterMotionMask kind="utility" className="md:text-center">
+            <FooterMotionMask kind="utility" className="min-w-max whitespace-nowrap text-center">
               <div>
                 {content.legal.map((item) => (
-                  <FooterLink key={item.href} item={item} />
+                  <FooterLink
+                    key={item.href}
+                    item={item}
+                    textClassName="leading-none"
+                  />
                 ))}
               </div>
             </FooterMotionMask>
-            <FooterMotionMask kind="utility" className="justify-self-end">
+            <FooterMotionMask kind="utility" className="min-w-max justify-self-end whitespace-nowrap">
               <FooterBackToTop />
             </FooterMotionMask>
           </div>

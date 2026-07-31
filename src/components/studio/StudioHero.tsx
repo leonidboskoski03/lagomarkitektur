@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,12 +10,18 @@ import { StudioProjectCaption } from "./StudioProjectCaption";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-export function StudioHero() {
+interface StudioHeroProps {
+  isReady: boolean;
+}
+
+export function StudioHero({ isReady }: StudioHeroProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const copyRef = useRef<HTMLDivElement | null>(null);
   const apertureRef = useRef<HTMLSpanElement | null>(null);
   const apertureImageRef = useRef<HTMLImageElement | null>(null);
   const featuredMediaRef = useRef<HTMLDivElement | null>(null);
+  const introTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const isReadyRef = useRef(false);
   const { hero } = studioContent;
 
   useGSAP(() => {
@@ -74,6 +80,7 @@ export function StudioHero() {
         };
 
         if (reduceMotion) {
+          introTimelineRef.current = null;
           gsap.set(
             [
               ...titleLines,
@@ -112,7 +119,10 @@ export function StudioHero() {
         gsap.set(apertureImage, { scale: 1.08, yPercent: 6 });
 
         const intro = gsap
-          .timeline({ defaults: { overwrite: "auto" } })
+          .timeline({
+            paused: true,
+            defaults: { overwrite: "auto" },
+          })
           .addLabel("construct", 0)
           .to(
             topMeta,
@@ -178,6 +188,9 @@ export function StudioHero() {
             "construct+=0.68",
           );
 
+        introTimelineRef.current = intro;
+        if (isReadyRef.current) intro.play(0);
+
         if (desktop) {
           gsap
             .timeline({
@@ -218,8 +231,18 @@ export function StudioHero() {
       },
     );
 
-    return () => matchMedia.revert();
+    return () => {
+      introTimelineRef.current = null;
+      matchMedia.revert();
+    };
   }, { scope: sectionRef });
+
+  useLayoutEffect(() => {
+    isReadyRef.current = isReady;
+    if (!isReady) return;
+
+    introTimelineRef.current?.play(0);
+  }, [isReady]);
 
   return (
     <section
@@ -250,7 +273,7 @@ export function StudioHero() {
           <div className="my-auto py-[clamp(4rem,8vh,7rem)] text-center">
             <h1
               id="studio-hero-heading"
-              className="mx-auto max-w-[16ch] text-[clamp(3rem,13vw,4.2rem)] font-medium leading-[0.8] tracking-[-0.074em] md:text-[clamp(4.35rem,10.25vw,12.5rem)]"
+              className="mx-[-0.25rem] w-[calc(100%+0.5rem)] max-w-none text-[clamp(2.55rem,13.25vw,4.5rem)] font-medium leading-[0.82] tracking-[-0.04em] md:mx-auto md:w-auto md:max-w-[16ch] md:text-[clamp(4.35rem,10.25vw,12.5rem)] md:leading-[0.8] md:tracking-[-0.074em]"
             >
               <span
                 data-studio-hero-drift
@@ -268,7 +291,7 @@ export function StudioHero() {
                 <span
                   ref={apertureRef}
                   aria-hidden="true"
-                  className="relative block h-[clamp(3.15rem,7.35vw,8.6rem)] w-[clamp(5.75rem,13.1vw,15.75rem)] shrink-0 overflow-hidden bg-white will-change-[transform,clip-path,opacity]"
+                  className="relative block h-[clamp(3.8rem,17vw,5.3rem)] w-[clamp(7rem,31vw,9.5rem)] shrink-0 overflow-hidden bg-white will-change-[transform,clip-path,opacity] md:h-[clamp(3.15rem,7.35vw,8.6rem)] md:w-[clamp(5.75rem,13.1vw,15.75rem)]"
                 >
                   <img
                     ref={apertureImageRef}
@@ -307,7 +330,7 @@ export function StudioHero() {
             </p>
             <p
               data-studio-hero-bottom-meta
-              className="w-full max-w-[34rem] self-end text-right will-change-[transform,clip-path,opacity] md:ml-auto"
+              className="hidden w-full max-w-[34rem] self-end text-right will-change-[transform,clip-path,opacity] sm:block md:ml-auto"
             >
               {hero.description}
             </p>

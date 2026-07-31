@@ -25,7 +25,7 @@ export function FooterBackToTop() {
         controlled
         active={isHovered || isFocused}
         uppercase={false}
-        className="leading-[1.25]"
+        className="leading-none"
       />
     </button>
   );

@@ -6,7 +6,10 @@ import { motionEases } from "../../../lib/motion";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-export function useFooterMotion(footerRef: RefObject<HTMLElement | null>) {
+export function useFooterMotion(
+  footerRef: RefObject<HTMLElement | null>,
+  routeKey: string,
+) {
   useGSAP(() => {
     const root = footerRef.current;
     if (!root) return;
@@ -35,6 +38,10 @@ export function useFooterMotion(footerRef: RefObject<HTMLElement | null>) {
       gsap.set(letters, { yPercent: 0 });
       return;
     }
+
+    const refreshFrame = window.requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+    });
 
     sections.forEach((section) => {
       const sectionItems = gsap.utils.toArray<HTMLElement>("[data-footer-motion]", section);
@@ -146,7 +153,9 @@ export function useFooterMotion(footerRef: RefObject<HTMLElement | null>) {
         );
     });
 
-    if (!wordmark || letters.length !== 5 || !utilityContent) return;
+    if (!wordmark || letters.length !== 5 || !utilityContent) {
+      return () => window.cancelAnimationFrame(refreshFrame);
+    }
 
     const closingTimeline = gsap.timeline({
       scrollTrigger: {
@@ -181,7 +190,6 @@ export function useFooterMotion(footerRef: RefObject<HTMLElement | null>) {
       {
         yPercent: 0,
         duration: 1.08,
-        stagger: 0.07,
         ease: motionEases.cinematic,
       },
       0.36,
@@ -202,5 +210,11 @@ export function useFooterMotion(footerRef: RefObject<HTMLElement | null>) {
         },
         1.68,
       );
-  }, { scope: footerRef });
+
+    return () => window.cancelAnimationFrame(refreshFrame);
+  }, {
+    scope: footerRef,
+    dependencies: [routeKey],
+    revertOnUpdate: true,
+  });
 }

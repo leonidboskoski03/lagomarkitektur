@@ -17,7 +17,8 @@ const headingLines = [
 ];
 
 const statementSentences = [
-    "LAGOM Architecture creates sustainable spaces defined by balance, meaning, and purpose.",
+    "LAGOM Architecture creates sustainable spaces defined by",
+    "balance, meaning and purpose.",
     "Every element is carefully considered and feels just right.",
 ];
 
@@ -33,27 +34,27 @@ const imageField = [
     {
         src: stoneframeFront,
         alt: "L-28 Stoneframe villa viewed from the garden",
-        className: "right-[7vw] top-[7vh] h-[28vh] w-[29vw] max-md:-right-[8vw] max-md:top-[24vh] max-md:h-[22vh] max-md:w-[60vw]",
+        className: "-right-[8vw] top-[24vh] h-[22vh] w-[60vw] sm:right-[1vw] sm:top-[20vh] sm:h-auto sm:aspect-[2.1/1] sm:w-[42vw] md:right-[7vw] md:top-[7vh] md:h-[28vh] md:w-[29vw]",
     },
     {
         src: sereneDining,
         alt: "Quiet dining interior framed by daylight",
-        className: "left-[17vw] top-[15vh] z-30 h-[22vh] w-[20vw] max-md:left-[4vw] max-md:top-[32vh] max-md:h-[19vh] max-md:w-[42vw]",
+        className: "left-[4vw] top-[32vh] z-30 h-[19vh] w-[42vw] sm:top-[27vh] sm:h-auto sm:aspect-[1.85/1] sm:w-[35vw] md:left-[17vw] md:top-[15vh] md:h-[22vh] md:w-[20vw]",
     },
     {
         src: stoneframeSide,
         alt: "L-28 Stoneframe villa side elevation in afternoon light",
-        className: "bottom-[5vh] left-[10vw] h-[30vh] w-[21vw] max-md:-left-[8vw] max-md:bottom-[10vh] max-md:h-[22vh] max-md:w-[48vw]",
+        className: "-left-[8vw] bottom-[10vh] h-[22vh] w-[48vw] sm:left-[2vw] sm:bottom-[10vh] sm:h-auto sm:aspect-[1.42/1] sm:w-[32vw] md:bottom-[5vh] md:left-[10vw] md:h-[30vh] md:w-[21vw]",
     },
     {
         src: archmoodArch,
         alt: "Minimal interior with a sculpted architectural arch",
-        className: "bottom-[7vh] left-[33vw] z-30 h-[22vh] w-[20vw] max-md:bottom-[7vh] max-md:left-[38vw] max-md:h-[18vh] max-md:w-[48vw]",
+        className: "bottom-[7vh] left-[38vw] z-30 h-[18vh] w-[48vw] sm:bottom-[12vh] sm:h-auto sm:aspect-[1.85/1] sm:w-[30vw] md:bottom-[7vh] md:left-[33vw] md:h-[22vh] md:w-[20vw]",
     },
     {
         src: stoneframeEntry,
         alt: "L-28 Stoneframe villa entrance and stone courtyard",
-        className: "left-[34vw] top-[28vh] z-40 h-[38vh] w-[34vw] max-md:left-[17vw] max-md:top-[42vh] max-md:h-[27vh] max-md:w-[70vw]",
+        className: "left-[17vw] top-[42vh] z-40 h-[27vh] w-[70vw] sm:left-[20vw] sm:top-[38vh] sm:h-auto sm:aspect-[1.82/1] sm:w-[56vw] md:left-[34vw] md:top-[28vh] md:h-[38vh] md:w-[34vw]",
     },
 ];
 
@@ -75,6 +76,7 @@ export const AboutIntro = () => {
         matchMedia.add(
             {
                 desktop: "(min-width: 768px)",
+                mobile: "(max-width: 767px)",
                 reduceMotion: "(prefers-reduced-motion: reduce)",
             },
             (context) => {
@@ -279,7 +281,7 @@ export const AboutIntro = () => {
                                 alt={image.alt}
                                 loading="lazy"
                                 decoding="async"
-                                className="h-full w-full object-cover will-change-transform"
+                                className="absolute inset-0 !h-full w-full object-cover will-change-transform"
                             />
                         </figure>
                     ))}

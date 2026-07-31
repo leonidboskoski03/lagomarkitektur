@@ -16,6 +16,7 @@ const COUNTER_REELS = [
 const LOGO_REVEAL_DURATION = 2.65;
 const HERO_IMAGE_POST_LOADER_DURATION = 0.5;
 const HERO_CONTENT_START_SCALE_PROGRESS = 0.85;
+const MASK_REVEAL_SCALE_DIVISOR = 10;
 
 const getTimeProgressAtEaseValue = (targetValue: number) => {
     const ease = motionEases.reveal;
@@ -60,19 +61,33 @@ export const Loader = () => {
         const previousBodyOverflow = body.style.overflow;
         const previousRootOverscroll = root.style.overscrollBehavior;
         const previousBodyOverscroll = body.style.overscrollBehavior;
+        let isScrollLocked = false;
 
         const lockScroll = () => {
             root.style.overflow = "hidden";
             body.style.overflow = "hidden";
             root.style.overscrollBehavior = "none";
             body.style.overscrollBehavior = "none";
+            isScrollLocked = true;
+            window.dispatchEvent(
+                new CustomEvent("lagom:scroll-lock", {
+                    detail: {locked: true},
+                }),
+            );
         };
 
         const unlockScroll = () => {
+            if (!isScrollLocked) return;
+            isScrollLocked = false;
             root.style.overflow = previousRootOverflow;
             body.style.overflow = previousBodyOverflow;
             root.style.overscrollBehavior = previousRootOverscroll;
             body.style.overscrollBehavior = previousBodyOverscroll;
+            window.dispatchEvent(
+                new CustomEvent("lagom:scroll-lock", {
+                    detail: {locked: false},
+                }),
+            );
         };
 
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -82,27 +97,83 @@ export const Loader = () => {
 
         lockScroll();
 
-        const centerMaskLogo = () => {
-            maskSvgRef.current.setAttribute(
-                "viewBox",
-                `0 0 ${window.innerWidth} ${window.innerHeight}`
-            );
-            gsap.set(maskPositionRef.current, {
-                x: window.innerWidth / 2,
-                y: window.innerHeight / 2,
+        const revealState = {progress: 0};
+        let resizeFrame = 0;
+        let settleTimer = 0;
+        let resizeObserver: ResizeObserver | null = null;
+        let viewportListenersActive = false;
+
+        const getViewportSize = () => {
+            const visualViewport = window.visualViewport;
+
+            return {
+                width: Math.max(
+                    1,
+                    Math.round(visualViewport?.width ?? containerRef.current.clientWidth),
+                ),
+                height: Math.max(
+                    1,
+                    Math.round(visualViewport?.height ?? containerRef.current.clientHeight),
+                ),
+            };
+        };
+
+        const getRevealScale = (width: number, height: number) => Math.min(
+            120,
+            Math.hypot(width, height) / MASK_REVEAL_SCALE_DIVISOR,
+        );
+
+        const applyRevealTransform = (width: number, height: number) => {
+            if (revealState.progress <= 0) return;
+
+            gsap.set(maskLogoRef.current, {
+                scale: gsap.utils.interpolate(
+                    1,
+                    getRevealScale(width, height),
+                    revealState.progress,
+                ),
+                rotation: gsap.utils.interpolate(0, 60, revealState.progress),
+                svgOrigin: "0% 20%",
             });
         };
 
-        const revealScale = Math.min(
-            120,
-            Math.hypot(window.innerWidth, window.innerHeight) / 20
-        );
+        const syncLoaderViewport = () => {
+            const {width, height} = getViewportSize();
+
+            maskSvgRef.current.setAttribute(
+                "viewBox",
+                `0 0 ${width} ${height}`,
+            );
+            gsap.set(maskPositionRef.current, {
+                x: width / 2,
+                y: height / 2,
+            });
+            applyRevealTransform(width, height);
+        };
+
+        const scheduleViewportSync = () => {
+            window.cancelAnimationFrame(resizeFrame);
+            resizeFrame = window.requestAnimationFrame(syncLoaderViewport);
+
+            window.clearTimeout(settleTimer);
+            settleTimer = window.setTimeout(() => {
+                syncLoaderViewport();
+            }, 240);
+        };
+
+        const stopViewportSync = () => {
+            if (!viewportListenersActive) return;
+
+            viewportListenersActive = false;
+            resizeObserver?.disconnect();
+            window.removeEventListener("resize", scheduleViewportSync);
+            window.visualViewport?.removeEventListener("resize", scheduleViewportSync);
+            window.cancelAnimationFrame(resizeFrame);
+            window.clearTimeout(settleTimer);
+        };
+
         const ctx = gsap.context(() => {
             gsap.set(barRef.current, { scaleX: 0, transformOrigin: "left" });
-            gsap.set(maskPositionRef.current, {
-                x: window.innerWidth / 2,
-                y: window.innerHeight / 2,
-            });
             gsap.set(maskLogoRef.current, {
                 scale: 0.78,
                 rotation: -8,
@@ -113,10 +184,7 @@ export const Loader = () => {
                 rotation: 0,
                 svgOrigin: "0 0",
             });
-            maskSvgRef.current.setAttribute(
-                "viewBox",
-                `0 0 ${window.innerWidth} ${window.innerHeight}`
-            );
+            syncLoaderViewport();
             gsap.set(poly1Ref.current, {
                 x: -28,
                 y: 58,
@@ -260,9 +328,9 @@ export const Loader = () => {
             const counterSteps = [1, 10, 100];
             counterTrackRefs.current.forEach((track, index) => {
                 if (!track) return;
-                const digitHeight = track.parentElement?.clientHeight ?? 0;
-                timeline.fromTo(track, { y: 0 }, {
-                    y: -(digitHeight * counterSteps[index]),
+                const trackSteps = COUNTER_REELS[index]?.length ?? 1;
+                timeline.fromTo(track, { yPercent: 0 }, {
+                    yPercent: -(counterSteps[index] / trackSteps) * 100,
                     duration: 3.6,
                     ease: "power3.out",
                     force3D: true,
@@ -293,12 +361,14 @@ export const Loader = () => {
                 duration: 0.7,
                 ease: motionEases.depart,
             }, "exit+=0.1");
-            timeline.to(maskLogoRef.current, {
-                scale: revealScale,
-                rotation: 60,
-                svgOrigin: "0% 20%",
+            timeline.to(revealState, {
+                progress: 1,
                 duration: LOGO_REVEAL_DURATION,
                 ease: motionEases.reveal,
+                onUpdate: () => {
+                    const {width, height} = getViewportSize();
+                    applyRevealTransform(width, height);
+                },
             }, "reveal-=0.3");
             timeline.call(() => {
                 window.dispatchEvent(new CustomEvent(LOADER_REVEAL_EVENT, {
@@ -318,14 +388,24 @@ export const Loader = () => {
                 display: "none",
                 pointerEvents: "none",
             });
-            timeline.call(unlockScroll);
+            timeline.call(() => {
+                stopViewportSync();
+                unlockScroll();
+            });
 
         }, containerRef);
 
-        window.addEventListener("resize", centerMaskLogo);
+        resizeObserver = new ResizeObserver(scheduleViewportSync);
+        viewportListenersActive = true;
+        resizeObserver.observe(containerRef.current);
+        window.addEventListener("resize", scheduleViewportSync, {passive: true});
+        window.visualViewport?.addEventListener("resize", scheduleViewportSync, {
+            passive: true,
+        });
+        scheduleViewportSync();
 
         return () => {
-            window.removeEventListener("resize", centerMaskLogo);
+            stopViewportSync();
             ctx.revert();
             unlockScroll();
         };
@@ -335,7 +415,7 @@ export const Loader = () => {
         <div
             ref={containerRef}
             data-lagom-loader
-            className="fixed top-0 z-[1000] h-screen w-screen overflow-hidden"
+            className="fixed inset-0 z-[1000] h-svh w-full overflow-hidden"
             style={{ perspective: "800px", transformStyle: "preserve-3d" }}
         >
             <LoaderRevealUnderlay ref={revealUnderlayRef} />

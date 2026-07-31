@@ -126,8 +126,11 @@ export function ContactEnquiry({ content }: ContactEnquiryProps) {
         .timeline({
           scrollTrigger: {
             trigger: "[data-contact-statement-shell]",
-            start: "top 62%",
+            start: () => window.innerWidth < 768
+              ? "clamp(top 88%)"
+              : "clamp(top 62%)",
             once: true,
+            invalidateOnRefresh: true,
           },
           defaults: {
             overwrite: "auto",
@@ -194,8 +197,11 @@ export function ContactEnquiry({ content }: ContactEnquiryProps) {
         .timeline({
           scrollTrigger: {
             trigger: "[data-contact-form-shell]",
-            start: "top 72%",
+            start: () => window.innerWidth < 768
+              ? "clamp(top 84%)"
+              : "clamp(top 72%)",
             once: true,
+            invalidateOnRefresh: true,
           },
           defaults: {
             overwrite: "auto",
@@ -278,7 +284,7 @@ export function ContactEnquiry({ content }: ContactEnquiryProps) {
       id="contact-enquiry"
       ref={sectionRef}
       aria-labelledby="contact-page-title"
-      className="overflow-hidden bg-white text-brand-ink"
+      className="scroll-mt-24 overflow-hidden bg-white text-brand-ink md:scroll-mt-28"
     >
       <div className="viewport-container">
         <div
@@ -378,7 +384,7 @@ export function ContactEnquiry({ content }: ContactEnquiryProps) {
             className="absolute inset-x-0 top-0 h-px origin-left bg-brand-ink/24 will-change-transform"
           />
 
-          <div className="md:col-span-3 md:flex md:min-h-0 md:flex-col">
+          <div className="md:col-span-4 lg:col-span-3">
             <div className="overflow-hidden pb-[0.08em]">
               <p
                 data-contact-form-meta
@@ -389,11 +395,11 @@ export function ContactEnquiry({ content }: ContactEnquiryProps) {
             </div>
 
             <figure
-              className="mt-9 w-[52vw] max-w-[14rem] md:mt-[clamp(4rem,8vw,8rem)] md:flex md:min-h-0 md:w-full md:max-w-none md:flex-1 md:flex-col"
+              className="mt-9 w-[52vw] max-w-[14rem] md:mt-[clamp(4rem,8vw,8rem)] md:w-full md:max-w-none"
             >
               <div
                 data-contact-form-image-frame
-                className="relative aspect-[3/4] overflow-hidden bg-surface md:aspect-auto md:min-h-0 md:flex-1"
+                className="relative aspect-[3/4] overflow-hidden bg-surface"
               >
                 <img
                   data-contact-form-image
@@ -424,8 +430,8 @@ export function ContactEnquiry({ content }: ContactEnquiryProps) {
             </figure>
           </div>
 
-          <div className="md:col-span-8 md:col-start-5">
-            <div className="mb-[clamp(3.5rem,6vw,6rem)] grid gap-7 md:grid-cols-[minmax(0,1fr)_minmax(15rem,21rem)] md:items-end">
+          <div className="md:col-span-7 md:col-start-6 lg:col-span-8 lg:col-start-5">
+            <div className="mb-[clamp(3.5rem,6vw,6rem)] grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(15rem,21rem)] lg:items-end">
               <h2
                 id="contact-form-heading"
                 className="overflow-hidden pb-[0.06em] text-[clamp(2.9rem,5.8vw,6.7rem)] font-medium leading-[0.86] tracking-[-0.06em]"
@@ -437,7 +443,7 @@ export function ContactEnquiry({ content }: ContactEnquiryProps) {
                   {content.form.title}
                 </span>
               </h2>
-              <div className="overflow-hidden pb-[0.08em] md:justify-self-end">
+              <div className="overflow-hidden pb-[0.08em] lg:justify-self-end">
                 <p
                   data-contact-form-heading-reveal
                   className="max-w-md text-[clamp(0.98rem,1.18vw,1.15rem)] leading-[1.45] tracking-[-0.016em] text-brand-ink/62 will-change-transform"

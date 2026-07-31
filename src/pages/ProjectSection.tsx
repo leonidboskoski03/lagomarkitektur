@@ -121,6 +121,7 @@ export const ProjectSection = () => {
         const indexWrap = stage.querySelector<HTMLElement>("[data-project-index-wrap]");
         const titleWrap = stage.querySelector<HTMLElement>("[data-project-title-wrap]");
         const line = stage.querySelector<HTMLElement>("[data-project-line]");
+        const lineProgress = stage.querySelector<HTMLElement>("[data-project-line-progress]");
         const rail = stage.querySelector<HTMLElement>("[data-project-rail]");
 
         const matchMedia = gsap.matchMedia();
@@ -128,10 +129,16 @@ export const ProjectSection = () => {
         matchMedia.add(
             {
                 desktop: "(min-width: 768px)",
+                wideTitleLayout: "(min-width: 960px)",
+                mobile: "(max-width: 767px)",
                 reduceMotion: "(prefers-reduced-motion: reduce)",
             },
             (context) => {
-                const {desktop, reduceMotion} = context.conditions as {desktop: boolean; reduceMotion: boolean};
+                const {desktop, wideTitleLayout, reduceMotion} = context.conditions as {
+                    desktop: boolean;
+                    wideTitleLayout: boolean;
+                    reduceMotion: boolean;
+                };
 
                 if (reduceMotion) {
                     gsap.set([introBackground, introTagsElement, introPropertiesElement, introIndexElement, introTitleElement], {
@@ -147,6 +154,7 @@ export const ProjectSection = () => {
                     gsap.set(metaItems, {autoAlpha: 1, clearProps: "transform"});
                     gsap.set([centerGroup, indexWrap, titleWrap, line], {autoAlpha: 1, clearProps: "transform"});
                     gsap.set(line, {scaleX: 1});
+                    gsap.set(lineProgress, {y: 0});
                     gsap.set(backgroundFrame, {
                         clipPath: "inset(0px)",
                         clearProps: "transform,willChange",
@@ -210,7 +218,11 @@ export const ProjectSection = () => {
                 });
                 gsap.set(metaItems, {yPercent: 0, autoAlpha: 1});
                 gsap.set(introMetaItems, {yPercent: 112, autoAlpha: 0});
-                gsap.set(line, {scaleX: 0, autoAlpha: 1, transformOrigin: "center center"});
+                gsap.set(line, wideTitleLayout
+                    ? {scaleX: 0, autoAlpha: 1, transformOrigin: "center center"}
+                    : {scaleX: 1, scaleY: 1, autoAlpha: 1, transformOrigin: "center center"},
+                );
+                gsap.set(lineProgress, {y: 0});
                 gsap.set(centerGroup, {autoAlpha: 0.74, scale: 0.985, willChange: "transform, opacity"});
                 gsap.set(indexWrap, {x: desktop ? window.innerWidth * 0.18 : window.innerWidth * 0.12, willChange: "transform"});
                 gsap.set(titleWrap, {x: desktop ? -window.innerWidth * 0.18 : -window.innerWidth * 0.12, willChange: "transform, width"});
@@ -221,7 +233,7 @@ export const ProjectSection = () => {
                     willChange: "clip-path",
                 });
 
-                gsap.timeline({
+                const centerIntroTimeline = gsap.timeline({
                     defaults: {ease: "none"},
                     scrollTrigger: {
                         trigger: section,
@@ -243,11 +255,14 @@ export const ProjectSection = () => {
                     .to(titleWrap, {
                         x: 0,
                         duration: 1,
-                    }, 0)
-                    .to(line, {
+                    }, 0);
+
+                if (wideTitleLayout) {
+                    centerIntroTimeline.to(line, {
                         scaleX: 1,
                         duration: 1,
                     }, 0.08);
+                }
 
                 gsap.to(backgroundFrame, {
                     clipPath: "inset(0px)",
@@ -313,6 +328,10 @@ export const ProjectSection = () => {
                 );
 
                 const getTitleWidth = (index: number) => {
+                    if (!wideTitleLayout) {
+                        return window.innerWidth - 48;
+                    }
+
                     const titleElement = getTitleElement(index);
                     const sideGutter = desktop ? 40 : 24;
                     const centerGap = desktop ? 16 : 12;
@@ -329,6 +348,21 @@ export const ProjectSection = () => {
                     if (nextIndex === activeLayoutIndex) return;
 
                     activeLayoutIndex = nextIndex;
+
+                    if (!wideTitleLayout) {
+                        const trackHeight = line?.clientHeight ?? 0;
+                        const markerHeight = lineProgress?.clientHeight ?? 0;
+                        const progress = (nextIndex + 1) / projectShowcaseProjects.length;
+
+                        gsap.set(titleWrap, {width: "100%"});
+                        gsap.to(lineProgress, {
+                            y: Math.max(0, trackHeight - markerHeight) * progress,
+                            duration: 0.78,
+                            ease: motionEases.reveal,
+                            overwrite: "auto",
+                        });
+                        return;
+                    }
 
                     gsap.to(titleWrap, {
                         width: getTitleWidth(nextIndex),
@@ -348,7 +382,9 @@ export const ProjectSection = () => {
                     });
                 };
 
-                gsap.set(titleWrap, {width: getTitleWidth(-1)});
+                gsap.set(titleWrap, {
+                    width: wideTitleLayout ? getTitleWidth(-1) : "100%",
+                });
 
                 const switchProjectContent = (nextIndex: number) => {
                     if (nextIndex === activeProjectIndex) return;
@@ -595,7 +631,7 @@ export const ProjectSection = () => {
                     </div>
                 </div>
 
-                <div className="pointer-events-none absolute left-6 right-6 top-10 z-30 flex items-start justify-between gap-8 text-[24px] font-normal leading-none tracking-[-0.045em] text-white/94 md:left-10 md:right-10">
+                <div className="pointer-events-none absolute left-6 right-6 top-10 z-30 flex items-start justify-between gap-8 text-[clamp(0.82rem,3.8vw,1.5rem)] font-normal leading-none tracking-[-0.045em] text-white/94 md:left-10 md:right-10">
                     <div className="relative h-[1.08em] min-w-0 flex-1 overflow-hidden">
                         <span data-project-intro-tags className="absolute left-0 top-0 block max-w-full whitespace-nowrap">
                             {renderMetaItems(projectShowcaseIntro.tags)}
@@ -618,8 +654,14 @@ export const ProjectSection = () => {
                     </div>
                 </div>
 
-                <div data-project-center-group className="pointer-events-none absolute left-6 right-6 top-1/2 z-30 flex -translate-y-1/2 items-center gap-3 text-[52px] font-normal leading-none tracking-[-0.055em] md:left-10 md:right-10 md:gap-4">
-                    <div data-project-index-wrap className="relative h-[1.06em] w-[82px] shrink-0 overflow-hidden">
+                <div
+                    data-project-center-group
+                    className="pointer-events-none absolute left-6 right-6 top-1/2 z-30 flex -translate-y-1/2 flex-col items-start gap-3 text-[clamp(1.75rem,7vw,3.25rem)] font-normal leading-none tracking-[-0.055em] md:left-10 md:right-10 min-[960px]:flex-row min-[960px]:items-center min-[960px]:gap-4 min-[960px]:text-[52px]"
+                >
+                    <div
+                        data-project-index-wrap
+                        className="relative h-[1.06em] w-[82px] shrink-0 overflow-hidden"
+                    >
                         <span data-project-intro-index className="absolute left-0 top-0 block">
                             {projectShowcaseIntro.index}
                         </span>
@@ -629,13 +671,32 @@ export const ProjectSection = () => {
                             </span>
                         ))}
                     </div>
-                    <div data-project-line className="h-px flex-1 bg-white/58"/>
-                    <div data-project-title-wrap className="relative h-[1.08em] shrink-0 overflow-hidden text-right">
-                        <span data-project-intro-title className="absolute right-0 top-0 block whitespace-nowrap">
+                    <div
+                        data-project-line
+                        className="relative ml-[0.52em] h-12 w-px shrink-0 overflow-hidden bg-white/28 min-[960px]:ml-0 min-[960px]:h-px min-[960px]:w-auto min-[960px]:flex-1 min-[960px]:overflow-visible min-[960px]:bg-white/58"
+                    >
+                        <span
+                            data-project-line-progress
+                            className="absolute left-0 top-0 h-3 w-full bg-white min-[960px]:hidden"
+                            aria-hidden="true"
+                        />
+                    </div>
+                    <div
+                        data-project-title-wrap
+                        className="relative h-[2.08em] w-full overflow-hidden text-left min-[960px]:h-[1.08em] min-[960px]:w-auto min-[960px]:shrink-0 min-[960px]:text-right"
+                    >
+                        <span
+                            data-project-intro-title
+                            className="absolute inset-0 flex h-full w-full items-center justify-start whitespace-normal text-left leading-[0.95] [text-wrap:balance] min-[960px]:inset-auto min-[960px]:right-0 min-[960px]:top-0 min-[960px]:block min-[960px]:h-auto min-[960px]:w-auto min-[960px]:whitespace-nowrap min-[960px]:text-right min-[960px]:leading-none"
+                        >
                             {projectShowcaseIntro.title}
                         </span>
                         {projectShowcaseProjects.map((project) => (
-                            <span key={project.id} data-project-title className="absolute right-0 top-0 block whitespace-nowrap">
+                            <span
+                                key={project.id}
+                                data-project-title
+                                className="absolute inset-0 flex h-full w-full items-center justify-start whitespace-normal text-left leading-[0.95] [text-wrap:balance] min-[960px]:inset-auto min-[960px]:right-0 min-[960px]:top-0 min-[960px]:block min-[960px]:h-auto min-[960px]:w-auto min-[960px]:whitespace-nowrap min-[960px]:text-right min-[960px]:leading-none"
+                            >
                                 {project.title}
                             </span>
                         ))}

@@ -5,10 +5,10 @@ export const LoaderRevealUnderlay = forwardRef<
     object
 >(function LoaderRevealUnderlay(_, forwardedRef) {
     return (
-        <div className="relative h-screen overflow-clip">
+        <div className="relative h-full overflow-clip">
             <div
                 ref={forwardedRef}
-                className="absolute top-0 z-[5] h-screen w-screen overflow-hidden bg-white"
+                className="absolute inset-0 z-[5] h-full w-full overflow-hidden bg-white"
             />
         </div>
     );

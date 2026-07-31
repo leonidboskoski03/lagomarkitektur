@@ -19,6 +19,14 @@ import {Footer} from "./components/layout/Footer.tsx";
 import {ProjectTransitionProvider} from "./components/transition/ProjectTransitionProvider.tsx";
 import {WorkTransitionProvider} from "./components/transition/WorkTransitionProvider.tsx";
 import {ContactTransitionProvider} from "./components/transition/ContactTransitionProvider.tsx";
+import {
+    useReloadOnResize,
+    useScrollToTopOnLoad,
+} from "./hooks/useReloadOnResize";
+import {
+    SMOOTH_SCROLL_EVENT,
+    type SmoothScrollRequest,
+} from "./lib/smoothScroll";
 
 function HomepageLoader() {
     const {pathname} = useLocation();
@@ -29,6 +37,9 @@ function AppContent() {
     const {pathname} = useLocation();
     const [isFooterVisible, setIsFooterVisible] = useState(true);
     const isContactPage = pathname === "/contact" || pathname === "/kontakt";
+
+    useReloadOnResize();
+    useScrollToTopOnLoad();
 
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger);
@@ -46,7 +57,28 @@ function AppContent() {
             if (locked) lenis.stop();
             else lenis.start();
         };
+        const handleSmoothScroll = (event: Event) => {
+            const {
+                target,
+                offset = 0,
+                immediate = false,
+            } = (event as CustomEvent<SmoothScrollRequest>).detail;
+
+            lenis.scrollTo(target, {
+                offset,
+                immediate,
+                duration: immediate ? 0 : 1.15,
+            });
+        };
+
         window.addEventListener("lagom:scroll-lock", handleScrollLock);
+        window.addEventListener(SMOOTH_SCROLL_EVENT, handleSmoothScroll);
+        if (
+            document.documentElement.style.overflow === "hidden"
+            || document.body.style.overflow === "hidden"
+        ) {
+            lenis.stop();
+        }
 
         const updateLenis = (time: number) => {
             lenis.raf(time * 1000);
@@ -57,6 +89,7 @@ function AppContent() {
 
         return () => {
             window.removeEventListener("lagom:scroll-lock", handleScrollLock);
+            window.removeEventListener(SMOOTH_SCROLL_EVENT, handleSmoothScroll);
             gsap.ticker.remove(updateLenis);
             lenis.destroy();
         };
@@ -90,8 +123,9 @@ function AppContent() {
                         <Route path="/work/:slug" element={<ProjectDetail/>}/>
                         <Route path="/projects/:slug" element={<ProjectDetail/>}/>
                         <Route path="/projekt/:slug" element={<ProjectDetail/>}/>
-                        <Route path="/studio" element={<About/>}/>
-                        <Route path="/om-oss" element={<About/>}/>
+                        <Route path="/about" element={<About/>}/>
+                        <Route path="/studio" element={<Navigate to="/about" replace/>}/>
+                        <Route path="/om-oss" element={<Navigate to="/about" replace/>}/>
                         <Route path="/contact" element={<Contact/>}/>
                         <Route path="/kontakt" element={<Contact/>}/>
                         <Route path="/process" element={<ServicesSection/>}/>

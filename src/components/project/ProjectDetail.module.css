@@ -680,30 +680,66 @@
   .galleryStage[data-mode="story"] .mediaList {
     display: flex;
     flex-direction: column;
-    gap: 4rem;
+    align-items: stretch;
+    gap: clamp(3rem, 12vw, 4rem);
+  }
+
+  .galleryStage[data-mode="story"] .mediaFigure {
+    flex: none;
+    width: 82%;
+    align-self: flex-start;
   }
 
   .galleryStage[data-mode="story"] .mosaicRow:first-child .mediaFigure:first-child .mediaFrame {
-    height: min(70dvh, 36rem);
+    height: auto;
+    aspect-ratio: var(--media-aspect);
+  }
+
+  .galleryStage[data-mode="story"] .mediaFigure .mediaFrame {
+    height: auto;
+    aspect-ratio: var(--media-aspect);
+  }
+
+  .galleryStage[data-mode="story"] .mediaImage {
+    top: 0;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .galleryStage[data-mode="story"] .wide {
+    width: 86%;
+    align-self: center;
   }
 
   .galleryStage[data-mode="story"] .portrait-left,
   .galleryStage[data-mode="story"] .portrait-center,
   .galleryStage[data-mode="story"] .portrait-right {
-    width: 78%;
     margin-top: 0;
   }
 
+  .galleryStage[data-mode="story"] .portrait-left {
+    width: 74%;
+    align-self: flex-start;
+  }
+
   .galleryStage[data-mode="story"] .portrait-center {
+    width: 84%;
     align-self: flex-end;
   }
 
   .galleryStage[data-mode="story"] .portrait-right {
-    width: 66%;
+    width: 76%;
     align-self: center;
   }
 
+  .galleryStage[data-mode="story"] .landscape-left {
+    width: 80%;
+    align-self: flex-start;
+  }
+
   .galleryStage[data-mode="story"] .landscape-right {
+    width: 80%;
+    align-self: flex-end;
     margin-top: 0;
   }
 

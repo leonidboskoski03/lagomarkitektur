@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   HERO_CONTENT_REVEAL_EVENT,
   WORK_CONTENT_REVEAL_EVENT,
+  WORK_VIEW_MODE_CHANGE_EVENT,
 } from "../lib/revealEvents";
 import { motionEaseCurves, motionEases } from "../lib/motion";
 import { WorkProjectViews } from "../components/work/WorkProjectViews";
@@ -23,6 +24,7 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
   const pageRef = useRef<HTMLDivElement | null>(null);
   const { projects, isLoading } = useWorkProjects();
   const [viewMode, setViewMode] = useState<WorkViewMode>("composition");
+  const [isIntroComplete, setIsIntroComplete] = useState(false);
 
   useEffect(() => {
     onFooterVisibilityChange?.(viewMode !== "field");
@@ -31,6 +33,18 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
       onFooterVisibilityChange?.(true);
     };
   }, [onFooterVisibilityChange, viewMode]);
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent(WORK_VIEW_MODE_CHANGE_EVENT, {
+      detail: { mode: viewMode },
+    }));
+  }, [viewMode]);
+
+  useEffect(() => () => {
+    window.dispatchEvent(new CustomEvent(WORK_VIEW_MODE_CHANGE_EVENT, {
+      detail: { mode: "composition" },
+    }));
+  }, []);
 
   useGSAP((_context, contextSafe) => {
     const eyebrow = pageRef.current?.querySelector<HTMLElement>("[data-work-eyebrow]");
@@ -42,6 +56,7 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
 
     if (reduceMotion) {
       gsap.set([eyebrow, description, ...titleLines], { clearProps: "all" });
+      setIsIntroComplete(true);
       return;
     }
 
@@ -58,9 +73,13 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
       filter: "blur(3px)",
     });
 
+    const revealProjects = contextSafe!(() => {
+      setIsIntroComplete(true);
+    });
     const introTimeline = gsap.timeline({
       paused: true,
       defaults: { ease: motionEases.enter },
+      onComplete: revealProjects,
     })
       .addLabel("warmth", 0)
       .addLabel("structure", 0.14)
@@ -114,6 +133,7 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
       window.removeEventListener(WORK_CONTENT_REVEAL_EVENT, playIntro);
       window.removeEventListener(HERO_CONTENT_REVEAL_EVENT, playIntro);
       loaderObserver?.disconnect();
+      introTimeline.eventCallback("onComplete", null);
     };
   }, { scope: pageRef });
 
@@ -143,9 +163,9 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
           >
             <section
               data-work-context
-              className="viewport-container flex min-h-[92vh] flex-col justify-between pb-8 pt-32 md:pt-40"
+              className="viewport-container flex flex-col justify-between pb-8 pt-32 md:min-h-[92vh] md:pt-40"
             >
-          <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(18rem,28rem)] md:items-start">
+          <div className="grid gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(18rem,28rem)] xl:items-start">
             <div className="max-w-[min(92vw,76rem)]">
               <p
                 data-work-eyebrow
@@ -153,19 +173,28 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
               >
                 Lagom Arkitektur / Work
               </p>
-              <h1 className="text-[clamp(4.25rem,13vw,12.5rem)] font-medium leading-[0.82] tracking-[-0.065em] text-text-primary">
+              <h1
+                aria-label="Selected spatial work"
+                className="text-[clamp(2.35rem,10vw,7rem)] font-medium leading-[0.82] tracking-[-0.065em] text-text-primary xl:text-[clamp(4.25rem,13vw,12.5rem)]"
+              >
                 <span className="block overflow-hidden">
-                  <span data-work-title-line className="block will-change-transform">Selected</span>
+                  <span data-work-title-line aria-hidden="true" className="block will-change-transform">
+                    <span className="xl:hidden">Selected spatial</span>
+                    <span className="hidden xl:inline">Selected</span>
+                  </span>
                 </span>
                 <span className="block overflow-hidden">
-                  <span data-work-title-line className="block will-change-transform">spatial work</span>
+                  <span data-work-title-line aria-hidden="true" className="block will-change-transform">
+                    <span className="xl:hidden">work</span>
+                    <span className="hidden xl:inline">spatial work</span>
+                  </span>
                 </span>
               </h1>
             </div>
 
             <div
               data-work-description
-              className="max-w-md justify-self-end pt-2 text-sm leading-relaxed text-text-muted will-change-[transform,opacity,filter] md:pt-10"
+              className="max-w-md justify-self-end pt-2 text-sm leading-relaxed text-text-muted will-change-[transform,opacity,filter] xl:pt-10"
             >
               <p>
                 Interiors, residences, hospitality spaces, and quiet architectural concepts shaped through light,
@@ -180,13 +209,25 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
 
       {!isLoading ? <WorkViewRail activeMode={viewMode} onModeChange={setViewMode} /> : null}
 
-      <div data-work-projects>
+      <motion.div
+        data-work-projects
+        initial={false}
+        animate={isIntroComplete
+          ? { opacity: 1, y: 0 }
+          : { opacity: 0, y: 18 }}
+        transition={{
+          duration: isIntroComplete ? 0.72 : 0,
+          ease: motionEaseCurves.settle,
+        }}
+        aria-hidden={!isIntroComplete}
+        className={isIntroComplete ? "pointer-events-auto" : "pointer-events-none"}
+      >
         {isLoading ? (
           <section aria-label="Loading projects" aria-busy="true" className="min-h-screen" />
         ) : (
           <WorkProjectViews mode={viewMode} projects={projects} />
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

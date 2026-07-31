@@ -1,13 +1,14 @@
 import {useEffect, useRef, useState, type MouseEvent} from "react";
 import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
+import {INSTAGRAM_URL, LINKEDIN_URL} from "../../lib/constants";
 import {motionEases} from "../../lib/motion";
 import {ClipMaskTextAnimation} from "../animation/ClipMaskTextAnimation";
 
 const menuLinks = [
     {href: "/", label: "Home"},
     {href: "/work", label: "Work"},
-    {href: "/studio", label: "About"},
+    {href: "/about", label: "About"},
     {href: "/contact", label: "Contact"},
 ] as const;
 
@@ -248,24 +249,19 @@ export function MenuOverlay({isOpen, onClose, onNavigate, triggerRef}: MenuOverl
                         type="button"
                         onClick={onClose}
                         data-cursor="default"
-                        className="group relative overflow-hidden rounded-full px-5 py-3 text-xs font-semibold uppercase"
+                        className="group relative flex min-h-11 items-center overflow-hidden rounded-full pl-4 text-xs font-semibold uppercase"
                         aria-label="Close menu"
                     >
                         <span className="block overflow-hidden">
                             <span ref={closeContentRef} className="relative z-10 flex items-center gap-3 text-white">
-                                <MenuUtilityText
-                                    text="Close"
-                                    className="px-4"
-                                    trailing={
-                                        <svg
-                                            viewBox="0 0 12 12"
-                                            aria-hidden="true"
-                                            className="size-3 transition-transform duration-500 ease-[cubic-bezier(.33,1,.68,1)] group-hover:rotate-90"
-                                        >
-                                            <path d="M1 1L11 11M11 1L1 11" fill="none" stroke="currentColor" strokeWidth="1" />
-                                        </svg>
-                                    }
-                                />
+                                <MenuUtilityText text="Close" />
+                                <svg
+                                    viewBox="0 0 12 12"
+                                    aria-hidden="true"
+                                    className="size-3 transition-transform duration-500 ease-[cubic-bezier(.33,1,.68,1)] group-hover:rotate-90"
+                                >
+                                    <path d="M1 1L11 11M11 1L1 11" fill="none" stroke="currentColor" strokeWidth="1" />
+                                </svg>
                             </span>
                         </span>
                     </button>
@@ -326,8 +322,8 @@ export function MenuOverlay({isOpen, onClose, onNavigate, triggerRef}: MenuOverl
                         <MenuUtilityText text="Architecture · Design · Interior" />
                     </div>
                     <div className="flex justify-end gap-5">
-                        <a href="mailto:studio@lagomarkitektur.se" data-cursor=""><MenuUtilityText text="Email" /></a>
-                        <a href="https://www.instagram.com/" data-cursor="" target="_blank" rel="noreferrer"><MenuUtilityText text="Instagram" /></a>
+                        <a href={LINKEDIN_URL} data-cursor="" target="_blank" rel="noreferrer"><MenuUtilityText text="LinkedIn" /></a>
+                        <a href={INSTAGRAM_URL} data-cursor="" target="_blank" rel="noreferrer"><MenuUtilityText text="Instagram" /></a>
                     </div>
                 </div>
             </div>
