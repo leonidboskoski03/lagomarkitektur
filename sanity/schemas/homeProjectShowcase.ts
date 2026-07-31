@@ -26,10 +26,10 @@ export const homeProjectShowcase = defineType({
     defineField({
       name: "introTitle",
       title: "Section title",
-      type: "string",
+      type: "localizedString",
       group: "intro",
-      initialValue: "Selected work",
-      validation: (rule) => rule.required().max(60),
+      initialValue: { sv: "Utvalda arbeten", en: "Selected work" },
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "introTags",
@@ -37,8 +37,12 @@ export const homeProjectShowcase = defineType({
       type: "array",
       group: "intro",
       description: "Displayed at the top left, separated by centered dots.",
-      of: [defineArrayMember({ type: "string" })],
-      initialValue: ["Lagom Arkitektur", "Selected work", "Spatial portfolio"],
+      of: [defineArrayMember({ type: "localizedString" })],
+      initialValue: [
+        { sv: "Lagom Arkitektur", en: "Lagom Arkitektur" },
+        { sv: "Utvalda projekt", en: "Selected work" },
+        { sv: "Rumslig portfolio", en: "Spatial portfolio" },
+      ],
       validation: (rule) => rule.required().min(1).max(4),
     }),
     defineField({
@@ -47,8 +51,12 @@ export const homeProjectShowcase = defineType({
       type: "array",
       group: "intro",
       description: "Disciplines and year range displayed at the top right.",
-      of: [defineArrayMember({ type: "string" })],
-      initialValue: ["Architecture", "Interiors", "2022-2026"],
+      of: [defineArrayMember({ type: "localizedString" })],
+      initialValue: [
+        { sv: "Arkitektur", en: "Architecture" },
+        { sv: "Interiörer", en: "Interiors" },
+        { sv: "2022–2026", en: "2022-2026" },
+      ],
       validation: (rule) => rule.required().min(1).max(4),
     }),
     defineField({
@@ -107,8 +115,8 @@ export const homeProjectShowcase = defineType({
           ],
           preview: {
             select: {
-              title: "project.title",
-              subtitle: "project.location",
+              title: "project.title.sv",
+              subtitle: "project.location.sv",
               media: "primaryImage",
             },
             prepare: ({ title, subtitle, media }) => ({

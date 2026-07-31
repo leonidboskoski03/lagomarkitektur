@@ -5,10 +5,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { studioContent } from "../../data/studio";
 import { motionEases } from "../../lib/motion";
 import styles from "./StudioMotion.module.css";
+import { useLocalizedContent } from "../../i18n/LanguageContext";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export function StudioDisciplineRail() {
+  const content = useLocalizedContent(studioContent);
   const sectionRef = useRef<HTMLElement | null>(null);
   const railRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
@@ -114,14 +116,14 @@ export function StudioDisciplineRail() {
     <section
       ref={sectionRef}
       className="relative bg-white pb-[clamp(2.5rem,4vw,4rem)] pt-[clamp(4.5rem,7vw,8rem)]"
-      aria-label={`Studio disciplines: ${studioContent.disciplines.join(", ")}`}
+      aria-label={`${content.disciplinesIntro}: ${content.disciplines.join(", ")}`}
     >
       <div className="viewport-container">
         <p
           data-studio-discipline-intro
           className="max-w-[18ch] text-[clamp(2rem,3.5vw,4.5rem)] font-medium leading-[0.95] tracking-[-0.058em] will-change-[transform,opacity]"
         >
-          {studioContent.disciplinesIntro}
+          {content.disciplinesIntro}
         </p>
       </div>
 
@@ -147,7 +149,7 @@ export function StudioDisciplineRail() {
               aria-hidden={duplicate || undefined}
               className={styles.marqueeGroup}
             >
-              {studioContent.disciplines.map((discipline) => (
+              {content.disciplines.map((discipline) => (
                 <span
                   key={`${duplicate ? "duplicate" : "primary"}-${discipline}`}
                   className="flex items-center whitespace-nowrap text-[clamp(2.25rem,5.4vw,6.5rem)] font-medium leading-none tracking-[-0.065em]"

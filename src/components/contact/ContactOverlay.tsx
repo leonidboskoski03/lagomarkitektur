@@ -1,9 +1,10 @@
 import {useEffect, useRef} from "react";
 import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
-import contactHousePortrait from "../../assets/images/contact-house-portrait.avif";
 import {motionEases} from "../../lib/motion";
 import {ClipMaskTextAnimation} from "../animation/ClipMaskTextAnimation";
+import {contactContent, contactOverlayContent} from "../../data/contact";
+import {useLocalizedContent} from "../../i18n/LanguageContext";
 
 interface ContactOverlayProps {
     isOpen: boolean;
@@ -11,13 +12,9 @@ interface ContactOverlayProps {
     triggerRef: React.RefObject<HTMLButtonElement | null>;
 }
 
-const fields = [
-    {id: "name", label: "Name", type: "text", autoComplete: "name", required: true, placeholder: "Your name"},
-    {id: "email", label: "Email address", type: "email", autoComplete: "email", required: true, placeholder: "you@studio.com"},
-    {id: "phone", label: "Phone number", type: "tel", autoComplete: "tel", required: false, placeholder: "+46 00 000 00 00"},
-] as const;
-
 export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProps) {
+    const content = useLocalizedContent(contactOverlayContent);
+    const pageContent = useLocalizedContent(contactContent);
     const rootRef = useRef<HTMLDivElement | null>(null);
     const backdropRef = useRef<HTMLButtonElement | null>(null);
     const panelRef = useRef<HTMLDivElement | null>(null);
@@ -120,7 +117,7 @@ export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProp
                 ref={backdropRef}
                 type="button"
                 onClick={onClose}
-                aria-label="Close enquiry form"
+                aria-label={content.closeForm}
                 data-cursor="close"
                 className="absolute inset-0 hidden bg-black/45 md:block"
             />
@@ -137,11 +134,11 @@ export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProp
                     <header className="flex items-start justify-between border-t border-white/70 pt-4">
                         <div className="overflow-hidden">
                             <div className="contact-row will-change-transform">
-                                <p className="text-xs font-semibold uppercase tracking-[0.08em]">Project enquiry</p>
+                                <p className="text-xs font-semibold uppercase tracking-[0.08em]">{content.eyebrow}</p>
                             </div>
                         </div>
                         <button ref={closeRef} type="button" onClick={onClose} data-cursor="default" className="group flex items-center gap-3 text-xs font-semibold uppercase">
-                            <ClipMaskTextAnimation text="Close" />
+                            <ClipMaskTextAnimation text={content.close} />
                             <svg viewBox="0 0 12 12" aria-hidden="true" className="size-3 transition-transform duration-500 group-hover:rotate-90">
                                 <path d="M1 1L11 11M11 1L1 11" fill="none" stroke="currentColor" strokeWidth="1" />
                             </svg>
@@ -152,16 +149,16 @@ export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProp
                         <div className="overflow-hidden">
                             <div className="contact-row will-change-transform">
                                 <h2 id="contact-heading" className="max-w-2xl text-[clamp(2rem,4vw,4.25rem)] font-medium leading-[0.94] tracking-[-0.055em]">
-                                    Tell us about the space you want to create.
+                                    {content.title}
                                 </h2>
                                 <p className="mt-5 max-w-md text-sm leading-relaxed text-white/65">
-                                    Share the first details of your project. We’ll review your enquiry and reply with the right next step.
+                                    {content.introduction}
                                 </p>
                             </div>
                         </div>
                         <figure className="hidden md:block">
                             <div className="aspect-[3/4] overflow-hidden bg-white/10">
-                                <img ref={imageRef} src={contactHousePortrait} alt="Lagom residential architecture" className="h-full w-full object-cover will-change-transform" />
+                                <img ref={imageRef} src={pageContent.form.image.src} alt={content.imageAlt} className="h-full w-full object-cover will-change-transform" />
                             </div>
                             <figcaption className="mt-2 flex justify-between text-[0.6rem] font-semibold uppercase text-white/55">
                                 <span>Lagom</span><span>01/01</span>
@@ -169,15 +166,15 @@ export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProp
                         </figure>
                     </div>
 
-                    <form onSubmit={(event) => event.preventDefault()} className="self-end" aria-label="Project enquiry form">
+                    <form onSubmit={(event) => event.preventDefault()} className="self-end" aria-label={content.formLabel}>
                         <div className="mb-5 overflow-hidden border-b border-white/25 pb-3">
                             <div className="contact-row flex justify-between text-xs font-semibold uppercase will-change-transform">
-                                <span>Your details</span><span>Required *</span>
+                                <span>{content.details}</span><span>{content.required}</span>
                             </div>
                         </div>
 
                         <div className="grid gap-5 md:grid-cols-2">
-                            {fields.map((field, index) => (
+                            {content.fields.map((field, index) => (
                                 <div key={field.id} className={`overflow-hidden ${index === 2 ? "md:col-span-2" : ""}`}>
                                     <div className="contact-row will-change-transform">
                                         <label htmlFor={`contact-${field.id}`} className="mb-2 block text-xs font-medium uppercase">
@@ -199,13 +196,13 @@ export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProp
 
                             <div className="overflow-hidden md:col-span-2">
                                 <div className="contact-row will-change-transform">
-                                    <label htmlFor="contact-message" className="mb-2 block text-xs font-medium uppercase">Project overview *</label>
+                                    <label htmlFor="contact-message" className="mb-2 block text-xs font-medium uppercase">{content.overview}</label>
                                     <textarea
                                         id="contact-message"
                                         name="message"
                                         required
                                         rows={4}
-                                        placeholder="Location, scope, timeline and anything else we should know"
+                                        placeholder={content.overviewPlaceholder}
                                         data-cursor="default"
                                         className="w-full resize-none rounded-none border border-transparent bg-white px-4 py-4 text-sm text-black outline-none transition-colors placeholder:text-black/40 focus:border-white"
                                     />
@@ -216,7 +213,7 @@ export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProp
                         <div className="mt-6 overflow-hidden">
                             <div className="contact-row will-change-transform">
                                 <button type="submit" className="group flex w-full items-center justify-between border-t border-white/50 py-4 text-sm font-semibold uppercase">
-                                    <span>Send enquiry</span>
+                                    <span>{content.send}</span>
                                     <span className="transition-transform duration-500 group-hover:translate-x-2">→</span>
                                 </button>
                             </div>
@@ -224,7 +221,7 @@ export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProp
                     </form>
 
                     <footer className="flex shrink-0 justify-between pb-8 text-[0.62rem] font-semibold uppercase text-white/45 md:pb-10">
-                        <span>Lagom Arkitektur</span><span>Studio enquiries</span>
+                        <span>Lagom Arkitektur</span><span>{content.footer}</span>
                     </footer>
                 </div>
             </section>

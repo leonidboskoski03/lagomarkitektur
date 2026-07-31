@@ -15,15 +15,14 @@ import {
 } from "../lib/revealEvents";
 import { motionEaseCurves, motionEases } from "../lib/motion";
 import { WorkTransitionLink } from "../components/transition/WorkTransitionLink";
-
-const descriptionLines = [
-    "Sustainable architecture shaped by",
-    "balance, meaning, and purpose."
-];
+import {useLanguage} from "../i18n/LanguageContext";
+import {siteCopy} from "../i18n/siteCopy";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export const Hero = () => {
+    const {language} = useLanguage();
+    const copy = siteCopy[language].home;
     const [hovered, setHovered] = useState(false);
     const heroRef = useRef<HTMLDivElement | null>(null);
     const heroRef2 = useRef<HTMLDivElement | null>(null);
@@ -218,13 +217,13 @@ export const Hero = () => {
                                 handleHeroMouseOff()
                             }}
                         >
-                            <NavItemUnderlineAnimation label="View project" />
+                            <NavItemUnderlineAnimation label={copy.viewProject} />
                             <DotAnimation hovered={hovered} />
                         </WorkTransitionLink>
                     </div>
 
                     <h1 className="w-fit max-w-[29rem] text-left text-[clamp(1rem,1.7vw,1.5rem)] font-normal leading-[1.12] tracking-[-0.035em] text-white">
-                        {descriptionLines.map((line, index) => (
+                        {copy.heroDescriptionLines.map((line, index) => (
                             <span key={line} className="block overflow-hidden">
                                 <span
                                     ref={(element) => { descriptionLineRefs.current[index] = element; }}

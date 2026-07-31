@@ -5,6 +5,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { motionEases } from "../../lib/motion";
 import styles from "./ProjectDetail.module.css";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
@@ -19,6 +21,8 @@ export function ProjectClosingStory({
   projectSlug,
   excerpt,
 }: ProjectClosingStoryProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].project;
   const sectionRef = useRef<HTMLElement | null>(null);
 
   useGSAP(() => {
@@ -88,10 +92,10 @@ export function ProjectClosingStory({
     <section ref={sectionRef} aria-labelledby="project-closing-heading">
       <div className={`viewport-container ${styles.closingStory}`}>
         <div data-project-closing-label className={styles.closingLabel}>
-          <span className={styles.sectionLabel}>Spatial character</span>
+          <span className={styles.sectionLabel}>{copy.spatialCharacter}</span>
         </div>
         <h2 id="project-closing-heading" className="sr-only">
-          {projectTitle} project summary
+          {projectTitle} {copy.summary}
         </h2>
         <p data-project-closing-copy className={styles.closingCopy}>
           {excerpt}

@@ -12,6 +12,7 @@ import gsap from "gsap";
 import { useReducedMotion } from "motion/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { contactContent } from "../../data/contact";
+import { useLocalizedContent } from "../../i18n/LanguageContext";
 import { CONTACT_CONTENT_REVEAL_EVENT } from "../../lib/revealEvents";
 import { motionEases } from "../../lib/motion";
 import { preloadImage, type ImageLoadProgress } from "../../lib/preloadImage";
@@ -86,7 +87,8 @@ const ContactTransitionOverlay = memo(function ContactTransitionOverlay({
   const progressRef = useRef<HTMLDivElement | null>(null);
   const onCoverCompleteRef = useRef(onCoverComplete);
   const onRevealCompleteRef = useRef(onRevealComplete);
-  const { transition: content } = contactContent;
+  const pageContent = useLocalizedContent(contactContent);
+  const { transition: content } = pageContent;
 
   useEffect(() => {
     onCoverCompleteRef.current = onCoverComplete;
@@ -206,19 +208,19 @@ const ContactTransitionOverlay = memo(function ContactTransitionOverlay({
 
   const progressPercent = Math.round(transition.progress * 100);
   const loadStatus = transition.loadFailed
-    ? "Contact image unavailable"
+    ? content.imageUnavailable
     : transition.progress === 1
-      ? "Contact page ready"
-      : "Preparing Contact";
+      ? content.pageReady
+      : content.preparing;
 
   return (
     <aside
       ref={overlayRef}
       className={styles.overlay}
-      aria-label={`Opening Contact. ${loadStatus}.`}
+      aria-label={`${content.openingLabel}. ${loadStatus}.`}
     >
       <span className="sr-only" role="status" aria-live="polite">
-        {`Opening Contact. ${loadStatus}.`}
+        {`${content.openingLabel}. ${loadStatus}.`}
       </span>
 
       <div className={styles.shell} aria-hidden="true">
@@ -252,7 +254,7 @@ const ContactTransitionOverlay = memo(function ContactTransitionOverlay({
               className={styles.media}
             >
               <img
-                src={contactContent.hero.image.src}
+                src={pageContent.hero.image.src}
                 alt=""
                 width={1800}
                 height={1013}
@@ -281,7 +283,7 @@ const ContactTransitionOverlay = memo(function ContactTransitionOverlay({
       <div
         className={styles.progress}
         role="progressbar"
-        aria-label="Loading the Contact hero image"
+        aria-label={content.loadingImage}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={progressPercent}
@@ -293,6 +295,7 @@ const ContactTransitionOverlay = memo(function ContactTransitionOverlay({
 });
 
 export function ContactTransitionProvider({ children }: { children: ReactNode }) {
+  const pageContent = useLocalizedContent(contactContent);
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const reduceMotion = useReducedMotion();
@@ -382,7 +385,7 @@ export function ContactTransitionProvider({ children }: { children: ReactNode })
     };
     progressFrameRef.current = window.requestAnimationFrame(advanceVisibleProgress);
 
-    const imagePromise = preloadImage(contactContent.hero.image.src, {
+    const imagePromise = preloadImage(pageContent.hero.image.src, {
       signal: controller.signal,
       onProgress: (progress: ImageLoadProgress) => {
         actualProgressRef.current = Math.max(
@@ -411,7 +414,7 @@ export function ContactTransitionProvider({ children }: { children: ReactNode })
         ? { ...active, stage: "revealing" }
         : active);
     });
-  }, [navigate, pathname, reduceMotion]);
+  }, [navigate, pageContent.hero.image.src, pathname, reduceMotion]);
 
   useEffect(() => () => {
     abortRef.current?.abort();

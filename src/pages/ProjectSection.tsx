@@ -5,6 +5,8 @@ import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {motionEases} from "../lib/motion";
 import {useProjectShowcase} from "../hooks/useProjectShowcase";
 import {ProjectTransitionLink} from "../components/transition/ProjectTransitionLink";
+import {useLanguage} from "../i18n/LanguageContext";
+import {siteCopy} from "../i18n/siteCopy";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -88,6 +90,8 @@ const findClosestCurveProgress = (curve: (progress: number) => PathPoint, distan
 const clampValue = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
 export const ProjectSection = () => {
+    const {language} = useLanguage();
+    const copy = siteCopy[language].home;
     const sectionRef = useRef<HTMLElement | null>(null);
     const stageRef = useRef<HTMLDivElement | null>(null);
     const {
@@ -650,7 +654,7 @@ export const ProjectSection = () => {
                             data-project-card
                             data-cursor="open"
                             className="group absolute left-1/2 top-1/2 block overflow-hidden shadow-[0_2rem_5rem_rgba(0,0,0,0.36)] outline outline-1 outline-white/14"
-                            aria-label={`Open project ${project.title}`}
+                            aria-label={`${copy.openProject} ${project.title}`}
                         >
                             <img
                                 data-project-card-secondary

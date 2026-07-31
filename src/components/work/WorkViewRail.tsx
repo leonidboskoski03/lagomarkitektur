@@ -3,6 +3,8 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motionEases } from "../../lib/motion";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 import { workViewModes, type WorkViewMode } from "./workView";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -151,13 +153,19 @@ function ViewOption({ mode, active, expanded, onSelect }: ViewOptionProps) {
 }
 
 export function WorkViewRail({ activeMode, onModeChange }: WorkViewRailProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].work;
   const railRef = useRef<HTMLDivElement | null>(null);
   const surfaceRef = useRef<HTMLElement | null>(null);
   const capsuleTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const openTimerRef = useRef(0);
   const closeTimerRef = useRef(0);
   const [expanded, setExpanded] = useState(false);
-  const activeIndex = Math.max(0, workViewModes.findIndex((mode) => mode.id === activeMode));
+  const localizedModes = workViewModes.map((mode) => ({
+    ...mode,
+    ...copy.viewModes[mode.id],
+  }));
+  const activeIndex = Math.max(0, localizedModes.findIndex((mode) => mode.id === activeMode));
 
   const open = useCallback((delay = 85) => {
     window.clearTimeout(openTimerRef.current);
@@ -331,7 +339,7 @@ export function WorkViewRail({ activeMode, onModeChange }: WorkViewRailProps) {
           ref={surfaceRef}
           data-view-capsule-surface
           data-expanded={expanded}
-          aria-label="Choose project view"
+          aria-label={copy.viewSelector}
           className="absolute right-0 top-1/2 h-10 w-11 -translate-y-1/2 overflow-hidden rounded-[9px] border border-white/14 bg-[#292824] text-[#f4f0e8] shadow-[0_8px_24px_rgba(19,18,15,0.16)] will-change-[height] [contain:layout_paint]"
           onPointerEnter={() => open()}
           onPointerLeave={() => close()}
@@ -341,7 +349,7 @@ export function WorkViewRail({ activeMode, onModeChange }: WorkViewRailProps) {
           onBlurCapture={handleBlur}
         >
           <div className="absolute left-1/2 top-1/2 flex h-[7.5rem] w-10 -translate-x-1/2 -translate-y-1/2 flex-col">
-            {workViewModes.map((mode) => (
+            {localizedModes.map((mode) => (
               <ViewOption
                 key={mode.id}
                 mode={mode}

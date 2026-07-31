@@ -19,6 +19,7 @@ import {Footer} from "./components/layout/Footer.tsx";
 import {ProjectTransitionProvider} from "./components/transition/ProjectTransitionProvider.tsx";
 import {WorkTransitionProvider} from "./components/transition/WorkTransitionProvider.tsx";
 import {ContactTransitionProvider} from "./components/transition/ContactTransitionProvider.tsx";
+import {LanguageProvider} from "./i18n/LanguageProvider.tsx";
 
 function HomepageLoader() {
     const {pathname} = useLocation();
@@ -110,15 +111,17 @@ function AppContent() {
 
 function App() {
     return (
-        <BrowserRouter basename={import.meta.env.BASE_URL}>
-            <ProjectTransitionProvider>
-                <WorkTransitionProvider>
-                    <ContactTransitionProvider>
-                        <AppContent/>
-                    </ContactTransitionProvider>
-                </WorkTransitionProvider>
-            </ProjectTransitionProvider>
-        </BrowserRouter>
+        <LanguageProvider>
+            <BrowserRouter basename={import.meta.env.BASE_URL}>
+                <ProjectTransitionProvider>
+                    <WorkTransitionProvider>
+                        <ContactTransitionProvider>
+                            <AppContent/>
+                        </ContactTransitionProvider>
+                    </WorkTransitionProvider>
+                </ProjectTransitionProvider>
+            </BrowserRouter>
+        </LanguageProvider>
     );
 }
 

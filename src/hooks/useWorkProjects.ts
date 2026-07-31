@@ -8,6 +8,13 @@ import {
   workProjectListQuery,
 } from "../lib/sanity";
 import { formatProjectArea } from "../lib/projectArea";
+import { useLanguage } from "../i18n/LanguageContext";
+import {
+  resolveLocalizedText,
+  translateCanonicalValue,
+  type Language,
+  type MaybeLocalizedText,
+} from "../i18n/language";
 
 export interface WorkProjectImage {
   url: string;
@@ -36,7 +43,7 @@ export interface WorkProjectItem {
 }
 
 interface SanityProjectImage {
-  alt?: string;
+  alt?: MaybeLocalizedText;
   asset?: {
     _ref: string;
     _type: "reference";
@@ -69,7 +76,7 @@ interface SanityProjectImage {
 
 interface SanityWorkProject {
   _id: string;
-  title: string;
+  title: MaybeLocalizedText;
   slug: string;
   category: string;
   siteSize?: string;
@@ -86,8 +93,8 @@ const workPreviewWidths = [320, 480, 640];
 const workDisplayWidths = [640, 960, 1280, 1600];
 const workGalleryWidths = [480, 720, 900, 1200];
 const workAtlasWidth = 768;
-let cachedWorkProjects: WorkProjectItem[] | null = null;
-let workProjectsPromise: Promise<WorkProjectItem[]> | null = null;
+const cachedWorkProjects = new Map<Language, WorkProjectItem[]>();
+const workProjectsPromises = new Map<Language, Promise<WorkProjectItem[]>>();
 
 function getAvailableWidths(widths: number[], sourceWidth?: number) {
   if (!sourceWidth) return widths;
@@ -123,6 +130,7 @@ function normalizeSanityImage(
   fallbackAlt: string,
   widths: number[],
   sizes: string,
+  language: Language,
 ): WorkProjectImage | null {
   if (!image.asset?._ref || !image.assetData) return null;
 
@@ -141,7 +149,7 @@ function normalizeSanityImage(
     previewSrcSet: buildSanitySrcSet(image, workPreviewWidths, 72, sourceWidth),
     previewSizes: "(max-width: 767px) 48vw, 15vw",
     atlasUrl: buildSanityUrl(image, Math.min(sourceWidth || workAtlasWidth, workAtlasWidth), 70),
-    alt: image.alt || fallbackAlt,
+    alt: resolveLocalizedText(image.alt, language, fallbackAlt),
     width: dimensions?.width,
     height: dimensions?.height,
     aspectRatio: dimensions?.aspectRatio || 1.4,
@@ -158,32 +166,38 @@ function uniqueWorkImages(images: WorkProjectImage[]) {
   });
 }
 
-function normalizeSanityProject(project: SanityWorkProject): WorkProjectItem | null {
+function normalizeSanityProject(project: SanityWorkProject, language: Language): WorkProjectItem | null {
   if (!project.slug || !project.featuredImage?.asset?._ref) return null;
 
   const displayImage = project.thumbnailImage?.asset?._ref ? project.thumbnailImage : project.featuredImage;
   if (!displayImage.asset?._ref) return null;
 
+  const title = resolveLocalizedText(project.title, language);
+  const imageLabel = language === "sv" ? "bild" : "image";
+  const atlasLabel = language === "sv" ? "Atlasbild" : "Atlas image";
   const normalizedDisplayImage = normalizeSanityImage(
     displayImage,
-    project.title,
+    title,
     workDisplayWidths,
     "(max-width: 767px) 92vw, 52vw",
+    language,
   );
   const normalizedGallery = (project.gallery || [])
     .map((image, index) => normalizeSanityImage(
       image,
-      `${project.title} image ${index + 1}`,
+      `${title} ${imageLabel} ${index + 1}`,
       workGalleryWidths,
       "(max-width: 767px) 48vw, 24vw",
+      language,
     ))
     .filter((image): image is WorkProjectImage => image !== null);
   const normalizedWorkGallery = (project.workGallery || [])
     .map((image, index) => normalizeSanityImage(
       image,
-      `${project.title} Atlas image ${index + 1}`,
+      `${title} ${atlasLabel} ${index + 1}`,
       workGalleryWidths,
       "(max-width: 767px) 48vw, 24vw",
+      language,
     ))
     .filter((image): image is WorkProjectImage => image !== null);
 
@@ -191,9 +205,9 @@ function normalizeSanityProject(project: SanityWorkProject): WorkProjectItem | n
 
   return {
     id: project._id,
-    title: project.title,
+    title,
     slug: project.slug,
-    category: project.category,
+    category: translateCanonicalValue(project.category, language),
     siteSize: formatProjectArea(project.siteSize),
     year: project.year,
     image: normalizedDisplayImage,
@@ -206,10 +220,12 @@ function normalizeSanityProject(project: SanityWorkProject): WorkProjectItem | n
   };
 }
 
-async function loadLocalFallback(): Promise<WorkProjectItem[]> {
-  const { projects } = await import("../data/projects");
+async function loadLocalFallback(language: Language): Promise<WorkProjectItem[]> {
+  const { getProjects } = await import("../data/projects");
+  const projects = getProjects(language);
 
   return projects.map((project, index) => {
+    const imageLabel = language === "sv" ? "bild" : "image";
     const image: WorkProjectImage = {
       url: project.thumbnailImage || project.featuredImage,
       previewUrl: publicAsset(`work-previews/${project.id}/cover.webp`),
@@ -224,7 +240,7 @@ async function loadLocalFallback(): Promise<WorkProjectItem[]> {
       atlasUrl: publicAsset(`work-previews/${project.id}/${imageIndex}.webp`),
       sizes: "(max-width: 767px) 48vw, 24vw",
       previewSizes: "(max-width: 767px) 48vw, 15vw",
-      alt: `${project.title} image ${imageIndex + 1}`,
+      alt: `${project.title} ${imageLabel} ${imageIndex + 1}`,
       aspectRatio: localGalleryAspectFallback[(imageIndex + index) % localGalleryAspectFallback.length],
     }));
     image.atlasUrl = image.previewUrl;
@@ -243,11 +259,13 @@ async function loadLocalFallback(): Promise<WorkProjectItem[]> {
   });
 }
 
-export function loadWorkProjects(): Promise<WorkProjectItem[]> {
-  if (cachedWorkProjects) return Promise.resolve(cachedWorkProjects);
-  if (workProjectsPromise) return workProjectsPromise;
+export function loadWorkProjects(language: Language): Promise<WorkProjectItem[]> {
+  const cached = cachedWorkProjects.get(language);
+  const pending = workProjectsPromises.get(language);
+  if (cached) return Promise.resolve(cached);
+  if (pending) return pending;
 
-  workProjectsPromise = (async () => {
+  const workProjectsPromise = (async () => {
       try {
         if (!hasSanityConfig) throw new Error("Sanity is not configured");
 
@@ -256,44 +274,55 @@ export function loadWorkProjects(): Promise<WorkProjectItem[]> {
           {},
         );
         const normalized = result
-          .map(normalizeSanityProject)
+          .map((project) => normalizeSanityProject(project, language))
           .filter((project): project is WorkProjectItem => project !== null);
 
         if (normalized.length === 0) throw new Error("Sanity returned no published projects");
         return normalized;
       } catch (error) {
         console.warn("Using local Work projects because Sanity could not be loaded.", error);
-        return loadLocalFallback();
+        return loadLocalFallback(language);
       }
     })()
     .then((projects) => {
-      cachedWorkProjects = projects;
+      cachedWorkProjects.set(language, projects);
       return projects;
     })
     .finally(() => {
-      workProjectsPromise = null;
+      workProjectsPromises.delete(language);
     });
 
+  workProjectsPromises.set(language, workProjectsPromise);
   return workProjectsPromise;
 }
 
 export function useWorkProjects() {
-  const [projects, setProjects] = useState<WorkProjectItem[]>(() => cachedWorkProjects || []);
-  const [isLoading, setIsLoading] = useState(() => cachedWorkProjects === null);
+  const { language } = useLanguage();
+  const [state, setState] = useState(() => ({
+    language,
+    projects: cachedWorkProjects.get(language) || [],
+    isLoading: !cachedWorkProjects.has(language),
+  }));
+  const currentState = state.language === language
+    ? state
+    : {
+      language,
+      projects: cachedWorkProjects.get(language) || [],
+      isLoading: !cachedWorkProjects.has(language),
+    };
 
   useEffect(() => {
     let active = true;
 
-    void loadWorkProjects().then((loadedProjects) => {
+    void loadWorkProjects(language).then((loadedProjects) => {
       if (!active) return;
-      setProjects(loadedProjects);
-      setIsLoading(false);
+      setState({ language, projects: loadedProjects, isLoading: false });
     });
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [language]);
 
-  return { projects, isLoading };
+  return { projects: currentState.projects, isLoading: currentState.isLoading };
 }

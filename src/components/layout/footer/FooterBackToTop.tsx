@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { ClipMaskTextAnimation } from "../../animation/ClipMaskTextAnimation";
+import { useLanguage } from "../../../i18n/LanguageContext";
+import { siteCopy } from "../../../i18n/siteCopy";
 
 export function FooterBackToTop() {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].footer;
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -18,10 +22,10 @@ export function FooterBackToTop() {
         window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
       }}
       className="w-fit uppercase outline-none focus-visible:ring-1 focus-visible:ring-current focus-visible:ring-offset-4 focus-visible:ring-offset-white"
-      aria-label="Back to the top of the page"
+      aria-label={copy.backToTopLabel}
     >
       <ClipMaskTextAnimation
-        text="Back to top ↑"
+        text={`${copy.backToTop} ↑`}
         controlled
         active={isHovered || isFocused}
         uppercase={false}

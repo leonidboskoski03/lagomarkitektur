@@ -20,22 +20,22 @@ export function ContactForm({ content, recipient }: ContactFormProps) {
     const message = String(formData.get("message") ?? "").trim();
     const subject = `${content.mailSubject} — ${name}`;
     const body = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      `Project location: ${location || "Not specified"}`,
+      `${content.bodyLabels.name}: ${name}`,
+      `${content.bodyLabels.email}: ${email}`,
+      `${content.bodyLabels.location}: ${location || content.bodyLabels.notSpecified}`,
       "",
       message,
     ].join("\n");
     const mailto = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-    setStatus("Opening a prepared email…");
+    setStatus(content.openingStatus);
     window.location.assign(mailto);
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      aria-label="Project enquiry form"
+      aria-label={content.formLabel}
       className="grid gap-[clamp(2.25rem,3.5vw,3.5rem)]"
     >
       <div className="overflow-hidden">
@@ -43,7 +43,7 @@ export function ContactForm({ content, recipient }: ContactFormProps) {
           data-contact-form-row
           className="flex items-center justify-between text-[0.6rem] font-semibold uppercase tracking-[0.08em] text-brand-ink/46 will-change-transform"
         >
-          <span>Your details</span>
+          <span>{content.detailsLabel}</span>
           <span>{content.requiredLabel}</span>
         </div>
       </div>

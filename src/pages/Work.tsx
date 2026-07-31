@@ -12,6 +12,8 @@ import { WorkProjectViews } from "../components/work/WorkProjectViews";
 import { WorkViewRail } from "../components/work/WorkViewRail";
 import type { WorkViewMode } from "../components/work/workView";
 import { useWorkProjects } from "../hooks/useWorkProjects";
+import { useLanguage } from "../i18n/LanguageContext";
+import { siteCopy } from "../i18n/siteCopy";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,6 +22,8 @@ interface WorkProps {
 }
 
 export function Work({ onFooterVisibilityChange }: WorkProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].work;
   const pageRef = useRef<HTMLDivElement | null>(null);
   const { projects, isLoading } = useWorkProjects();
   const [viewMode, setViewMode] = useState<WorkViewMode>("composition");
@@ -115,7 +119,7 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
       window.removeEventListener(HERO_CONTENT_REVEAL_EVENT, playIntro);
       loaderObserver?.disconnect();
     };
-  }, { scope: pageRef });
+  }, { scope: pageRef, dependencies: [language], revertOnUpdate: true });
 
   return (
     <div
@@ -151,15 +155,14 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
                 data-work-eyebrow
                 className="mb-5 text-xs font-semibold uppercase tracking-[0.18em] text-text-muted will-change-[transform,opacity,filter]"
               >
-                Lagom Arkitektur / Work
+                {copy.eyebrow}
               </p>
               <h1 className="text-[clamp(4.25rem,13vw,12.5rem)] font-medium leading-[0.82] tracking-[-0.065em] text-text-primary">
-                <span className="block overflow-hidden">
-                  <span data-work-title-line className="block will-change-transform">Selected</span>
-                </span>
-                <span className="block overflow-hidden">
-                  <span data-work-title-line className="block will-change-transform">spatial work</span>
-                </span>
+                {copy.titleLines.map((line) => (
+                  <span key={line} className="block overflow-hidden">
+                    <span data-work-title-line className="block will-change-transform">{line}</span>
+                  </span>
+                ))}
               </h1>
             </div>
 
@@ -168,8 +171,7 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
               className="max-w-md justify-self-end pt-2 text-sm leading-relaxed text-text-muted will-change-[transform,opacity,filter] md:pt-10"
             >
               <p>
-                Interiors, residences, hospitality spaces, and quiet architectural concepts shaped through light,
-                proportion, material restraint, and carefully staged atmosphere.
+                {copy.description}
               </p>
             </div>
           </div>
@@ -182,7 +184,7 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
 
       <div data-work-projects>
         {isLoading ? (
-          <section aria-label="Loading projects" aria-busy="true" className="min-h-screen" />
+          <section aria-label={copy.loadingProjects} aria-busy="true" className="min-h-screen" />
         ) : (
           <WorkProjectViews mode={viewMode} projects={projects} />
         )}

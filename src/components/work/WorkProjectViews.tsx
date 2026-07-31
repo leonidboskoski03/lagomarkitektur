@@ -6,6 +6,8 @@ import { EditorialProjectGrid } from "./EditorialProjectGrid";
 import { ProjectField } from "./ProjectField";
 import { ProjectIndex } from "./ProjectIndex";
 import type { WorkViewMode } from "./workView";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 interface WorkProjectViewsProps {
   mode: WorkViewMode;
@@ -20,10 +22,14 @@ function ActiveView({ mode, projects }: WorkProjectViewsProps) {
 
 export function WorkProjectViews({ mode, projects }: WorkProjectViewsProps) {
   const reduceMotion = useReducedMotion();
+  const { language } = useLanguage();
+  const copy = siteCopy[language].work;
 
   return (
     <div data-work-project-views className="relative">
-      <p className="sr-only" aria-live="polite">{`${mode} project view selected`}</p>
+      <p className="sr-only" aria-live="polite">
+        {`${copy.viewModes[mode].shortLabel} ${copy.selectedView}`}
+      </p>
 
       <AnimatePresence
         initial={false}

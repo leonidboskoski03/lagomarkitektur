@@ -19,6 +19,8 @@ import { motionEaseCurves, motionEases } from "../../lib/motion";
 import { preloadImage, type ImageLoadProgress } from "../../lib/preloadImage";
 import { WORK_CONTENT_REVEAL_EVENT } from "../../lib/revealEvents";
 import styles from "./ProjectTransition.module.css";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 import {
   WorkTransitionContext,
   type WorkTransitionContextValue,
@@ -165,6 +167,8 @@ async function waitForWorkPage(signal: AbortSignal) {
 }
 
 export function WorkTransitionProvider({ children }: { children: ReactNode }) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].transitions;
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const reduceMotion = useReducedMotion();
@@ -178,8 +182,8 @@ export function WorkTransitionProvider({ children }: { children: ReactNode }) {
   const progressResolveRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
-    void loadWorkProjects();
-  }, []);
+    void loadWorkProjects(language);
+  }, [language]);
 
   const finishTransition = useCallback(() => {
     window.dispatchEvent(new CustomEvent(WORK_CONTENT_REVEAL_EVENT));
@@ -255,7 +259,7 @@ export function WorkTransitionProvider({ children }: { children: ReactNode }) {
     };
     progressFrameRef.current = window.requestAnimationFrame(advanceVisibleProgress);
 
-    const readinessPromise = loadWorkProjects()
+    const readinessPromise = loadWorkProjects(language)
       .then(async (projects) => {
         try {
           await preloadCriticalWorkImages(
@@ -292,7 +296,7 @@ export function WorkTransitionProvider({ children }: { children: ReactNode }) {
       if (controller.signal.aborted) return;
       setTransition((active) => active ? { ...active, stage: "revealing" } : active);
     });
-  }, [navigate, pathname, reduceMotion]);
+  }, [language, navigate, pathname, reduceMotion]);
 
   useEffect(() => () => {
     abortRef.current?.abort();
@@ -313,10 +317,10 @@ export function WorkTransitionProvider({ children }: { children: ReactNode }) {
 
   const progressPercent = transition ? Math.round(transition.progress * 100) : 0;
   const loadStatus = transition?.loadFailed
-    ? "Some project imagery is unavailable"
+    ? copy.workImageryUnavailable
     : transition?.progress === 1
-      ? "Work images decoded"
-      : "Loading selected work";
+      ? copy.workImagesDecoded
+      : copy.loadingSelectedWork;
 
   const handleOverlayComplete = () => {
     if (!transition) return;
@@ -343,7 +347,7 @@ export function WorkTransitionProvider({ children }: { children: ReactNode }) {
           <motion.aside
             key="work-transition"
             className={styles.overlay}
-            aria-label={`Opening Work. ${loadStatus}.`}
+            aria-label={`${copy.openingWork}. ${loadStatus}.`}
             initial={{
               opacity: 1,
               clipPath: "inset(100% 0 0 0)",
@@ -364,7 +368,7 @@ export function WorkTransitionProvider({ children }: { children: ReactNode }) {
             onAnimationComplete={handleOverlayComplete}
           >
             <span className="sr-only" role="status" aria-live="polite">
-              {`Opening Work. ${loadStatus}.`}
+              {`${copy.openingWork}. ${loadStatus}.`}
             </span>
 
             <motion.div
@@ -386,7 +390,7 @@ export function WorkTransitionProvider({ children }: { children: ReactNode }) {
             <motion.div
               className={styles.progress}
               role="progressbar"
-              aria-label="Loading critical Work images"
+              aria-label={copy.loadingCriticalWorkImages}
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={progressPercent}

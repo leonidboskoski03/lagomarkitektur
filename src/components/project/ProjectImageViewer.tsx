@@ -12,6 +12,8 @@ import { Flip } from "gsap/Flip";
 import { motionEases } from "../../lib/motion";
 import type { ProjectGalleryMedia } from "../../types/project";
 import styles from "./ProjectDetail.module.css";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 gsap.registerPlugin(Flip, useGSAP);
 
@@ -28,6 +30,8 @@ export function ProjectImageViewer({
   originElement,
   onClose,
 }: ProjectImageViewerProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].project;
   const viewerRef = useRef<HTMLDivElement | null>(null);
   const frameRef = useRef<HTMLDivElement | null>(null);
   const pendingOriginRef = useRef<HTMLElement | null>(originElement);
@@ -237,7 +241,9 @@ export function ProjectImageViewer({
       ref={viewerRef}
       role="dialog"
       aria-modal="true"
-      aria-label={`${selected.alt}. Image ${selectedIndex + 1} of ${media.length}.`}
+      aria-label={`${selected.alt}. ${copy.imageOf
+        .replace("{current}", String(selectedIndex + 1))
+        .replace("{total}", String(media.length))}.`}
       className={styles.viewer}
     >
       <button
@@ -246,16 +252,16 @@ export function ProjectImageViewer({
         onClick={closeViewer}
         className={styles.viewerClose}
       >
-        Close
+        {copy.closeImage}
       </button>
 
-      <div className={styles.viewerThumbnails} aria-label="Project image thumbnails">
+      <div className={styles.viewerThumbnails} aria-label={copy.thumbnails}>
         {media.map((item, index) => (
           <button
             key={item.id}
             type="button"
             data-project-viewer-thumbnail
-            aria-label={`Show image ${index + 1}: ${item.alt}`}
+            aria-label={`${copy.showImage} ${index + 1}: ${item.alt}`}
             aria-pressed={index === selectedIndex}
             onClick={(event) => selectMedia(index, event)}
             className={[

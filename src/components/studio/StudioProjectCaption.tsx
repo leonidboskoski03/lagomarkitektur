@@ -1,4 +1,6 @@
 import { cn } from "../../lib/utils";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 interface StudioProjectCaptionProps {
   projectTitle: string;
@@ -9,6 +11,7 @@ export function StudioProjectCaption({
   projectTitle,
   className,
 }: StudioProjectCaptionProps) {
+  const { language } = useLanguage();
   return (
     <figcaption
       className={cn(
@@ -28,7 +31,7 @@ export function StudioProjectCaption({
           <span className="block h-[1.55em] text-black/48">↗</span>
           <span className="block h-[1.55em] whitespace-nowrap">
             <span className="relative inline-block h-[1.55em]">
-              View project
+              {siteCopy[language].project.viewProject}
               <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-current transition-transform delay-100 duration-700 [transition-timing-function:cubic-bezier(.22,1,.36,1)] group-hover:scale-x-100 group-focus-visible:scale-x-100" />
             </span>
           </span>

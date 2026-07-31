@@ -7,6 +7,8 @@ import { motionEases } from "../../lib/motion";
 import { formatProjectArea } from "../../lib/projectArea";
 import type { Project } from "../../types/project";
 import styles from "./ProjectDetail.module.css";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
@@ -15,6 +17,8 @@ interface ProjectStoryIntroProps {
 }
 
 export function ProjectStoryIntro({ project }: ProjectStoryIntroProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].project;
   const sectionRef = useRef<HTMLElement | null>(null);
   const projectArea = formatProjectArea(project.credits);
   const serviceRows = Array.from(
@@ -106,22 +110,22 @@ export function ProjectStoryIntro({ project }: ProjectStoryIntroProps) {
     <section ref={sectionRef} aria-labelledby="project-story-heading">
       <div className={`viewport-container ${styles.intro}`}>
         <h2 id="project-story-heading" className="sr-only">
-          About {project.title}
+          {copy.about} {project.title}
         </h2>
 
         <aside
           data-project-story-facts
           className={styles.facts}
-          aria-label="Project facts"
+          aria-label={copy.facts}
         >
-          <ProjectFact label="Location" value={project.location} />
-          <ProjectFact label="Year" value={project.year} />
-          <ProjectFact label="Type" value={project.category} />
-          {projectArea ? <ProjectFact label="Scale" value={projectArea} /> : null}
+          <ProjectFact label={copy.location} value={project.location} />
+          <ProjectFact label={copy.year} value={project.year} />
+          <ProjectFact label={copy.type} value={project.category} />
+          {projectArea ? <ProjectFact label={copy.scale} value={projectArea} /> : null}
 
           {project.services.length > 0 ? (
             <div>
-              <span className={styles.factLabel}>Services</span>
+              <span className={styles.factLabel}>{copy.services}</span>
               <ul className={styles.services}>
                 {serviceRows.map((services) => (
                   <li key={services.join("-")} className={styles.factValue}>

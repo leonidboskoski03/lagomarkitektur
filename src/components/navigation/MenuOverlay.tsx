@@ -3,13 +3,8 @@ import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
 import {motionEases} from "../../lib/motion";
 import {ClipMaskTextAnimation} from "../animation/ClipMaskTextAnimation";
-
-const menuLinks = [
-    {href: "/", label: "Home"},
-    {href: "/work", label: "Work"},
-    {href: "/studio", label: "About"},
-    {href: "/contact", label: "Contact"},
-] as const;
+import {useLanguage} from "../../i18n/LanguageContext";
+import {siteCopy} from "../../i18n/siteCopy";
 
 interface MenuOverlayProps {
     isOpen: boolean;
@@ -29,6 +24,14 @@ function shouldUseNativeNavigation(event: MouseEvent<HTMLAnchorElement>) {
 }
 
 export function MenuOverlay({isOpen, onClose, onNavigate, triggerRef}: MenuOverlayProps) {
+    const {language} = useLanguage();
+    const copy = siteCopy[language].navigation;
+    const menuLinks = [
+        {href: "/", label: copy.home},
+        {href: "/work", label: copy.work},
+        {href: "/studio", label: copy.about},
+        {href: "/contact", label: copy.contact},
+    ];
     const [clipActiveIndex, setClipActiveIndex] = useState<number | null>(null);
     const overlayRef = useRef<HTMLDivElement | null>(null);
     const closeButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -228,7 +231,7 @@ export function MenuOverlay({isOpen, onClose, onNavigate, triggerRef}: MenuOverl
             id="site-menu"
             role="dialog"
             aria-modal="true"
-            aria-label="Site menu"
+            aria-label={copy.siteMenu}
             aria-hidden={!isOpen}
             className="invisible fixed inset-0 z-[140] bg-black text-white [clip-path:circle(0%_at_calc(100%-var(--spacing-viewport-gutter))_3.5rem)]"
         >
@@ -237,7 +240,7 @@ export function MenuOverlay({isOpen, onClose, onNavigate, triggerRef}: MenuOverl
                     <a
                         href="/"
                         data-cursor=""
-                        aria-label="Lagom Arkitektur home"
+                        aria-label={copy.homeLabel}
                         className="py-2"
                         onClick={(event) => handleInternalNavigation(event, "/")}
                     >
@@ -249,12 +252,12 @@ export function MenuOverlay({isOpen, onClose, onNavigate, triggerRef}: MenuOverl
                         onClick={onClose}
                         data-cursor="default"
                         className="group relative overflow-hidden rounded-full px-5 py-3 text-xs font-semibold uppercase"
-                        aria-label="Close menu"
+                        aria-label={copy.closeMenu}
                     >
                         <span className="block overflow-hidden">
                             <span ref={closeContentRef} className="relative z-10 flex items-center gap-3 text-white">
                                 <MenuUtilityText
-                                    text="Close"
+                                    text={copy.close}
                                     className="px-4"
                                     trailing={
                                         <svg
@@ -271,7 +274,7 @@ export function MenuOverlay({isOpen, onClose, onNavigate, triggerRef}: MenuOverl
                     </button>
                 </div>
 
-                <nav aria-label="Main menu" className="flex items-center py-12 md:justify-end">
+                <nav aria-label={copy.mainMenu} className="flex items-center py-12 md:justify-end">
                     <ol className="w-full md:w-[78%] lg:w-[70%]">
                         {menuLinks.map((link, index) => (
                             <li key={link.href} className="relative border-b border-white/25 first:border-t">
@@ -323,10 +326,10 @@ export function MenuOverlay({isOpen, onClose, onNavigate, triggerRef}: MenuOverl
                 <div ref={metaRef} className="grid grid-cols-2 items-end text-[0.65rem] font-semibold uppercase md:grid-cols-3">
                     <MenuUtilityText className={"w-fit"} text={`© ${new Date().getFullYear()} Lagom Arkitektur`} />
                     <div className="hidden justify-self-center md:block">
-                        <MenuUtilityText text="Architecture · Design · Interior" />
+                        <MenuUtilityText text={language === "sv" ? "Arkitektur · Design · Interiör" : "Architecture · Design · Interior"} />
                     </div>
                     <div className="flex justify-end gap-5">
-                        <a href="mailto:studio@lagomarkitektur.se" data-cursor=""><MenuUtilityText text="Email" /></a>
+                        <a href="mailto:studio@lagomarkitektur.se" data-cursor=""><MenuUtilityText text={language === "sv" ? "E-post" : "Email"} /></a>
                         <a href="https://www.instagram.com/" data-cursor="" target="_blank" rel="noreferrer"><MenuUtilityText text="Instagram" /></a>
                     </div>
                 </div>

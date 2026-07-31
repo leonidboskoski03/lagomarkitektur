@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { studioContent } from "../../data/studio";
+import { useLocalizedContent } from "../../i18n/LanguageContext";
 
 const veilEase = [0.83, 0, 0.17, 1] as const;
 const constructionEase = [0.16, 1, 0.3, 1] as const;
@@ -9,7 +10,7 @@ export function StudioPageLoader() {
   const prefersReducedMotion = useReducedMotion();
   const [isComplete, setIsComplete] = useState(false);
   const unlockScrollRef = useRef<() => void>(() => undefined);
-  const { loader, hero } = studioContent;
+  const { loader, hero } = useLocalizedContent(studioContent);
 
   useLayoutEffect(() => {
     if (prefersReducedMotion) return;

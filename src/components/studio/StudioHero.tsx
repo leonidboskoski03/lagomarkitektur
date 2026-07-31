@@ -7,16 +7,18 @@ import { motionEases } from "../../lib/motion";
 import { ProjectTransitionLink } from "../transition/ProjectTransitionLink";
 import { StudioImageReveal } from "./StudioImageReveal";
 import { StudioProjectCaption } from "./StudioProjectCaption";
+import { useLanguage, useLocalizedContent } from "../../i18n/LanguageContext";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export function StudioHero() {
+  const { language } = useLanguage();
   const sectionRef = useRef<HTMLElement | null>(null);
   const copyRef = useRef<HTMLDivElement | null>(null);
   const apertureRef = useRef<HTMLSpanElement | null>(null);
   const apertureImageRef = useRef<HTMLImageElement | null>(null);
   const featuredMediaRef = useRef<HTMLDivElement | null>(null);
-  const { hero } = studioContent;
+  const { hero } = useLocalizedContent(studioContent);
 
   useGSAP(() => {
     const section = sectionRef.current;
@@ -303,7 +305,7 @@ export function StudioHero() {
               data-studio-hero-bottom-meta
               className="shrink-0 font-semibold uppercase tracking-[0.06em] text-black/48 will-change-[transform,clip-path,opacity]"
             >
-              Architecture / Interiors
+              {hero.meta}
             </p>
             <p
               data-studio-hero-bottom-meta
@@ -320,7 +322,7 @@ export function StudioHero() {
         >
           <ProjectTransitionLink
             projectSlug={hero.media.projectSlug}
-            aria-label={`View ${hero.media.projectTitle}`}
+            aria-label={`${language === "sv" ? "Se" : "View"} ${hero.media.projectTitle}`}
             className="group block"
             data-cursor=""
           >

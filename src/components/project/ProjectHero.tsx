@@ -5,6 +5,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motionEases } from "../../lib/motion";
 import { PROJECT_CONTENT_REVEAL_EVENT } from "../../lib/revealEvents";
 import type { Project, ProjectGalleryMedia } from "../../types/project";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -14,6 +16,8 @@ interface ProjectHeroProps {
 }
 
 export function ProjectHero({ project, media }: ProjectHeroProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].project;
   const heroRef = useRef<HTMLElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -152,7 +156,7 @@ export function ProjectHero({ project, media }: ProjectHeroProps) {
                 <div
                   data-project-hero-reveal
                   className="flex items-start justify-end font-display tabular-nums"
-                  aria-label={`${siteSizeValue} square metres`}
+                  aria-label={`${siteSizeValue} ${copy.squareMetres}`}
                 >
                   <span
                     aria-hidden="true"

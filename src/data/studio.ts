@@ -4,6 +4,7 @@ import stoneframeEntry from "../assets/images/about/stoneframe-entry.webp";
 import stoneframeFront from "../assets/images/about/stoneframe-front.webp";
 import stoneframeSide from "../assets/images/about/stoneframe-side.webp";
 import founderPortrait from "../assets/LAGOM Arkitektur/viber_image_2023-11-12_14-41-18-196.jpg";
+import type { Language } from "../i18n/language";
 
 export interface StudioProjectMedia {
   src: string;
@@ -23,13 +24,14 @@ export interface StudioPrinciple {
   media: StudioProjectMedia;
 }
 
-export const studioContent = {
+const studioContentEn = {
   loader: {
     label: "About Lagom Arkitektur",
     title: "LAGOM",
   },
   hero: {
     eyebrow: "Lagom Arkitektur",
+    meta: "Architecture / Interiors",
     titleLines: ["Spaces that feel", "just right."],
     description:
       "Architecture, interiors and visualisation shaped by precision, simplicity and lasting value.",
@@ -106,6 +108,8 @@ export const studioContent = {
   },
   principles: {
     label: "Our way",
+    tabLabel: "Studio principles",
+    viewProject: "View",
     title: "The principles behind every project.",
     items: [
       {
@@ -182,3 +186,73 @@ export const studioContent = {
   ],
   disciplinesIntro: "One studio, four connected disciplines.",
 } as const;
+
+const studioContentSv = {
+  ...studioContentEn,
+  loader: { label: "Om Lagom Arkitektur", title: "LAGOM" },
+  hero: {
+    ...studioContentEn.hero,
+    eyebrow: "Lagom Arkitektur",
+    meta: "Arkitektur / Interiörer",
+    titleLines: ["Rum som känns", "precis rätt."],
+    description: "Arkitektur, interiörer och visualiseringar präglade av precision, enkelhet och bestående värde.",
+    accentMedia: {
+      ...studioContentEn.hero.accentMedia,
+      alt: "ArchMood Interior Concept med skulpturala valv och inramat dagsljus",
+    },
+    media: {
+      ...studioContentEn.hero.media,
+      alt: "Matsalen i Serene Luxe Residence inramad av dagsljus och ett avlägset landskap",
+    },
+  },
+  studio: {
+    ...studioContentEn.studio,
+    label: "Studion",
+    title: "Arkitektur i balans, med mening och precision.",
+    paragraphs: [
+      "LAGOM Arkitektur skapar arkitektur, interiörer och visualiseringar präglade av precision, enkelhet och bestående värde. Genom nära samarbete och noggrann omsorg om detaljer formar vi skräddarsydda miljöer som speglar varje klients identitet, i balans mellan estetik, funktion och hållbarhet.",
+      "Vi tror på en nära dialog med våra klienter där förståelse, förtroende och gemensam riktning är grunden för varje projekt. Resultatet är tidlös arkitektur med mening och närvaro — rum som stödjer livet som levs i dem och som behåller sitt värde över tid.",
+      "Vår portfolio omfattar inredningsdesign, bostadsarkitektur och miljöer inom besöksnäringen. Denna bredd av erfarenhet gör att vi kan närma oss varje uppdrag med flexibilitet och insikt och anpassa vår process till olika skalor, sammanhang och sätt att leva.",
+    ],
+    media: [
+      { ...studioContentEn.studio.media[0], alt: "Entrén till L-28 Stoneframe Villa formad av natursten, puts och varmt trä" },
+      { ...studioContentEn.studio.media[1], alt: "ArchMood Interior Concept med ett skulpturalt valv och varsamt inramat dagsljus" },
+    ],
+  },
+  founder: {
+    ...studioContentEn.founder,
+    label: "Grundaren",
+    title: "Varje rum är en dialog.",
+    role: "Grundare och licensierad arkitekt (SAR/MSA)",
+    portrait: { ...studioContentEn.founder.portrait, alt: "Nikola Gjorgoski, grundare och licensierad arkitekt på LAGOM Arkitektur" },
+    paragraphs: [
+      "Studion är grundad av Nikola Gjorgoski, licensierad arkitekt (SAR/MSA), med flera års erfarenhet som arkitekt, inredningsdesigner samt instruktör inom 3D-modellering och rendering.",
+      "Vi kombinerar kreativ vision med teknisk expertis och erbjuder helhetslösningar som följer projektet genom alla faser — från konceptutveckling, skisser och ritningar till bygglov, projektledning och uppföljning under genomförande.",
+    ],
+    philosophy: "I kärnan av vår process finns förtroende. Genom att bygga starka relationer med våra klienter skapar vi förutsättningar för genomtänkta beslut, meningsfull design och resultat som är både långsiktiga och uppskattade — rum där arkitekturen verkligen tjänar människorna som upplever den.",
+    facts: [
+      { label: "Studio", value: "LAGOM Arkitektur" },
+      { label: "Plats", value: "Malmö, Sverige" },
+      { label: "Grundad", value: "2026" },
+    ],
+  },
+  principles: {
+    label: "Vårt sätt",
+    tabLabel: "Studions principer",
+    viewProject: "Se",
+    title: "Principerna bakom varje projekt.",
+    items: [
+      { ...studioContentEn.principles.items[0], title: "Balans", summary: "Varken för mycket eller för lite.", body: "Vi skapar hållbar arkitektur präglad av balans, mening och syfte, där varje element är noggrant genomtänkt och känns precis rätt.", media: { ...studioContentEn.principles.items[0].media, alt: "Balanserad matsalskomposition i Serene Luxe Residence" } },
+      { ...studioContentEn.principles.items[1], title: "Dialog", summary: "Varje projekt börjar med att lyssna.", body: "Framgångsrik arkitektur börjar med att förstå, inte bara klientens behov, utan även deras personlighet, värderingar och sätt att leva. Varje design ska kännas autentisk och personlig.", media: { ...studioContentEn.principles.items[1].media, alt: "Skiktade valv och dagsljus i ArchMood Interior Concept" } },
+      { ...studioContentEn.principles.items[2], title: "Förtroende", summary: "Starka relationer skapar utrymme för tydlighet.", body: "Förtroende skapar förutsättningar för genomtänkta beslut, meningsfull design och resultat som fortsätter att uppskattas långt efter att projektet är avslutat.", media: { ...studioContentEn.principles.items[2].media, alt: "Framsidan av L-28 Stoneframe Villa" } },
+      { ...studioContentEn.principles.items[3], title: "Beständighet", summary: "Bestående värde framför tillfälliga trender.", body: "Vi formar funktionella, hållbara och personliga miljöer som stödjer vardagslivet med respekt för människor, plats och byggnadens materiella liv.", media: { ...studioContentEn.principles.items[3].media, alt: "Stenfasad och trädskuggor vid L-28 Stoneframe Villa" } },
+    ],
+  },
+  disciplines: ["Arkitektur", "Interiörer", "Visualisering", "Projektrådgivning"],
+  disciplinesIntro: "En studio, fyra sammanlänkade discipliner.",
+} as const;
+
+export const studioContent = {
+  sv: studioContentSv,
+  en: studioContentEn,
+} as const satisfies Record<Language, object>;

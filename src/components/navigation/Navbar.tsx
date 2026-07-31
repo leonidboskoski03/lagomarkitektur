@@ -19,15 +19,10 @@ import {WorkTransitionLink} from "../transition/WorkTransitionLink";
 import {useWorkTransition} from "../transition/workTransitionContext";
 import {ContactTransitionLink} from "../transition/ContactTransitionLink";
 import {useContactTransition} from "../transition/contactTransitionContext";
+import {useLanguage} from "../../i18n/LanguageContext";
+import {siteCopy} from "../../i18n/siteCopy";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const links = [
-    {href: "/", label: "Home"},
-    {href: "/work", label: "Work"},
-    {href: "/studio", label: "About"},
-    {href: "/contact", label: "Contact"},
-];
 
 const charVariants = {
     initial: {y: 0},
@@ -58,6 +53,14 @@ const handleMouseEnter = () => {
 };
 
 export function Navbar() {
+    const {language} = useLanguage();
+    const copy = siteCopy[language].navigation;
+    const links = [
+        {href: "/", label: copy.home},
+        {href: "/work", label: copy.work},
+        {href: "/studio", label: copy.about},
+        {href: "/contact", label: copy.contact},
+    ];
     const {pathname, key: locationKey} = useLocation();
     const navigate = useNavigate();
     const {startWorkTransition} = useWorkTransition();
@@ -351,7 +354,7 @@ export function Navbar() {
                 revealContactNavbar,
             );
         };
-    }, { scope: headerRef, dependencies: [pathname], revertOnUpdate: true });
+    }, { scope: headerRef, dependencies: [language, pathname], revertOnUpdate: true });
 
     return (
       <>
@@ -373,7 +376,7 @@ export function Navbar() {
                     ref={logoMarkRef}
                     to="/"
                     data-cursor=""
-                    aria-label="Lagom Arkitektur home"
+                    aria-label={copy.homeLabel}
                     onMouseEnter={handleMouseEnter}
                     className="flex h-10 items-center gap-2.5 will-change-transform"
                 >
@@ -435,7 +438,7 @@ export function Navbar() {
 
             <div className="col-start-3 row-start-1 hidden justify-self-end overflow-hidden rounded-lg md:block">
                 <div ref={buttonRef} className="will-change-transform">
-                    <GetInTouchButton variant={usesLightPrimaryNav ? "dark" : "light"} onClick={(event) => {
+                    <GetInTouchButton label={copy.getInTouch} variant={usesLightPrimaryNav ? "dark" : "light"} onClick={(event) => {
                         contactButtonRef.current = event.currentTarget;
                         setIsContactOpen(true);
                     }} />
@@ -449,11 +452,11 @@ export function Navbar() {
                     setIsMenuOpen(true);
                 }}
                 className="col-start-3 row-start-1 h-10 justify-self-end rounded-lg bg-[#f4f1ea] px-4 text-sm font-medium text-black md:hidden"
-                aria-label="Open menu"
+                aria-label={copy.openMenu}
                 aria-expanded={isMenuOpen}
                 aria-controls="site-menu"
             >
-                Menu
+                {copy.menu}
             </button>
           </div>
         </header>
@@ -463,10 +466,10 @@ export function Navbar() {
                 "fixed top-5 right-[var(--spacing-viewport-gutter)] z-[100] flex items-center gap-1 p-2 will-change-[transform,clip-path,opacity]",
             )}
             role="navigation"
-            aria-label="Secondary navigation"
+            aria-label={copy.secondaryNavigation}
         >
             <div>
-                <GetInTouchButton variant="dark" onClick={(event) => {
+                <GetInTouchButton label={copy.getInTouch} variant="dark" onClick={(event) => {
                     contactButtonRef.current = event.currentTarget;
                     setIsContactOpen(true);
                 }} />
@@ -476,11 +479,11 @@ export function Navbar() {
                 type="button"
                 onClick={() => setIsMenuOpen(true)}
                 className="h-10 rounded-lg bg-[#f4f1ea] px-4 text-black"
-                aria-label="Open menu"
+                aria-label={copy.openMenu}
                 aria-expanded={isMenuOpen}
                 aria-controls="site-menu"
             >
-                <ClipMaskTextAnimation text="Menu" className="text-sm font-medium" />
+                <ClipMaskTextAnimation text={copy.menu} className="text-sm font-medium" />
             </button>
         </div>
         <MenuOverlay
@@ -499,9 +502,11 @@ export function Navbar() {
 }
 
 function GetInTouchButton({
+    label,
     variant = "light",
     onClick,
 }: {
+    label: string;
     variant?: "light" | "dark";
     onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
@@ -525,8 +530,8 @@ function GetInTouchButton({
                     animate={hovered ? {y: "-100%"} : {y: "0%"}}
                     transition={{duration: 0.3, ease: motionEaseCurves.settle}}
                 >
-                    <div>Get in touch</div>
-                    <div className="absolute top-full left-0 w-full">Get in touch</div>
+                    <div>{label}</div>
+                    <div className="absolute top-full left-0 w-full">{label}</div>
                 </motion.div>
             </div>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

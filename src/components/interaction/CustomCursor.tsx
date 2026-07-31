@@ -2,11 +2,15 @@ import {useRef} from "react";
 import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
 import {motionEases} from "../../lib/motion";
+import {useLanguage} from "../../i18n/LanguageContext";
+import {siteCopy} from "../../i18n/siteCopy";
 
 const interactiveSelector = "button, a, input, textarea, select, [data-cursor]";
 const passiveContentSelector = "p, h1, h2, h3, h4, h5, h6, label, span, img, picture, figure, figcaption, svg";
 
 export function CustomCursor() {
+    const {language} = useLanguage();
+    const copy = siteCopy[language].cursor;
     const rootRef = useRef<HTMLDivElement | null>(null);
     const ringRef = useRef<HTMLDivElement | null>(null);
     const labelRef = useRef<HTMLSpanElement | null>(null);
@@ -50,7 +54,11 @@ export function CustomCursor() {
             const scrollState = explicitLabel?.toLowerCase() === "scroll";
             const closeState = explicitLabel?.toLowerCase() === "close";
             const openState = Boolean(interactive && !scrollState && !closeState);
-            const text = closeState ? "Close" : scrollState ? "Scroll" : explicitLabel || (interactive ? "" : "");
+            const normalizedLabel = explicitLabel?.toLowerCase();
+            const localizedLabel = normalizedLabel && normalizedLabel in copy
+                ? copy[normalizedLabel as keyof typeof copy]
+                : explicitLabel;
+            const text = closeState ? copy.close : scrollState ? copy.scroll : localizedLabel || (interactive ? "" : "");
             const width = closeState ? 54 : openState ? 46 : interactive ? 88 : 46;
             const height = closeState ? 54 : openState ? 46 : interactive ? 44 : 46;
             const scale = interactive ? 1 : 12 / 46;
@@ -121,7 +129,7 @@ export function CustomCursor() {
             document.documentElement.removeEventListener("mouseleave", handlePointerLeave);
             window.removeEventListener("wheel", handleWheel);
         };
-    }, {scope: rootRef});
+    }, {scope: rootRef, dependencies: [language]});
 
     return (
         <div

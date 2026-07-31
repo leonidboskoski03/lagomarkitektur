@@ -2,7 +2,8 @@ import {useEffect, useRef, useState} from "react";
 import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
-import {processStory} from "../../data/processStory";
+import {processStory as processStoryContent} from "../../data/processStory";
+import {useLocalizedContent} from "../../i18n/LanguageContext";
 import {usePrefersReducedMotion} from "../../hooks/usePrefersReducedMotion";
 import {motionEases} from "../../lib/motion";
 import {
@@ -497,6 +498,7 @@ const createFrameSequenceRenderer = ({
 };
 
 export function ArchitecturalProcessStory() {
+    const processStory = useLocalizedContent(processStoryContent);
     const rootRef = useRef<HTMLElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const backdropCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -594,7 +596,14 @@ export function ArchitecturalProcessStory() {
             renderer.dispose();
             rendererRef.current = null;
         };
-    }, [isNearSequence, prefersReducedMotion, tier]);
+    }, [
+        isNearSequence,
+        prefersReducedMotion,
+        processStory.sequence.desktopBasePath,
+        processStory.sequence.frameCount,
+        processStory.sequence.mobileBasePath,
+        tier,
+    ]);
 
     useGSAP(() => {
         const root = rootRef.current;
@@ -1344,7 +1353,7 @@ export function ArchitecturalProcessStory() {
                             />
                             <img
                                 src={processStory.sequence.poster}
-                                alt="Architectural drawing and material samples on a studio table"
+                                alt={processStory.sequence.posterAlt}
                                 className="absolute inset-0 h-full w-full object-contain"
                             />
                         </div>
@@ -1487,7 +1496,7 @@ export function ArchitecturalProcessStory() {
                             className="absolute bottom-5 right-[var(--spacing-viewport-gutter)] z-[3] flex items-center gap-3 text-[10px] uppercase tracking-[0.16em] text-white/85 transition-opacity duration-150 md:bottom-7"
                         >
                             <span className="h-px w-8 bg-white/70"/>
-                            Preparing sequence
+                            {processStory.sequence.preparingLabel}
                         </div>
                     </div>
                 </section>
@@ -1498,6 +1507,7 @@ export function ArchitecturalProcessStory() {
 }
 
 function ReducedMotionProcessStory() {
+    const processStory = useLocalizedContent(processStoryContent);
     const basePath = processStory.sequence.mobileBasePath;
 
     return (
@@ -1505,7 +1515,7 @@ function ReducedMotionProcessStory() {
             <div className="viewport-container">
                 <header className="mb-20 flex items-center justify-between border-b border-white/18 pb-5">
                     <h2 className="text-sm uppercase tracking-[0.16em] text-white/76">{processStory.sequence.title}</h2>
-                    <span className="text-xs text-white/42">A still-frame journey</span>
+                    <span className="text-xs text-white/42">{processStory.sequence.mobileLabel}</span>
                 </header>
                 <div className="space-y-28 md:space-y-40">
                     {processStory.chapters.map((chapter) => (

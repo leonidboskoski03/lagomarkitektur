@@ -4,6 +4,8 @@ import gsap from "gsap";
 import type { WorkProjectItem } from "../../hooks/useWorkProjects";
 import { motionEases } from "../../lib/motion";
 import { ProjectTransitionLink } from "../transition/ProjectTransitionLink";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 interface EditorialProjectCardProps {
   project: WorkProjectItem;
@@ -20,6 +22,8 @@ export function EditorialProjectCard({
   onActivate,
   onDeactivate,
 }: EditorialProjectCardProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].work;
   const cardRef = useRef<HTMLElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const metadataTrackRef = useRef<HTMLDivElement | null>(null);
@@ -67,7 +71,7 @@ export function EditorialProjectCard({
         projectSlug={project.slug}
         data-cursor="open"
         className="group block"
-        aria-label={`View ${project.title}`}
+        aria-label={`${copy.viewPrefix} ${project.title}`}
       >
         <div
           data-project-image
@@ -107,7 +111,7 @@ export function EditorialProjectCard({
               </span>
               <span className="block h-[1.55em] whitespace-nowrap">
                 <span className="relative inline-block h-[1.55em]">
-                  View project
+                  {copy.viewProject}
                   <span
                     ref={viewLineRef}
                     className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-current will-change-transform"

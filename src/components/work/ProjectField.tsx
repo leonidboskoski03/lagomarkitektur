@@ -7,6 +7,8 @@ import type { WorkProjectImage, WorkProjectItem } from "../../hooks/useWorkProje
 import { DirectionalShaderImage } from "./DirectionalShaderImage";
 import { DirectionalShaderStage, type DirectionalMotion } from "./DirectionalShaderStage";
 import { ProjectTransitionLink } from "../transition/ProjectTransitionLink";
+import { useLanguage } from "../../i18n/LanguageContext";
+import { siteCopy } from "../../i18n/siteCopy";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 
@@ -176,6 +178,7 @@ interface FieldTileProps {
   entries: FieldEntry[];
   interactive: boolean;
   tileIndex: number;
+  viewPrefix: string;
 }
 
 function FieldTile({
@@ -183,6 +186,7 @@ function FieldTile({
   entries,
   interactive,
   tileIndex,
+  viewPrefix,
 }: FieldTileProps) {
   return (
     <div
@@ -201,7 +205,7 @@ function FieldTile({
             key={instanceId}
             projectSlug={project.slug}
             data-cursor="open"
-            aria-label={interactive ? `View ${project.title}` : undefined}
+            aria-label={interactive ? `${viewPrefix} ${project.title}` : undefined}
             tabIndex={interactive ? 0 : -1}
             className="group absolute block select-none [contain:layout_paint_style]"
             data-field-card
@@ -246,6 +250,8 @@ function FieldTile({
 }
 
 export function ProjectField({ projects }: ProjectFieldProps) {
+  const { language } = useLanguage();
+  const copy = siteCopy[language].work;
   const fieldRef = useRef<HTMLElement | null>(null);
   const planeRef = useRef<HTMLDivElement | null>(null);
   const proxyRef = useRef<HTMLDivElement | null>(null);
@@ -399,8 +405,8 @@ export function ProjectField({ projects }: ProjectFieldProps) {
   return (
     <section
       ref={fieldRef}
-      aria-label="Spatial project field"
-      data-cursor="Drag"
+      aria-label={copy.spatialField}
+      data-cursor="drag"
       className="relative h-[100svh] min-h-[42rem] touch-none overflow-hidden bg-bg select-none data-[field-dragging=true]:cursor-grabbing"
     >
       <DirectionalShaderStage motionSignal={motionSignalRef} viewportRef={fieldRef}>
@@ -413,6 +419,7 @@ export function ProjectField({ projects }: ProjectFieldProps) {
               entries={entries}
               interactive={index === 0}
               tileIndex={index}
+              viewPrefix={copy.viewPrefix}
             />
           ))}
         </div>

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import type { SanityImageSource } from "@sanity/image-url";
 import projectIntroImage from "../assets/images/hero2.avif";
 import {
-  projectShowcaseIntro,
-  projectShowcaseProjects,
+  getProjectShowcaseIntro,
+  getProjectShowcaseProjects,
   type ProjectShowcaseItem,
 } from "../data/projects";
 import { formatProjectArea } from "../lib/projectArea";
@@ -13,9 +13,16 @@ import {
   sanityClient,
   sanityImageUrl,
 } from "../lib/sanity";
+import { useLanguage } from "../i18n/LanguageContext";
+import {
+  resolveLocalizedText,
+  translateCanonicalValue,
+  type Language,
+  type MaybeLocalizedText,
+} from "../i18n/language";
 
 interface SanityProjectImage {
-  alt?: string;
+  alt?: MaybeLocalizedText;
   asset?: {
     _ref: string;
     _type: "reference";
@@ -48,12 +55,12 @@ interface SanityProjectImage {
 
 interface SanityShowcaseProject {
   _id: string;
-  title: string;
+  title: MaybeLocalizedText;
   slug: string;
   category: string;
   services?: string[];
   year: string;
-  location: string;
+  location: MaybeLocalizedText;
   siteSize?: string;
   isPublished?: boolean;
   featuredImage?: SanityProjectImage;
@@ -68,9 +75,9 @@ interface SanityShowcaseItem {
 }
 
 interface SanityHomeProjectShowcase {
-  introTitle?: string;
-  introTags?: string[];
-  introProperties?: string[];
+  introTitle?: MaybeLocalizedText;
+  introTags?: MaybeLocalizedText[];
+  introProperties?: MaybeLocalizedText[];
   introBackground?: SanityProjectImage;
   projects?: SanityShowcaseItem[];
 }
@@ -88,16 +95,21 @@ export interface ProjectShowcaseData {
   projects: ProjectShowcaseItem[];
 }
 
-const localShowcase: ProjectShowcaseData = {
-  intro: {
-    ...projectShowcaseIntro,
-    image: projectIntroImage,
-  },
-  projects: projectShowcaseProjects,
-};
+function getLocalShowcase(language: Language): ProjectShowcaseData {
+  const intro = getProjectShowcaseIntro(language);
+  return {
+    intro: {
+      ...intro,
+      tags: [...intro.tags],
+      properties: [...intro.properties],
+      image: projectIntroImage,
+    },
+    projects: getProjectShowcaseProjects(language),
+  };
+}
 
-let cachedShowcase: ProjectShowcaseData | null = null;
-let showcasePromise: Promise<ProjectShowcaseData> | null = null;
+const cachedShowcases = new Map<Language, ProjectShowcaseData>();
+const showcasePromises = new Map<Language, Promise<ProjectShowcaseData>>();
 
 function buildImageUrl(
   image: SanityProjectImage | undefined,
@@ -117,8 +129,10 @@ function buildImageUrl(
 
 function normalizeShowcase(
   showcase: SanityHomeProjectShowcase | null,
+  language: Language,
 ): ProjectShowcaseData | null {
   if (!showcase) return null;
+  const localShowcase = getLocalShowcase(language);
 
   const introImage = buildImageUrl(showcase.introBackground, 2400, 86);
   if (!introImage) return null;
@@ -142,14 +156,14 @@ function normalizeShowcase(
         id: item._key || project._id,
         index: String(index + 1).padStart(2, "0"),
         slug: project.slug,
-        title: project.title,
+        title: resolveLocalizedText(project.title, language),
         tags: [
-          project.category,
-          project.services?.[0] || "Design",
+          translateCanonicalValue(project.category, language),
+          translateCanonicalValue(project.services?.[0] || "Design", language),
           project.year,
           "Lagom",
         ],
-        properties: [project.year, project.location, area].filter(
+        properties: [project.year, resolveLocalizedText(project.location, language), area].filter(
           (value): value is string => Boolean(value),
         ),
         image: background,
@@ -161,13 +175,17 @@ function normalizeShowcase(
 
   if (projects.length !== 5) return null;
 
-  const introTags = showcase.introTags?.filter(Boolean);
-  const introProperties = showcase.introProperties?.filter(Boolean);
+  const introTags = showcase.introTags
+    ?.map((item) => resolveLocalizedText(item, language))
+    .filter(Boolean);
+  const introProperties = showcase.introProperties
+    ?.map((item) => resolveLocalizedText(item, language))
+    .filter(Boolean);
 
   return {
     intro: {
       index: "00",
-      title: showcase.introTitle?.trim() || "Selected work",
+      title: resolveLocalizedText(showcase.introTitle, language, localShowcase.intro.title),
       tags: introTags?.length ? introTags : localShowcase.intro.tags,
       properties: introProperties?.length
         ? introProperties
@@ -178,11 +196,13 @@ function normalizeShowcase(
   };
 }
 
-export function loadProjectShowcase(): Promise<ProjectShowcaseData> {
-  if (cachedShowcase) return Promise.resolve(cachedShowcase);
-  if (showcasePromise) return showcasePromise;
+export function loadProjectShowcase(language: Language): Promise<ProjectShowcaseData> {
+  const cached = cachedShowcases.get(language);
+  const pending = showcasePromises.get(language);
+  if (cached) return Promise.resolve(cached);
+  if (pending) return pending;
 
-  showcasePromise = (async () => {
+  const showcasePromise = (async () => {
     try {
       if (!hasSanityConfig) throw new Error("Sanity is not configured");
 
@@ -190,7 +210,7 @@ export function loadProjectShowcase(): Promise<ProjectShowcaseData> {
         homeProjectShowcaseQuery,
         {},
       );
-      const normalized = normalizeShowcase(result);
+      const normalized = normalizeShowcase(result, language);
 
       if (!normalized) {
         throw new Error("Sanity returned an incomplete Selected Work document");
@@ -202,36 +222,42 @@ export function loadProjectShowcase(): Promise<ProjectShowcaseData> {
         "Using the local Selected Work content because Sanity could not be loaded.",
         error,
       );
-      return localShowcase;
+      return getLocalShowcase(language);
     }
   })()
     .then((showcase) => {
-      cachedShowcase = showcase;
+      cachedShowcases.set(language, showcase);
       return showcase;
     })
     .finally(() => {
-      showcasePromise = null;
+      showcasePromises.delete(language);
     });
 
+  showcasePromises.set(language, showcasePromise);
   return showcasePromise;
 }
 
 export function useProjectShowcase() {
-  const [showcase, setShowcase] = useState<ProjectShowcaseData>(
-    () => cachedShowcase || localShowcase,
-  );
+  const { language } = useLanguage();
+  const [state, setState] = useState(() => ({
+    language,
+    showcase: cachedShowcases.get(language) || getLocalShowcase(language),
+  }));
+  const showcase = state.language === language
+    ? state.showcase
+    : cachedShowcases.get(language) || getLocalShowcase(language);
 
   useEffect(() => {
     let active = true;
 
-    void loadProjectShowcase().then((loadedShowcase) => {
-      if (active) setShowcase(loadedShowcase);
+    void loadProjectShowcase(language).then((loadedShowcase) => {
+      if (active) setState({ language, showcase: loadedShowcase });
     });
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [language]);
 
   return showcase;
 }
