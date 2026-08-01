@@ -209,60 +209,238 @@ const escapeHtml = (value: string) => value
   .replaceAll('"', "&quot;")
   .replaceAll("'", "&#039;");
 
-const displayChoice = (value: string) => value
-  .split("-")
-  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-  .join(" ");
+type EmailAnswer = string | string[];
+type EmailRow = [label: string, answer: EmailAnswer];
 
-function emailRows(enquiry: ValidatedEnquiry): Array<[string, string]> {
-  const optional = (value: string) => value || "Not provided";
-  const selections = (values: string[]) => values.length
-    ? values.map(displayChoice).join(", ")
-    : "Not provided";
+const EMAIL_COPY = {
+  en: {
+    language: "English",
+    notProvided: "Not provided",
+    sizeUnknown: "I don't know yet",
+    contactDetails: "Contact details",
+    name: "Name",
+    email: "Email",
+    phone: "Phone number",
+    location: "Where will the project be located?",
+    quickTitle: "Quick enquiry",
+    quickMessage: "Project overview",
+    briefTitle: "Project brief",
+    questions: {
+      projectTypes: "What type of project are you planning?",
+      description: "Tell us a little about your project",
+      size: "Approximate project size (if known)",
+      timeframe: "When are you planning to start your project?",
+      priorities: "What is most important to you?",
+      source: "How did you hear about us?",
+      additional: "Is there anything else you'd like us to know?",
+    },
+  },
+  sv: {
+    language: "Svenska",
+    notProvided: "Ej angivet",
+    sizeUnknown: "Vet ej",
+    contactDetails: "Kontaktuppgifter",
+    name: "Namn",
+    email: "E-postadress",
+    phone: "Telefonnummer",
+    location: "Var ligger projektet?",
+    quickTitle: "Snabb förfrågan",
+    quickMessage: "Projektöversikt",
+    briefTitle: "Projektbrief",
+    questions: {
+      projectTypes: "Vad gäller ditt projekt?",
+      description: "Berätta kort om ditt projekt",
+      size: "Ungefärlig storlek (om du vet)",
+      timeframe: "När planerar du att starta projektet?",
+      priorities: "Vad är viktigast för dig i projektet?",
+      source: "Hur hörde du talas om oss?",
+      additional: "Finns det något annat du vill att vi ska veta?",
+    },
+  },
+} as const;
 
-  return [
-    ["Enquiry type", enquiry.mode === "structured" ? "Guided project brief" : "Quick enquiry"],
-    ["Language", enquiry.language === "sv" ? "Swedish" : "English"],
-    ["Name", enquiry.name],
-    ["Email", enquiry.email],
-    ["Phone", optional(enquiry.phone)],
-    ["Project location", optional(enquiry.location)],
-    ["Project types", selections(enquiry.projectTypes)],
-    ["Approximate size", enquiry.sizeUnknown ? "Not known yet" : optional(enquiry.size)],
-    ["Timeframe", optional(enquiry.timeframe ? displayChoice(enquiry.timeframe) : "")],
-    ["Priorities", selections(enquiry.priorities)],
-    ["How they found Lagom", optional(enquiry.source ? displayChoice(enquiry.source) : "")],
-  ];
-}
+const OPTION_LABELS = {
+  en: {
+    projectTypes: {
+      "new-home": "New Home",
+      extension: "Home Extension",
+      renovation: "Renovation",
+      "interior-design": "Interior Design",
+      commercial: "Commercial Project",
+      "building-permit": "Building Permit Documentation",
+      visualization: "3D Visualization",
+      "other-services": "Other Architectural Services",
+    },
+    timeframe: {
+      asap: "As soon as possible",
+      "three-months": "Within 3 months",
+      "six-months": "Within 6 months",
+      "twelve-months": "Within 12 months",
+      exploring: "I'm currently exploring my options",
+    },
+    priorities: {
+      design: "Design & Aesthetics",
+      function: "Functionality",
+      sustainability: "Sustainability",
+      budget: "Budget",
+      timeline: "Timeline",
+      "energy-efficiency": "Energy Efficiency",
+      other: "Other",
+    },
+    source: {
+      google: "Google Search",
+      instagram: "Instagram",
+      linkedin: "LinkedIn",
+      recommendation: "Recommendation",
+      returning: "Returning Client",
+      other: "Other",
+    },
+  },
+  sv: {
+    projectTypes: {
+      "new-home": "Nybyggnation",
+      extension: "Tillbyggnad",
+      renovation: "Ombyggnad/Renovering",
+      "interior-design": "Inredningsdesign",
+      commercial: "Kommersiell lokal",
+      "building-permit": "Bygglovshandlingar",
+      visualization: "3D-visualisering",
+      "other-services": "Annat",
+    },
+    timeframe: {
+      asap: "Så snart som möjligt",
+      "three-months": "Inom 3 månader",
+      "six-months": "Inom 6 månader",
+      "twelve-months": "Inom ett år",
+      exploring: "Jag undersöker bara möjligheterna",
+    },
+    priorities: {
+      design: "Design",
+      function: "Funktion",
+      sustainability: "Hållbarhet",
+      budget: "Budget",
+      timeline: "Tidsplan",
+      "energy-efficiency": "Energieffektivitet",
+      other: "Annat",
+    },
+    source: {
+      google: "Google-sökning",
+      instagram: "Instagram",
+      linkedin: "LinkedIn",
+      recommendation: "Rekommendation",
+      returning: "Återkommande kund",
+      other: "Annat",
+    },
+  },
+} as const;
+
+const optionLabel = (
+  language: ValidatedEnquiry["language"],
+  group: keyof typeof OPTION_LABELS.en,
+  value: string,
+) => {
+  const labels = OPTION_LABELS[language][group] as Record<string, string>;
+  return labels[value] ?? value;
+};
+
+const paragraph = (value: string) => escapeHtml(value).replaceAll("\n", "<br>");
+
+const htmlTable = (rows: EmailRow[]) => rows.map(([label, answer]) => {
+  const value = Array.isArray(answer)
+    ? `<ul style="margin:0;padding-left:18px;">${answer.map((item) => `<li style="margin:0 0 4px;">${escapeHtml(item)}</li>`).join("")}</ul>`
+    : escapeHtml(answer);
+  return `<tr>
+    <th style="width:38%;padding:10px 18px 10px 0;text-align:left;vertical-align:top;color:#777;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;">${escapeHtml(label)}</th>
+    <td style="padding:10px 0;vertical-align:top;color:#171714;font-size:15px;line-height:1.5;">${value}</td>
+  </tr>`;
+}).join("");
+
+const textRows = (rows: EmailRow[]) => rows.flatMap(([label, answer]) => [
+  label,
+  ...(Array.isArray(answer) ? answer.map((item) => `- ${item}`) : [answer]),
+  "",
+]);
 
 function createEmailContent(enquiry: ValidatedEnquiry) {
-  const rows = emailRows(enquiry);
+  const copy = EMAIL_COPY[enquiry.language];
+  const optional = (value: string) => value || copy.notProvided;
+  const contactRows: EmailRow[] = [
+    [copy.name, enquiry.name],
+    [copy.email, enquiry.email],
+    ...(enquiry.phone ? [[copy.phone, enquiry.phone] as EmailRow] : []),
+  ];
+  const heading = enquiry.mode === "structured" ? copy.briefTitle : copy.quickTitle;
+
+  if (enquiry.mode === "quick") {
+    const quickRows: EmailRow[] = [
+      ...contactRows,
+      ...(enquiry.location ? [[copy.location, enquiry.location] as EmailRow] : []),
+    ];
+    const textContent = [
+      heading.toUpperCase(),
+      `Language: ${copy.language}`,
+      "",
+      ...textRows(quickRows),
+      copy.quickMessage.toUpperCase(),
+      enquiry.message,
+      "",
+      `Submission reference: ${enquiry.submissionId}`,
+    ].join("\n");
+    const htmlContent = `<!doctype html>
+      <html><body style="margin:0;background:#f4f1ea;color:#171714;font-family:Arial,sans-serif;">
+        <main style="max-width:680px;margin:0 auto;padding:40px 24px;">
+          <p style="margin:0 0 28px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;">Lagom Arkitektur / Website</p>
+          <h1 style="margin:0;font-size:34px;line-height:1.05;font-weight:500;">${escapeHtml(heading)}</h1>
+          <p style="margin:8px 0 30px;color:#777;font-size:12px;">${escapeHtml(copy.language)}</p>
+          <table style="width:100%;border-collapse:collapse;border-top:1px solid #c9c5bb;border-bottom:1px solid #c9c5bb;">${htmlTable(quickRows)}</table>
+          <h2 style="margin:32px 0 12px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;">${escapeHtml(copy.quickMessage)}</h2>
+          <p style="margin:0;font-size:16px;line-height:1.65;">${paragraph(enquiry.message)}</p>
+          <p style="margin:40px 0 0;color:#777;font-size:11px;">Submission reference: ${escapeHtml(enquiry.submissionId)}</p>
+        </main>
+      </body></html>`;
+    return {textContent, htmlContent};
+  }
+
+  const briefRows: EmailRow[] = [
+    [copy.questions.projectTypes, enquiry.projectTypes.map((value) => optionLabel(enquiry.language, "projectTypes", value))],
+    [copy.questions.description, enquiry.message],
+    [copy.location, enquiry.location],
+    [copy.questions.size, enquiry.sizeUnknown ? copy.sizeUnknown : optional(enquiry.size)],
+    [copy.questions.timeframe, enquiry.timeframe ? optionLabel(enquiry.language, "timeframe", enquiry.timeframe) : copy.notProvided],
+    [copy.questions.priorities, enquiry.priorities.length ? enquiry.priorities.map((value) => optionLabel(enquiry.language, "priorities", value)) : copy.notProvided],
+    [copy.questions.source, enquiry.source ? optionLabel(enquiry.language, "source", enquiry.source) : copy.notProvided],
+    [copy.questions.additional, optional(enquiry.additional)],
+  ];
   const textContent = [
-    "NEW PROJECT ENQUIRY",
+    heading.toUpperCase(),
+    `Language: ${copy.language}`,
     "",
-    ...rows.map(([label, value]) => `${label}: ${value}`),
+    copy.contactDetails.toUpperCase(),
     "",
-    "PROJECT OVERVIEW",
-    enquiry.message,
-    ...(enquiry.additional ? ["", "ADDITIONAL INFORMATION", enquiry.additional] : []),
+    ...textRows(contactRows),
+    "QUESTIONS & ANSWERS",
     "",
+    ...textRows(briefRows),
     `Submission reference: ${enquiry.submissionId}`,
   ].join("\n");
-  const htmlRows = rows.map(([label, value]) => `
-    <tr>
-      <th style="padding:8px 16px 8px 0;text-align:left;vertical-align:top;color:#777;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">${escapeHtml(label)}</th>
-      <td style="padding:8px 0;vertical-align:top;color:#171714;font-size:15px;line-height:1.45;">${escapeHtml(value)}</td>
-    </tr>`).join("");
-  const paragraph = (value: string) => escapeHtml(value).replaceAll("\n", "<br>");
+  const htmlQuestions = briefRows.map(([question, answer], index) => {
+    const value = Array.isArray(answer)
+      ? `<ul style="margin:0;padding-left:20px;">${answer.map((item) => `<li style="margin:0 0 5px;">${escapeHtml(item)}</li>`).join("")}</ul>`
+      : `<p style="margin:0;">${paragraph(answer)}</p>`;
+    return `<section style="padding:22px 0;${index < briefRows.length - 1 ? "border-bottom:1px solid #dedad0;" : ""}">
+      <h2 style="margin:0 0 10px;color:#777;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;">${escapeHtml(question)}</h2>
+      <div style="font-size:16px;line-height:1.6;">${value}</div>
+    </section>`;
+  }).join("");
   const htmlContent = `<!doctype html>
     <html><body style="margin:0;background:#f4f1ea;color:#171714;font-family:Arial,sans-serif;">
       <main style="max-width:680px;margin:0 auto;padding:40px 24px;">
-        <p style="margin:0 0 32px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;">Lagom Arkitektur / Website</p>
-        <h1 style="margin:0 0 32px;font-size:32px;line-height:1.05;font-weight:500;">New project enquiry</h1>
-        <table style="width:100%;border-collapse:collapse;border-top:1px solid #c9c5bb;border-bottom:1px solid #c9c5bb;">${htmlRows}</table>
-        <h2 style="margin:32px 0 12px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;">Project overview</h2>
-        <p style="margin:0;font-size:16px;line-height:1.6;">${paragraph(enquiry.message)}</p>
-        ${enquiry.additional ? `<h2 style="margin:32px 0 12px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;">Additional information</h2><p style="margin:0;font-size:16px;line-height:1.6;">${paragraph(enquiry.additional)}</p>` : ""}
+        <p style="margin:0 0 28px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;">Lagom Arkitektur / Website</p>
+        <h1 style="margin:0;font-size:34px;line-height:1.05;font-weight:500;">${escapeHtml(heading)}</h1>
+        <p style="margin:8px 0 30px;color:#777;font-size:12px;">${escapeHtml(copy.language)}</p>
+        <h2 style="margin:0 0 10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;">${escapeHtml(copy.contactDetails)}</h2>
+        <table style="width:100%;border-collapse:collapse;border-top:1px solid #c9c5bb;border-bottom:1px solid #c9c5bb;">${htmlTable(contactRows)}</table>
+        <div style="margin-top:34px;border-top:1px solid #c9c5bb;border-bottom:1px solid #c9c5bb;">${htmlQuestions}</div>
         <p style="margin:40px 0 0;color:#777;font-size:11px;">Submission reference: ${escapeHtml(enquiry.submissionId)}</p>
       </main>
     </body></html>`;
@@ -319,10 +497,13 @@ export async function onRequestPost({request, env}: FunctionContext): Promise<Re
     to: [recipient],
     ...(EMAIL_PATTERN.test(bcc) && bcc !== recipient ? {bcc: [bcc]} : {}),
     reply_to: `${enquiry.name} <${enquiry.email}>`,
-    subject: `[Website] ${enquiry.mode === "structured" ? "Project brief" : "Project enquiry"} — ${enquiry.name}`,
+    subject: `[Website] ${enquiry.mode === "structured" ? "Project brief" : "Quick enquiry"} — ${enquiry.name}`,
     text: textContent,
     html: htmlContent,
-    tags: [{name: "source", value: "project-enquiry"}],
+    tags: [
+      {name: "source", value: "project-enquiry"},
+      {name: "type", value: enquiry.mode === "structured" ? "project-brief" : "quick-enquiry"},
+    ],
   };
 
   try {

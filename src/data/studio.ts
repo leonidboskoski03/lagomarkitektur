@@ -86,6 +86,7 @@ const studioContentEn = {
   founder: {
     label: "The founder",
     title: "Every space is a dialogue.",
+    profileTitle: "Behind LAGOM.",
     name: "Nikola Gjorgoski",
     role: "Founder & Licensed Architect (SAR/MSA)",
     portrait: {
@@ -223,6 +224,7 @@ const studioContentSv = {
     ...studioContentEn.founder,
     label: "Grundaren",
     title: "Varje rum är en dialog.",
+    profileTitle: "Bakom LAGOM.",
     role: "Grundare och licensierad arkitekt (SAR/MSA)",
     portrait: { ...studioContentEn.founder.portrait, alt: "Nikola Gjorgoski, grundare och licensierad arkitekt på LAGOM Arkitektur" },
     paragraphs: [

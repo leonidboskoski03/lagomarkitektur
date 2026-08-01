@@ -42,7 +42,7 @@ export const services: Record<Language, ServiceItem[]> = {
     },
     {
       id: "consultant", index: "04", title: "Konsult",
-      description: "Externt stöd inom inredningsdesign för arkitektkontor och företag, med expertis inom material, färg och belysning för att skapa tydlighet och sammanhang i varje projekt.",
+      description: "Externt stöd inom arkitektur och inredningsdesign för arkitektkontor och företag, med expertis inom tekniska ritningar, 3D visualiseringar, bygglovsärenden, material, färg och belysning för att skapa tydlighet och sammanhang i varje projekt.",
       image: serviceMedia.consultant,
       imageAlt: "Rådgivningsbord med arkitektritningar, materialprover och skisser",
     },
@@ -68,7 +68,7 @@ export const services: Record<Language, ServiceItem[]> = {
     },
     {
       id: "consultant", index: "04", title: "Consultant",
-      description: "External interior design support for studios and companies, using expertise in materials, color, and lighting to bring clarity and cohesion to every project.",
+      description: "External architecture and interior design support for studios and companies, using expertise in technical drawings, 3D visualizations, building permit approval, materials, color, and lighting to bring clarity and cohesion to every project.",
       image: serviceMedia.consultant,
       imageAlt: "Architectural consultation table with plans, samples, and sketches",
     },

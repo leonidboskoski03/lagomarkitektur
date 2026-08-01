@@ -116,7 +116,7 @@ export function StudioFounder() {
               data-studio-text-reveal
               className="max-w-[10ch] text-[clamp(2.7rem,5vw,6.2rem)] font-medium leading-[0.92] tracking-[-0.065em]"
             >
-              Behind LAGOM.
+              {founder.profileTitle}
             </h3>
 
             <div className="mt-[clamp(3rem,5vw,5rem)] space-y-[clamp(2.5rem,4vw,4.25rem)]">

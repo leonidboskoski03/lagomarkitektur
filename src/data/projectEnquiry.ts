@@ -99,7 +99,7 @@ export const projectEnquiryContent: Record<Language, ProjectEnquiryContent> = {
       back: "Tillbaka",
       next: "Nästa",
       submit: "Starta samtalet",
-      submitNote: "Öppnar ett strukturerat meddelande i ert vanliga e-postprogram.",
+      submitNote: "Era uppgifter skickas säkert till Lagom Arkitektur.",
       mailSubject: "Ny strukturerad projektförfrågan",
       openingStatus: "Öppnar en strukturerad projektförfrågan…",
       contact: {
@@ -209,7 +209,7 @@ export const projectEnquiryContent: Record<Language, ProjectEnquiryContent> = {
       back: "Back",
       next: "Next",
       submit: "Start the conversation",
-      submitNote: "Opens a structured message in your default email app.",
+      submitNote: "Your details are sent securely to Lagom Arkitektur.",
       mailSubject: "New structured project enquiry",
       openingStatus: "Opening a structured project enquiry…",
       contact: {
