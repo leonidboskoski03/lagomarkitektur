@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">Lagom Arkitektur project placeholder</title>
+  <desc id="description">A quiet architectural composition used while project imagery is unavailable.</desc>
+  <rect width="1600" height="900" fill="#d8d6d0"/>
+  <path d="M0 690h1600M430 0v900M1120 0v900" stroke="#b7b4ad" stroke-width="1"/>
+  <rect x="430" y="210" width="690" height="480" fill="#c8c5be"/>
+  <rect x="570" y="340" width="410" height="350" fill="#bcb9b1"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Lagom Studio">
+  <rect width="128" height="128" rx="18" fill="#f3f0e9"/>
+  <g fill="#111111" transform="translate(18 9) scale(.92)">
+    <polygon points="0,0 20,0 21,94 0,114"/>
+    <polygon points="33,0 53,0 54,61 33,81"/>
+    <polygon points="57,64 101,64 101,85 36,85"/>
+    <polygon points="25,97 101,98 101,118 3,118"/>
+  </g>
+</svg>

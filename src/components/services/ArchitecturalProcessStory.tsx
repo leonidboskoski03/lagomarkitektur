@@ -134,6 +134,8 @@ const createFrameSequenceRenderer = ({
     let seekRequest = 0;
     let disposed = false;
     let hasDrawn = false;
+    let objectUrl: string | null = null;
+    const sourceRequest = new AbortController();
 
     const resize = () => {
         const cssWidth = Math.max(1, backdropCanvas.clientWidth);
@@ -190,7 +192,13 @@ const createFrameSequenceRenderer = ({
             hasDrawn = true;
             onFirstDraw();
         }
-        video.dataset.processFrame = String(desiredFrame + 1);
+        const renderedFrame = durationSeconds > 0
+            ? clampFrameIndex(
+                (video.currentTime / durationSeconds) * (frameCount - 1),
+                frameCount,
+            )
+            : 0;
+        video.dataset.processFrame = String(renderedFrame + 1);
     }
 
     const seekToDesiredFrame = () => {
@@ -241,6 +249,7 @@ const createFrameSequenceRenderer = ({
 
     const dispose = () => {
         disposed = true;
+        sourceRequest.abort();
         if (seekRequest) window.cancelAnimationFrame(seekRequest);
         video.removeEventListener("loadedmetadata", scheduleSeek);
         video.removeEventListener("loadeddata", handleLoadedData);
@@ -248,6 +257,31 @@ const createFrameSequenceRenderer = ({
         video.pause();
         video.removeAttribute("src");
         video.load();
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+
+    const loadSource = async () => {
+        try {
+            const response = await fetch(sourceUrl, {
+                cache: "force-cache",
+                signal: sourceRequest.signal,
+            });
+            if (!response.ok) {
+                throw new Error(`Unable to load process film (${response.status})`);
+            }
+
+            const sourceBlob = await response.blob();
+            if (disposed) return;
+
+            objectUrl = URL.createObjectURL(sourceBlob);
+            video.src = objectUrl;
+            video.load();
+        } catch {
+            if (disposed || sourceRequest.signal.aborted) return;
+
+            video.src = sourceUrl;
+            video.load();
+        }
     };
 
     video.muted = true;
@@ -256,8 +290,7 @@ const createFrameSequenceRenderer = ({
     video.addEventListener("loadedmetadata", scheduleSeek);
     video.addEventListener("loadeddata", handleLoadedData);
     video.addEventListener("seeked", handleSeeked);
-    video.src = sourceUrl;
-    video.load();
+    void loadSource();
     resize();
     return {requestFrame, resize, dispose};
 };
@@ -368,6 +401,8 @@ export function ArchitecturalProcessStory() {
         isNearSequence,
         prefersReducedMotion,
         processStory.sequence.desktopVideo,
+        processStory.sequence.durationSeconds,
+        processStory.sequence.fps,
         processStory.sequence.frameCount,
         processStory.sequence.mobileVideo,
         tier,

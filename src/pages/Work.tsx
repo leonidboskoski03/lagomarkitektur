@@ -26,7 +26,7 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
   const { language } = useLanguage();
   const copy = siteCopy[language].work;
   const pageRef = useRef<HTMLDivElement | null>(null);
-  const { projects, isLoading } = useWorkProjects();
+  const { projects, isLoading, error } = useWorkProjects();
   const [viewMode, setViewMode] = useState<WorkViewMode>("composition");
   const [isIntroComplete, setIsIntroComplete] = useState(false);
 
@@ -227,6 +227,12 @@ export function Work({ onFooterVisibilityChange }: WorkProps) {
       >
         {isLoading ? (
           <section aria-label={copy.loadingProjects} aria-busy="true" className="min-h-screen" />
+        ) : error ? (
+          <section className="viewport-container flex min-h-[55vh] items-center justify-center text-center">
+            <p role="alert" className="max-w-md text-sm uppercase tracking-[0.16em] text-text-muted">
+              {copy.projectsUnavailable}
+            </p>
+          </section>
         ) : (
           <WorkProjectViews mode={viewMode} projects={projects} />
         )}

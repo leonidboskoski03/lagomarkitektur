@@ -13,7 +13,7 @@ import { Flip } from "gsap/Flip";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motionEases } from "../../lib/motion";
-import type { ProjectGalleryMedia } from "../../types/project";
+import type { ProjectImage } from "../../types/project";
 import styles from "./ProjectDetail.module.css";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { siteCopy } from "../../i18n/siteCopy";
@@ -26,7 +26,7 @@ gsap.registerPlugin(Draggable, Flip, InertiaPlugin, ScrollTrigger, useGSAP);
 
 interface ProjectGalleryProps {
   projectTitle: string;
-  media: ProjectGalleryMedia[];
+  media: ProjectImage[];
 }
 
 export function ProjectGallery({ projectTitle, media }: ProjectGalleryProps) {
@@ -469,7 +469,8 @@ export function ProjectGallery({ projectTitle, media }: ProjectGalleryProps) {
                   <figure>
                     <div className={styles.mediaFrame}>
                       <img
-                        src={item.src}
+                        src={item.url}
+                        srcSet={item.srcSet}
                         alt={item.alt}
                         width={item.width}
                         height={item.height}

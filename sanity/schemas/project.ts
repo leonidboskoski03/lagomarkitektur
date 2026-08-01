@@ -31,6 +31,7 @@ export const project = defineType({
   groups: [
     { name: "overview", title: "Overview", default: true },
     { name: "details", title: "Details" },
+    { name: "showcase", title: "Homepage showcase" },
     { name: "images", title: "Images" },
     { name: "publishing", title: "Publishing" },
     { name: "seo", title: "SEO" },
@@ -118,6 +119,26 @@ export const project = defineType({
       ],
       options: { layout: "tags" },
       validation: (rule) => rule.unique(),
+    }),
+    defineField({
+      name: "showcaseTags",
+      title: "Homepage tags (Swedish + English)",
+      type: "array",
+      description:
+        "The short labels shown at the top left of this project's homepage showcase slide.",
+      group: "showcase",
+      of: [defineArrayMember({ type: "localizedString" })],
+      validation: (rule) => rule.required().min(1).max(4),
+    }),
+    defineField({
+      name: "showcaseDetails",
+      title: "Homepage details (Swedish + English)",
+      type: "array",
+      description:
+        "The year, location, and area shown at the bottom right of this project's homepage showcase slide.",
+      group: "showcase",
+      of: [defineArrayMember({ type: "localizedString" })],
+      validation: (rule) => rule.required().min(1).max(4),
     }),
     defineField({
       name: "featuredImage",

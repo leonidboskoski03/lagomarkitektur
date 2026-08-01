@@ -5,6 +5,7 @@ import {motionEases} from "../../lib/motion";
 import {ClipMaskTextAnimation} from "../animation/ClipMaskTextAnimation";
 import {contactContent, contactOverlayContent} from "../../data/contact";
 import {useLocalizedContent} from "../../i18n/LanguageContext";
+import {ProjectEnquiryForm} from "./ProjectEnquiryForm";
 
 interface ContactOverlayProps {
     isOpen: boolean;
@@ -166,59 +167,23 @@ export function ContactOverlay({isOpen, onClose, triggerRef}: ContactOverlayProp
                         </figure>
                     </div>
 
-                    <form onSubmit={(event) => event.preventDefault()} className="self-end" aria-label={content.formLabel}>
-                        <div className="mb-5 overflow-hidden border-b border-white/25 pb-3">
-                            <div className="contact-row flex justify-between text-xs font-semibold uppercase will-change-transform">
-                                <span>{content.details}</span><span>{content.required}</span>
-                            </div>
-                        </div>
-
-                        <div className="grid gap-5 md:grid-cols-2">
-                            {content.fields.map((field, index) => (
-                                <div key={field.id} className={`overflow-hidden ${index === 2 ? "md:col-span-2" : ""}`}>
-                                    <div className="contact-row will-change-transform">
-                                        <label htmlFor={`contact-${field.id}`} className="mb-2 block text-xs font-medium uppercase">
-                                            {field.label}{field.required && <span aria-hidden="true"> *</span>}
-                                        </label>
-                                        <input
-                                            id={`contact-${field.id}`}
-                                            name={field.id}
-                                            type={field.type}
-                                            autoComplete={field.autoComplete}
-                                            required={field.required}
-                                            placeholder={field.placeholder}
-                                            data-cursor="default"
-                                            className="h-14 w-full rounded-none border border-transparent bg-white px-4 text-sm text-black outline-none transition-colors placeholder:text-black/40 focus:border-white"
-                                        />
-                                    </div>
-                                </div>
-                            ))}
-
-                            <div className="overflow-hidden md:col-span-2">
-                                <div className="contact-row will-change-transform">
-                                    <label htmlFor="contact-message" className="mb-2 block text-xs font-medium uppercase">{content.overview}</label>
-                                    <textarea
-                                        id="contact-message"
-                                        name="message"
-                                        required
-                                        rows={4}
-                                        placeholder={content.overviewPlaceholder}
-                                        data-cursor="default"
-                                        className="w-full resize-none rounded-none border border-transparent bg-white px-4 py-4 text-sm text-black outline-none transition-colors placeholder:text-black/40 focus:border-white"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-6 overflow-hidden">
-                            <div className="contact-row will-change-transform">
-                                <button type="submit" className="group flex w-full items-center justify-between border-t border-white/50 py-4 text-sm font-semibold uppercase">
-                                    <span>{content.send}</span>
-                                    <span className="transition-transform duration-500 group-hover:translate-x-2">→</span>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    <div className="self-end">
+                        <ProjectEnquiryForm
+                            recipient={pageContent.direct.email}
+                            variant="dark"
+                            isActive={isOpen}
+                            quickContent={{
+                                formLabel: content.formLabel,
+                                detailsLabel: content.details,
+                                requiredLabel: content.required,
+                                fields: content.fields,
+                                submitLabel: content.send,
+                                submitNote: content.submitNote,
+                                mailSubject: content.mailSubject,
+                                openingStatus: content.openingStatus,
+                            }}
+                        />
+                    </div>
 
                     <footer className="flex shrink-0 justify-between pb-8 text-[0.62rem] font-semibold uppercase text-white/45 md:pb-10">
                         <span>Lagom Arkitektur</span><span>{content.footer}</span>

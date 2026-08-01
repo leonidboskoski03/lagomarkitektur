@@ -11,6 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
+tmp/process-desktop-deploy*.mp4
+tmp/wrangler-functions-build/
+_worker.bundle
+.wrangler/
 
 # Editor directories and files
 .vscode/*

@@ -10,7 +10,7 @@ export const hasSanityConfig = Boolean(sanityProjectId && sanityProjectId !== "r
 export const sanityClient = createClient({
   projectId: sanityProjectId || "replace-me",
   dataset: sanityDataset,
-  apiVersion: "2026-07-09",
+  apiVersion: "2026-08-01",
   useCdn: true,
   perspective: "published",
 });
@@ -25,8 +25,12 @@ export const workProjectListQuery = `*[_type == "project" && isPublished != fals
   _id,
   title,
   "slug": slug.current,
+  excerpt,
+  description,
   category,
   siteSize,
+  services,
+  location,
   year,
   featuredImage {
     alt,
@@ -177,6 +181,8 @@ export const homeProjectShowcaseQuery = `*[
       "slug": slug.current,
       category,
       services,
+      showcaseTags,
+      showcaseDetails,
       year,
       location,
       siteSize,

@@ -220,8 +220,6 @@ export const AboutIntro = () => {
                     invalidateOnRefresh: true,
                     refreshPriority: 1,
                     onUpdate: (self) => {
-                        console.log(`AboutIntro progress: ${(self.progress * 100).toFixed(1)}%`);
-
                         if (self.progress >= statementExitProgress && !statementExited) {
                             statementExited = true;
                             statementExitTimeline.play();

@@ -3,7 +3,7 @@ import sereneDining from "../assets/images/about/serene-dining.webp";
 import stoneframeEntry from "../assets/images/about/stoneframe-entry.webp";
 import stoneframeFront from "../assets/images/about/stoneframe-front.webp";
 import stoneframeSide from "../assets/images/about/stoneframe-side.webp";
-import founderPortrait from "../assets/LAGOM Arkitektur/viber_image_2023-11-12_14-41-18-196.jpg";
+import founderPortrait from "../assets/images/founder-nikola.jpg";
 import type { Language } from "../i18n/language";
 
 export interface StudioProjectMedia {

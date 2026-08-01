@@ -13,5 +13,6 @@ export const motionEases = {
 
 export const motionEaseCurves = {
     reveal: [0.65, 0, 0.35, 1] as [number, number, number, number],
+    cinematic: [0.58, 0, 0.22, 1] as [number, number, number, number],
     settle: [0.33, 1, 0.68, 1] as [number, number, number, number],
 } as const;

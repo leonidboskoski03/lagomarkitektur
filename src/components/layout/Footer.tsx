@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import { footerContent, type FooterContent, type FooterLinkItem } from "../../data/footer";
 import { cn } from "../../lib/utils";
 import { FooterBackToTop } from "./footer/FooterBackToTop";

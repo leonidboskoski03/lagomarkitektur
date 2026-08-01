@@ -7,6 +7,7 @@ export const siteCopy = {
       menu: "Meny", openMenu: "Öppna meny", close: "Stäng", closeMenu: "Stäng meny",
       getInTouch: "Kontakta oss", siteMenu: "Webbplatsmeny", mainMenu: "Huvudmeny",
       secondaryNavigation: "Sekundär navigering", homeLabel: "Lagom Arkitektur startsida",
+      switchToEnglish: "Byt språk till engelska", switchToSwedish: "Byt språk till svenska",
     },
     home: {
       heroDescriptionLines: ["Hållbar arkitektur präglad av", "balans, mening och syfte."],
@@ -24,6 +25,7 @@ export const siteCopy = {
       titleLines: ["Utvalda", "rumsliga projekt"], mobileTitleLines: ["Utvalda rumsliga", "projekt"],
       description: "Interiörer, bostäder, miljöer inom hotell och restaurang samt lågmälda arkitektoniska koncept, formade genom ljus, proportioner, återhållsam materialitet och omsorgsfullt iscensatt atmosfär.",
       loadingProjects: "Laddar projekt", composition: "Komposition", index: "Index", atlas: "Atlas",
+      projectsUnavailable: "Projekten kunde inte laddas just nu. Försök igen om en stund.",
       changeView: "Byt projektvy", openProject: "Öppna projektet", viewProject: "Se projektet",
       viewPrefix: "Se", viewSelector: "Välj projektvy", selectedView: "projektvy vald",
       viewModes: {
@@ -36,6 +38,7 @@ export const siteCopy = {
       archive: "Arkiv", number: "Nr.", dragImages: "Dra för att utforska projektbilder",
     },
     project: {
+      loading: "Laddar projekt", unavailable: "Projekten kunde inte laddas just nu",
       notFound: "Projektet kunde inte hittas", imageryUnavailable: "Projektbilderna är inte tillgängliga",
       backToWork: "Tillbaka till projekt", projectInformation: "Projektinformation",
       location: "Plats", category: "Typologi", year: "År", services: "Tjänster", area: "Yta",
@@ -66,6 +69,7 @@ export const siteCopy = {
       menu: "Menu", openMenu: "Open menu", close: "Close", closeMenu: "Close menu",
       getInTouch: "Get in touch", siteMenu: "Site menu", mainMenu: "Main menu",
       secondaryNavigation: "Secondary navigation", homeLabel: "Lagom Arkitektur home",
+      switchToEnglish: "Switch language to English", switchToSwedish: "Switch language to Swedish",
     },
     home: {
       heroDescriptionLines: ["Sustainable architecture shaped by", "balance, meaning, and purpose."],
@@ -82,6 +86,7 @@ export const siteCopy = {
       titleLines: ["Selected", "spatial work"], mobileTitleLines: ["Selected spatial", "work"],
       description: "Interiors, residences, hospitality spaces, and quiet architectural concepts shaped through light, proportion, material restraint, and carefully staged atmosphere.",
       loadingProjects: "Loading projects", composition: "Composition", index: "Index", atlas: "Atlas",
+      projectsUnavailable: "Projects are temporarily unavailable. Please try again shortly.",
       changeView: "Change project view", openProject: "Open project", viewProject: "View project",
       viewPrefix: "View", viewSelector: "Choose project view", selectedView: "project view selected",
       viewModes: {
@@ -94,6 +99,7 @@ export const siteCopy = {
       archive: "Archive", number: "No.", dragImages: "Drag to explore project images",
     },
     project: {
+      loading: "Loading project", unavailable: "Projects are temporarily unavailable",
       notFound: "Project not found", imageryUnavailable: "Project imagery is unavailable",
       backToWork: "Back to work", projectInformation: "Project information",
       location: "Location", category: "Typology", year: "Year", services: "Services", area: "Area",

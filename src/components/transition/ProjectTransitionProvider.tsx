@@ -10,8 +10,11 @@ import {
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useNavigate } from "react-router-dom";
-import { getProjectBySlug, getProjectGalleryMedia } from "../../data/projects";
+import { useNavigate } from "react-router";
+import {
+  getCachedSanityProject,
+  loadSanityProject,
+} from "../../data/sanityProjects";
 import { motionEaseCurves, motionEases } from "../../lib/motion";
 import { preloadImage, type ImageLoadProgress } from "../../lib/preloadImage";
 import { PROJECT_CONTENT_REVEAL_EVENT } from "../../lib/revealEvents";
@@ -23,6 +26,7 @@ import {
 import styles from "./ProjectTransition.module.css";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { siteCopy } from "../../i18n/siteCopy";
+import type { Project } from "../../types/project";
 
 gsap.registerPlugin(useGSAP);
 
@@ -206,6 +210,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
   const displayedProgressRef = useRef(0);
   const progressFrameRef = useRef(0);
   const progressResolveRef = useRef<(() => void) | null>(null);
+  const pendingSlugRef = useRef<string | null>(null);
 
   const finishTransition = useCallback((activeTransition: ActiveTransition) => {
     window.dispatchEvent(new CustomEvent(PROJECT_CONTENT_REVEAL_EVENT, {
@@ -230,13 +235,14 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
     }
   }, []);
 
-  const startProjectTransition = useCallback((request: ProjectTransitionRequest) => {
+  const beginProjectTransition = useCallback((
+    project: Project,
+    request: ProjectTransitionRequest,
+  ) => {
     if (activeRef.current) return;
 
-    const project = getProjectBySlug(request.slug, language);
-    const heroMedia = project ? getProjectGalleryMedia(project, language)[0] : undefined;
-
-    if (!project || !heroMedia || reduceMotion) {
+    const heroMedia = project.gallery[0];
+    if (!heroMedia) {
       navigate(`/work/${request.slug}`);
       return;
     }
@@ -247,7 +253,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
     const initialTransition: ActiveTransition = {
       slug: project.slug,
       title: project.title,
-      targetSrc: heroMedia.src,
+      targetSrc: heroMedia.url,
       progress: 0,
       loadFailed: false,
       shouldFocusTitle: request.shouldFocusTitle,
@@ -292,7 +298,7 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
     };
     progressFrameRef.current = window.requestAnimationFrame(advanceVisibleProgress);
 
-    const imagePromise = preloadImage(heroMedia.src, {
+    const imagePromise = preloadImage(heroMedia.url, {
       signal: controller.signal,
       onProgress: (progress: ImageLoadProgress) => {
         actualProgressRef.current = Math.max(actualProgressRef.current, progress.progress);
@@ -317,9 +323,41 @@ export function ProjectTransitionProvider({ children }: { children: ReactNode })
         ? { ...current, stage: "revealing" }
         : current);
     });
-  }, [language, navigate, reduceMotion]);
+  }, [navigate]);
+
+  const startProjectTransition = useCallback((request: ProjectTransitionRequest) => {
+    if (activeRef.current || pendingSlugRef.current) return;
+
+    if (reduceMotion) {
+      navigate(`/work/${request.slug}`);
+      return;
+    }
+
+    const cachedProject = getCachedSanityProject(request.slug, language);
+    if (cachedProject) {
+      beginProjectTransition(cachedProject, request);
+      return;
+    }
+
+    pendingSlugRef.current = request.slug;
+    void loadSanityProject(request.slug, language)
+      .then((project) => {
+        if (pendingSlugRef.current !== request.slug) return;
+        if (project) beginProjectTransition(project, request);
+        else navigate(`/work/${request.slug}`);
+      })
+      .catch(() => {
+        if (pendingSlugRef.current === request.slug) {
+          navigate(`/work/${request.slug}`);
+        }
+      })
+      .finally(() => {
+        if (pendingSlugRef.current === request.slug) pendingSlugRef.current = null;
+      });
+  }, [beginProjectTransition, language, navigate, reduceMotion]);
 
   useEffect(() => () => {
+    pendingSlugRef.current = null;
     abortRef.current?.abort();
     coverResolveRef.current?.();
     window.cancelAnimationFrame(progressFrameRef.current);

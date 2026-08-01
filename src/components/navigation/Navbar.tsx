@@ -16,13 +16,14 @@ import {MenuOverlay} from "./MenuOverlay";
 import {LogoMark} from "../branding/LogoMark";
 import {ClipMaskTextAnimation} from "../animation/ClipMaskTextAnimation";
 import {ContactOverlay} from "../contact/ContactOverlay";
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router";
 import {WorkTransitionLink} from "../transition/WorkTransitionLink";
 import {useWorkTransition} from "../transition/workTransitionContext";
 import {ContactTransitionLink} from "../transition/ContactTransitionLink";
 import {useContactTransition} from "../transition/contactTransitionContext";
 import {useLanguage} from "../../i18n/LanguageContext";
 import {siteCopy} from "../../i18n/siteCopy";
+import {LanguageSwitcher} from "./LanguageSwitcher";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -55,7 +56,7 @@ const handleMouseEnter = () => {
 };
 
 export function Navbar() {
-    const {language} = useLanguage();
+    const {language, setLanguage} = useLanguage();
     const copy = siteCopy[language].navigation;
     const links = [
         {href: "/", label: copy.home},
@@ -81,6 +82,7 @@ export function Navbar() {
     const logoMarkRef = useRef<HTMLAnchorElement | null>(null);
     const buttonRef = useRef<HTMLDivElement | null>(null);
     const primaryMenuButtonRef = useRef<HTMLButtonElement | null>(null);
+    const languageSwitcherRef = useRef<HTMLDivElement | null>(null);
     const secondaryNavRef = useRef<HTMLDivElement | null>(null);
     const menuButtonRef = useRef<HTMLButtonElement | null>(null);
     const contactButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -130,12 +132,23 @@ export function Navbar() {
                 ...navItems,
                 buttonRef.current,
                 primaryMenuButtonRef.current,
+                languageSwitcherRef.current,
             ].filter(Boolean);
 
-            gsap.killTweensOf([primaryNavContentRef.current, ...animatedItems]);
+            gsap.killTweensOf([
+                primaryNavContentRef.current,
+                secondaryNavRef.current,
+                ...animatedItems,
+            ]);
             gsap.set(primaryNavContentRef.current, {
-                clearProps: "transform",
+                yPercent: 0,
                 pointerEvents: "auto",
+            });
+            gsap.set(secondaryNavRef.current, {
+                yPercent: -125,
+                clipPath: "inset(0% 0% 100% 0%)",
+                autoAlpha: 0,
+                pointerEvents: "none",
             });
             gsap.set(animatedItems, {clearProps: "transform"});
         };
@@ -161,9 +174,18 @@ export function Navbar() {
             ...navItems,
             buttonRef.current,
             primaryMenuButtonRef.current,
+            languageSwitcherRef.current,
         ].filter(Boolean);
         const secondaryNavTargets = [secondaryNavRef.current].filter(Boolean);
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const pageLoader = pathname === "/"
+            ? document.querySelector<HTMLElement>("[data-lagom-loader]")
+            : pathname === "/about"
+                ? document.querySelector<HTMLElement>("[data-studio-page-loader]")
+                : null;
+        const pageLoaderIsActive = () => Boolean(
+            pageLoader && window.getComputedStyle(pageLoader).display !== "none"
+        );
         let workViewSuppressesNavbar = false;
 
         if (!reduceMotion) {
@@ -179,6 +201,7 @@ export function Navbar() {
 
         const revealNavbar = contextSafe!(() => {
             if (workViewSuppressesNavbar) return;
+            showNavbar();
             if (reduceMotion) return;
 
             const timeline = gsap.timeline({ defaults: { ease: motionEases.enter } })
@@ -193,7 +216,11 @@ export function Navbar() {
                 stagger: 0.035,
             }, "links");
             timeline.to(
-                [buttonRef.current, primaryMenuButtonRef.current].filter(Boolean),
+                [
+                    buttonRef.current,
+                    primaryMenuButtonRef.current,
+                    languageSwitcherRef.current,
+                ].filter(Boolean),
                 { yPercent: 0, duration: 0.6 },
                 "action",
             );
@@ -213,6 +240,7 @@ export function Navbar() {
 
         const showNavbar = contextSafe!(() => {
             if (workViewSuppressesNavbar) return;
+            hideSecondaryNavbar();
             gsap.to(primaryNavContentRef.current, {
                 yPercent: 0,
                 duration: reduceMotion ? 0 : 0.64,
@@ -225,7 +253,11 @@ export function Navbar() {
         });
 
         const showSecondaryNavbar = contextSafe!(() => {
-            if (workViewSuppressesNavbar) return;
+            if (workViewSuppressesNavbar || pageLoaderIsActive()) {
+                hideSecondaryNavbar();
+                return;
+            }
+            hideNavbar();
             gsap.to(secondaryNavTargets, {
                 yPercent: 0,
                 clipPath: "inset(0% 0% 0% 0%)",
@@ -279,6 +311,7 @@ export function Navbar() {
                 ...currentNavItems,
                 buttonRef.current,
                 primaryMenuButtonRef.current,
+                languageSwitcherRef.current,
             ].filter(Boolean);
 
             gsap.killTweensOf([primaryNavContentRef.current, ...currentAnimatedItems]);
@@ -287,6 +320,7 @@ export function Navbar() {
                 pointerEvents: "auto",
             });
             gsap.set(currentAnimatedItems, {clearProps: "transform"});
+            showNavbar();
         });
 
         const syncWorkViewNavbar = contextSafe!((event: Event) => {
@@ -384,12 +418,7 @@ export function Navbar() {
             }
         }
 
-        const loader = pathname === "/"
-            ? document.querySelector<HTMLElement>("[data-lagom-loader]")
-            : pathname === "/about"
-                ? document.querySelector<HTMLElement>("[data-studio-page-loader]")
-                : null;
-        const loaderIsHidden = !loader || window.getComputedStyle(loader).display === "none";
+        const loaderIsHidden = !pageLoader || !pageLoaderIsActive();
 
         window.addEventListener(NAVBAR_REVEAL_EVENT, revealNavbar);
         window.addEventListener(CONTACT_CONTENT_REVEAL_EVENT, revealContactNavbar);
@@ -409,7 +438,7 @@ export function Navbar() {
                 revealContactNavbar,
             );
         };
-    }, { scope: headerRef, dependencies: [language, pathname], revertOnUpdate: true });
+    }, { scope: headerRef, dependencies: [pathname], revertOnUpdate: true });
 
     return (
       <>
@@ -448,7 +477,7 @@ export function Navbar() {
 
             <nav
                 className={clsx(
-                    "col-start-2 row-start-1 hidden gap-4 justify-self-center md:flex",
+                    "col-start-2 row-start-1 hidden gap-4 justify-self-center lg:flex",
                     usesLightPrimaryNav ? "text-brand-ink" : "text-white",
                 )}
             >
@@ -491,36 +520,49 @@ export function Navbar() {
                 })}
             </nav>
 
-            <div className="col-start-3 row-start-1 hidden justify-self-end overflow-hidden rounded-lg md:block">
-                <div ref={buttonRef} className="will-change-transform">
-                    <GetInTouchButton label={copy.getInTouch} variant={usesLightPrimaryNav ? "dark" : "light"} onClick={(event) => {
-                        contactButtonRef.current = event.currentTarget;
-                        setIsContactOpen(true);
-                    }} />
+            <div className="col-start-3 row-start-1 flex items-center gap-2 justify-self-end">
+                <div className="hidden overflow-hidden rounded-lg lg:block">
+                    <div ref={buttonRef} className="will-change-transform">
+                        <GetInTouchButton label={copy.getInTouch} variant={usesLightPrimaryNav ? "dark" : "light"} onClick={(event) => {
+                            contactButtonRef.current = event.currentTarget;
+                            setIsContactOpen(true);
+                        }} />
+                    </div>
+                </div>
+                <button
+                    ref={primaryMenuButtonRef}
+                    type="button"
+                    onClick={(event) => {
+                        menuButtonRef.current = event.currentTarget;
+                        setIsMenuOpen(true);
+                    }}
+                    className="h-10 rounded-lg bg-[#f4f1ea] px-4 text-sm font-medium leading-none text-black will-change-transform lg:hidden"
+                    data-navbar-mobile-menu
+                    aria-label={copy.openMenu}
+                    aria-expanded={isMenuOpen}
+                    aria-controls="site-menu"
+                >
+                    {copy.menu}
+                </button>
+                <div
+                    ref={languageSwitcherRef}
+                    className="overflow-hidden rounded-lg will-change-transform"
+                >
+                    <LanguageSwitcher
+                        language={language}
+                        onChange={setLanguage}
+                        variant={usesLightPrimaryNav ? "dark" : "light"}
+                        switchToEnglishLabel={copy.switchToEnglish}
+                        switchToSwedishLabel={copy.switchToSwedish}
+                    />
                 </div>
             </div>
-
-            <button
-                ref={primaryMenuButtonRef}
-                type="button"
-                onClick={(event) => {
-                    menuButtonRef.current = event.currentTarget;
-                    setIsMenuOpen(true);
-                }}
-                className="col-start-3 row-start-1 h-10 justify-self-end rounded-lg bg-[#f4f1ea] px-4 text-sm font-medium leading-none text-black will-change-transform md:hidden"
-                data-navbar-mobile-menu
-                aria-label={copy.openMenu}
-                aria-expanded={isMenuOpen}
-                aria-controls="site-menu"
-            >
-                {copy.menu}
-            </button>
           </div>
         </header>
         <div
             ref={secondaryNavRef}
             className={clsx(
-                "fixed top-8 right-[var(--spacing-viewport-gutter)] z-[100] flex items-center gap-2 will-change-[transform,clip-path,opacity] md:top-10",
+                "pointer-events-none invisible fixed top-8 right-[var(--spacing-viewport-gutter)] z-[100] flex items-center gap-2 opacity-0 [clip-path:inset(0%_0%_100%_0%)] will-change-[transform,clip-path,opacity] md:top-10",
             )}
             role="navigation"
             aria-label={copy.secondaryNavigation}

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
 
 interface PageTransitionProps {

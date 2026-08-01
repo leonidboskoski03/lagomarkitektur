@@ -4,7 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motionEases } from "../../lib/motion";
 import { PROJECT_CONTENT_REVEAL_EVENT } from "../../lib/revealEvents";
-import type { Project, ProjectGalleryMedia } from "../../types/project";
+import type { Project, ProjectImage } from "../../types/project";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { siteCopy } from "../../i18n/siteCopy";
 
@@ -12,7 +12,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 interface ProjectHeroProps {
   project: Project;
-  media: ProjectGalleryMedia;
+  media: ProjectImage;
 }
 
 export function ProjectHero({ project, media }: ProjectHeroProps) {
@@ -21,7 +21,7 @@ export function ProjectHero({ project, media }: ProjectHeroProps) {
   const heroRef = useRef<HTMLElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
-  const siteSizeValue = project.credits.match(/[\d.,]+/)?.[0];
+  const siteSizeValue = project.siteSize?.match(/[\d.,]+/)?.[0];
 
   useGSAP(() => {
     const image = imageRef.current;
@@ -109,7 +109,9 @@ export function ProjectHero({ project, media }: ProjectHeroProps) {
       <img
         ref={imageRef}
         data-project-hero-image
-        src={media.src}
+        src={media.url}
+        srcSet={media.srcSet}
+        sizes="100vw"
         alt={media.alt}
         width={media.width}
         height={media.height}

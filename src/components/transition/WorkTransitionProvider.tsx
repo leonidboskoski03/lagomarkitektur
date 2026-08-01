@@ -10,7 +10,7 @@ import {
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import {
   loadWorkProjects,
   type WorkProjectItem,

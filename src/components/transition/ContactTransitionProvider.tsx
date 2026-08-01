@@ -10,7 +10,7 @@ import {
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useReducedMotion } from "motion/react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import { contactContent } from "../../data/contact";
 import { useLocalizedContent } from "../../i18n/LanguageContext";
 import { CONTACT_CONTENT_REVEAL_EVENT } from "../../lib/revealEvents";

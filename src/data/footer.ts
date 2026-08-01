@@ -64,7 +64,7 @@ export const footerContent: Record<Language, FooterContent> = {
       { label: "Kontakt", href: "/contact" },
     ],
     social,
-    legal: [{ label: "Integritetspolicy", href: "https://lagomarkitektur.se/en/legal/", external: true }],
+    legal: [{ label: "Integritetspolicy", href: "/integritet" }],
     labels: {
       footer: "Lagom Arkitektur sidfot", enquiries: "Projektförfrågningar",
       studioInformation: "Studioinformation", studio: "Studio", navigate: "Navigera",
@@ -92,7 +92,7 @@ export const footerContent: Record<Language, FooterContent> = {
       { label: "Contact", href: "/contact" },
     ],
     social,
-    legal: [{ label: "Privacy policy", href: "https://lagomarkitektur.se/en/legal/", external: true }],
+    legal: [{ label: "Privacy notice", href: "/privacy" }],
     labels: {
       footer: "Lagom Arkitektur footer", enquiries: "Project enquiries",
       studioInformation: "Studio information", studio: "Studio", navigate: "Navigate",

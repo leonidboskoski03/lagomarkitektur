@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
 import type { SanityImageSource } from "@sanity/image-url";
-import projectIntroImage from "../assets/images/hero2.avif";
-import {
-  getProjectShowcaseIntro,
-  getProjectShowcaseProjects,
-  type ProjectShowcaseItem,
-} from "../data/projects";
 import { formatProjectArea } from "../lib/projectArea";
 import {
   hasSanityConfig,
@@ -46,8 +40,6 @@ interface SanityProjectImage {
     metadata?: {
       dimensions?: {
         width?: number;
-        height?: number;
-        aspectRatio?: number;
       };
     };
   };
@@ -59,6 +51,8 @@ interface SanityShowcaseProject {
   slug: string;
   category: string;
   services?: string[];
+  showcaseTags?: MaybeLocalizedText[];
+  showcaseDetails?: MaybeLocalizedText[];
   year: string;
   location: MaybeLocalizedText;
   siteSize?: string;
@@ -82,6 +76,18 @@ interface SanityHomeProjectShowcase {
   projects?: SanityShowcaseItem[];
 }
 
+export interface ProjectShowcaseItem {
+  id: string;
+  index: string;
+  slug: string;
+  title: string;
+  tags: string[];
+  properties: string[];
+  image: string;
+  thumbnail: string;
+  secondaryImage: string;
+}
+
 export interface ProjectShowcaseIntro {
   index: string;
   title: string;
@@ -95,17 +101,11 @@ export interface ProjectShowcaseData {
   projects: ProjectShowcaseItem[];
 }
 
-function getLocalShowcase(language: Language): ProjectShowcaseData {
-  const intro = getProjectShowcaseIntro(language);
-  return {
-    intro: {
-      ...intro,
-      tags: [...intro.tags],
-      properties: [...intro.properties],
-      image: projectIntroImage,
-    },
-    projects: getProjectShowcaseProjects(language),
-  };
+interface ProjectShowcaseState {
+  language: Language;
+  showcase: ProjectShowcaseData | null;
+  isLoading: boolean;
+  error: Error | null;
 }
 
 const cachedShowcases = new Map<Language, ProjectShowcaseData>();
@@ -132,7 +132,6 @@ function normalizeShowcase(
   language: Language,
 ): ProjectShowcaseData | null {
   if (!showcase) return null;
-  const localShowcase = getLocalShowcase(language);
 
   const introImage = buildImageUrl(showcase.introBackground, 2400, 86);
   if (!introImage) return null;
@@ -143,29 +142,44 @@ function normalizeShowcase(
       if (!project || project.isPublished === false || !project.slug) return null;
 
       const background =
-        buildImageUrl(item.backgroundImage, 2400, 86) ||
-        buildImageUrl(project.featuredImage, 2400, 86);
+        buildImageUrl(item.backgroundImage, 2400, 86)
+        || buildImageUrl(project.featuredImage, 2400, 86);
       const primaryImage = buildImageUrl(item.primaryImage, 1200, 84);
       const secondaryImage = buildImageUrl(item.secondaryImage, 1200, 84);
 
       if (!background || !primaryImage || !secondaryImage) return null;
 
       const area = formatProjectArea(project.siteSize);
+      const title = resolveLocalizedText(project.title, language);
+      if (!title) return null;
+
+      const configuredTags = (project.showcaseTags || [])
+        .map((tag) => resolveLocalizedText(tag, language))
+        .filter(Boolean);
+      const configuredDetails = (project.showcaseDetails || [])
+        .map((detail) => resolveLocalizedText(detail, language))
+        .filter(Boolean);
 
       return {
         id: item._key || project._id,
         index: String(index + 1).padStart(2, "0"),
         slug: project.slug,
-        title: resolveLocalizedText(project.title, language),
-        tags: [
-          translateCanonicalValue(project.category, language),
-          translateCanonicalValue(project.services?.[0] || "Design", language),
-          project.year,
-          "Lagom",
-        ],
-        properties: [project.year, resolveLocalizedText(project.location, language), area].filter(
-          (value): value is string => Boolean(value),
-        ),
+        title,
+        tags: configuredTags.length > 0
+          ? configuredTags
+          : [
+            translateCanonicalValue(project.category, language),
+            translateCanonicalValue(project.services?.[0] || "Design", language),
+            project.year,
+            "Lagom",
+          ],
+        properties: configuredDetails.length > 0
+          ? configuredDetails
+          : [
+            project.year,
+            resolveLocalizedText(project.location, language),
+            area,
+          ].filter((value): value is string => Boolean(value)),
         image: background,
         thumbnail: primaryImage,
         secondaryImage,
@@ -175,21 +189,23 @@ function normalizeShowcase(
 
   if (projects.length !== 5) return null;
 
-  const introTags = showcase.introTags
-    ?.map((item) => resolveLocalizedText(item, language))
+  const introTags = (showcase.introTags || [])
+    .map((item) => resolveLocalizedText(item, language))
     .filter(Boolean);
-  const introProperties = showcase.introProperties
-    ?.map((item) => resolveLocalizedText(item, language))
+  const introProperties = (showcase.introProperties || [])
+    .map((item) => resolveLocalizedText(item, language))
     .filter(Boolean);
 
   return {
     intro: {
       index: "00",
-      title: resolveLocalizedText(showcase.introTitle, language, localShowcase.intro.title),
-      tags: introTags?.length ? introTags : localShowcase.intro.tags,
-      properties: introProperties?.length
-        ? introProperties
-        : localShowcase.intro.properties,
+      title: resolveLocalizedText(
+        showcase.introTitle,
+        language,
+        language === "sv" ? "Utvalda arbeten" : "Selected work",
+      ),
+      tags: introTags,
+      properties: introProperties,
       image: introImage,
     },
     projects,
@@ -202,62 +218,64 @@ export function loadProjectShowcase(language: Language): Promise<ProjectShowcase
   if (cached) return Promise.resolve(cached);
   if (pending) return pending;
 
-  const showcasePromise = (async () => {
-    try {
-      if (!hasSanityConfig) throw new Error("Sanity is not configured");
+  const promise = (async () => {
+    if (!hasSanityConfig) throw new Error("Sanity is not configured");
 
-      const result = await sanityClient.fetch<SanityHomeProjectShowcase | null>(
-        homeProjectShowcaseQuery,
-        {},
-      );
-      const normalized = normalizeShowcase(result, language);
-
-      if (!normalized) {
-        throw new Error("Sanity returned an incomplete Selected Work document");
-      }
-
-      return normalized;
-    } catch (error) {
-      console.warn(
-        "Using the local Selected Work content because Sanity could not be loaded.",
-        error,
-      );
-      return getLocalShowcase(language);
+    const result = await sanityClient.fetch<SanityHomeProjectShowcase | null>(
+      homeProjectShowcaseQuery,
+      {},
+    );
+    const normalized = normalizeShowcase(result, language);
+    if (!normalized) {
+      throw new Error("Sanity returned an incomplete Selected Work document");
     }
-  })()
-    .then((showcase) => {
-      cachedShowcases.set(language, showcase);
-      return showcase;
-    })
-    .finally(() => {
-      showcasePromises.delete(language);
-    });
 
-  showcasePromises.set(language, showcasePromise);
-  return showcasePromise;
+    cachedShowcases.set(language, normalized);
+    return normalized;
+  })().finally(() => {
+    showcasePromises.delete(language);
+  });
+
+  showcasePromises.set(language, promise);
+  return promise;
 }
 
 export function useProjectShowcase() {
   const { language } = useLanguage();
-  const [state, setState] = useState(() => ({
+  const [state, setState] = useState<ProjectShowcaseState>(() => ({
     language,
-    showcase: cachedShowcases.get(language) || getLocalShowcase(language),
+    showcase: cachedShowcases.get(language) || null,
+    isLoading: !cachedShowcases.has(language),
+    error: null,
   }));
-  const showcase = state.language === language
-    ? state.showcase
-    : cachedShowcases.get(language) || getLocalShowcase(language);
+  const currentState = state.language === language
+    ? state
+    : {
+      language,
+      showcase: cachedShowcases.get(language) || null,
+      isLoading: !cachedShowcases.has(language),
+      error: null,
+    };
 
   useEffect(() => {
     let active = true;
 
-    void loadProjectShowcase(language).then((loadedShowcase) => {
-      if (active) setState({ language, showcase: loadedShowcase });
-    });
+    void loadProjectShowcase(language)
+      .then((showcase) => {
+        if (active) setState({ language, showcase, isLoading: false, error: null });
+      })
+      .catch((error: unknown) => {
+        if (!active) return;
+        const normalizedError = error instanceof Error
+          ? error
+          : new Error("Could not load Selected Work");
+        setState({ language, showcase: null, isLoading: false, error: normalizedError });
+      });
 
     return () => {
       active = false;
     };
   }, [language]);
 
-  return showcase;
+  return currentState;
 }

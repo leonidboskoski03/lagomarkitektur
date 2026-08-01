@@ -1,4 +1,4 @@
-import {useRef} from "react";
+import {useEffect, useMemo, useRef} from "react";
 import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
@@ -94,15 +94,27 @@ export const ProjectSection = () => {
     const copy = siteCopy[language].home;
     const sectionRef = useRef<HTMLElement | null>(null);
     const stageRef = useRef<HTMLDivElement | null>(null);
-    const {
-        intro: projectShowcaseIntro,
-        projects: projectShowcaseProjects,
-    } = useProjectShowcase();
+    const {showcase, isLoading, error} = useProjectShowcase();
+    const projectShowcaseIntro = showcase?.intro;
+    const projectShowcaseProjects = useMemo(
+        () => showcase?.projects ?? [],
+        [showcase?.projects],
+    );
+
+    useEffect(() => {
+        if (!projectShowcaseIntro || projectShowcaseProjects.length !== 5) return;
+
+        const refreshFrame = window.requestAnimationFrame(() => {
+            ScrollTrigger.refresh();
+        });
+
+        return () => window.cancelAnimationFrame(refreshFrame);
+    }, [projectShowcaseIntro, projectShowcaseProjects]);
 
     useGSAP(() => {
         const section = sectionRef.current;
         const stage = stageRef.current;
-        if (!section || !stage) return;
+        if (!section || !stage || !projectShowcaseIntro || projectShowcaseProjects.length !== 5) return;
 
         const backgrounds = gsap.utils.toArray<HTMLElement>("[data-project-bg]", stage);
         const cards = gsap.utils.toArray<HTMLElement>("[data-project-card]", stage);
@@ -598,6 +610,29 @@ export const ProjectSection = () => {
         revertOnUpdate: true,
     });
 
+    if (!projectShowcaseIntro || projectShowcaseProjects.length !== 5) {
+        return (
+            <section
+                ref={sectionRef}
+                data-project-section
+                aria-busy={isLoading}
+                aria-live="polite"
+                className="relative z-[3] -mt-[100vh] flex h-screen items-center justify-center bg-[#d8d6d0] px-6 text-center text-text-primary"
+                style={{backgroundImage: "url('/project-placeholder.svg')", backgroundSize: "cover"}}
+            >
+                <p className="max-w-md text-sm uppercase tracking-[0.16em] text-text-muted">
+                    {error
+                        ? language === "sv"
+                            ? "Utvalda projekt kunde inte laddas just nu."
+                            : "Selected projects are temporarily unavailable."
+                        : language === "sv"
+                            ? "Laddar utvalda projekt"
+                            : "Loading selected projects"}
+                </p>
+            </section>
+        );
+    }
+
     return (
         <section
             ref={sectionRef}
@@ -635,8 +670,8 @@ export const ProjectSection = () => {
                     </div>
                 </div>
 
-                <div className="pointer-events-none absolute left-6 right-6 top-10 z-30 flex items-start justify-between gap-8 text-[clamp(0.82rem,3.8vw,1.5rem)] font-normal leading-none tracking-[-0.045em] text-white/94 md:left-10 md:right-10">
-                    <div className="relative h-[1.08em] min-w-0 flex-1 overflow-hidden">
+                <div className="pointer-events-none absolute inset-0 z-30 text-[clamp(0.82rem,3.8vw,1.5rem)] font-normal leading-none tracking-[-0.045em] text-white/94">
+                    <div className="absolute left-6 right-6 top-10 h-[1.08em] overflow-hidden md:left-10 md:right-10 lg:right-auto lg:w-[46vw]">
                         <span data-project-intro-tags className="absolute left-0 top-0 block max-w-full whitespace-nowrap">
                             {renderMetaItems(projectShowcaseIntro.tags)}
                         </span>
@@ -646,12 +681,12 @@ export const ProjectSection = () => {
                             </span>
                         ))}
                     </div>
-                    <div className="relative hidden h-[1.08em] min-w-[38vw] overflow-hidden text-right md:block">
-                        <span data-project-intro-properties className="absolute right-0 top-0 block whitespace-nowrap">
+                    <div className="absolute bottom-10 left-6 right-6 h-[1.08em] overflow-hidden text-left md:left-10 md:right-10 lg:bottom-auto lg:left-auto lg:top-10 lg:w-[46vw] lg:text-right">
+                        <span data-project-intro-properties className="absolute left-0 top-0 block max-w-full whitespace-nowrap lg:left-auto lg:right-0">
                             {renderMetaItems(projectShowcaseIntro.properties)}
                         </span>
                         {projectShowcaseProjects.map((project) => (
-                            <span key={project.id} data-project-properties className="absolute right-0 top-0 block whitespace-nowrap">
+                            <span key={project.id} data-project-properties className="absolute left-0 top-0 block max-w-full whitespace-nowrap lg:left-auto lg:right-0">
                                 {renderMetaItems(project.properties)}
                             </span>
                         ))}

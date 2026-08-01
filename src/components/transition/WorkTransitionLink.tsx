@@ -2,7 +2,7 @@ import {
   forwardRef,
   type MouseEvent,
 } from "react";
-import { Link, type LinkProps } from "react-router-dom";
+import { Link, type LinkProps } from "react-router";
 import { useWorkTransition } from "./workTransitionContext";
 
 interface WorkTransitionLinkProps extends Omit<LinkProps, "to"> {

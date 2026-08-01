@@ -16,7 +16,7 @@ export interface ProcessStoryLedgerItem { title: string; description: string }
 
 const sequenceMedia = {
   poster: publicAsset("process-story/poster.webp"),
-  mobileBasePath: publicAsset("process-story-v2/mobile"),
+  mobileBasePath: publicAsset("process-story-stills"),
   desktopVideo: publicAsset("process-story-v2/process-desktop.mp4"),
   mobileVideo: publicAsset("process-story-v2/process-mobile.mp4"),
   frameCount: 979,

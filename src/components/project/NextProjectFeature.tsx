@@ -4,7 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { motionEases } from "../../lib/motion";
-import type { Project, ProjectGalleryMedia } from "../../types/project";
+import type { Project, ProjectImage } from "../../types/project";
 import styles from "./ProjectDetail.module.css";
 import { ProjectTransitionLink } from "../transition/ProjectTransitionLink";
 import { useLanguage } from "../../i18n/LanguageContext";
@@ -14,7 +14,7 @@ gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
 interface NextProjectFeatureProps {
   project: Project;
-  media: ProjectGalleryMedia;
+  media: ProjectImage;
 }
 
 export function NextProjectFeature({ project, media }: NextProjectFeatureProps) {
@@ -151,7 +151,7 @@ export function NextProjectFeature({ project, media }: NextProjectFeatureProps) 
       image.removeEventListener("load", revealImage);
       trigger.kill();
     };
-  }, { scope: sectionRef, dependencies: [project.slug, media.previewSrc] });
+  }, { scope: sectionRef, dependencies: [project.slug, media.previewUrl] });
 
   return (
     <ProjectTransitionLink
@@ -170,7 +170,9 @@ export function NextProjectFeature({ project, media }: NextProjectFeatureProps) 
         >
           <img
             data-next-project-image
-            src={media.previewSrc}
+            src={media.previewUrl}
+            srcSet={media.previewSrcSet}
+            sizes={media.previewSizes}
             alt=""
             width={Math.min(media.width, 640)}
             height={Math.round(Math.min(media.width, 640) / media.aspectRatio)}

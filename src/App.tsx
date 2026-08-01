@@ -1,14 +1,10 @@
-import {useEffect, useState} from "react";
-import {BrowserRouter, Navigate, Route, Routes, useLocation} from "react-router-dom";
+import {lazy, Suspense, useEffect, useState} from "react";
+import {BrowserRouter, Navigate, Route, Routes, useLocation} from "react-router";
 import {Navbar} from "./components/navigation/Navbar.tsx";
 import {Hero} from "./pages/Hero.tsx";
 import {AboutIntro} from "./pages/AboutIntro.tsx";
 import {ProjectSection} from "./pages/ProjectSection.tsx";
 import {ServicesSection} from "./pages/ServicesSection.tsx";
-import {Work} from "./pages/Work.tsx";
-import {ProjectDetail} from "./pages/ProjectDetail.tsx";
-import {About} from "./pages/About.tsx";
-import {Contact} from "./pages/Contact.tsx";
 
 import Lenis from "lenis";
 import gsap from "gsap";
@@ -28,6 +24,12 @@ import {
     type SmoothScrollRequest,
 } from "./lib/smoothScroll";
 import {LanguageProvider} from "./i18n/LanguageProvider.tsx";
+
+const Work = lazy(() => import("./pages/Work.tsx").then((module) => ({default: module.Work})));
+const ProjectDetail = lazy(() => import("./pages/ProjectDetail.tsx").then((module) => ({default: module.ProjectDetail})));
+const About = lazy(() => import("./pages/About.tsx").then((module) => ({default: module.About})));
+const Contact = lazy(() => import("./pages/Contact.tsx").then((module) => ({default: module.Contact})));
+const Privacy = lazy(() => import("./pages/Privacy.tsx").then((module) => ({default: module.Privacy})));
 
 function HomepageLoader() {
     const {pathname} = useLocation();
@@ -102,6 +104,7 @@ function AppContent() {
                 <HomepageLoader/>
                 <Navbar/>
                 <main id="main-content">
+                  <Suspense fallback={<div className="min-h-screen bg-bg" aria-busy="true" />}>
                     <Routes>
                         <Route
                             path="/"
@@ -129,8 +132,11 @@ function AppContent() {
                         <Route path="/om-oss" element={<Navigate to="/about" replace/>}/>
                         <Route path="/contact" element={<Contact/>}/>
                         <Route path="/kontakt" element={<Contact/>}/>
+                        <Route path="/privacy" element={<Privacy/>}/>
+                        <Route path="/integritet" element={<Privacy/>}/>
                         <Route path="/process" element={<ServicesSection/>}/>
                     </Routes>
+                  </Suspense>
                 </main>
                 {isFooterVisible ? (
                     <Footer

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import type { FooterLinkItem } from "../../../data/footer";
 import { ClipMaskTextAnimation } from "../../animation/ClipMaskTextAnimation";
 import { cn } from "../../../lib/utils";

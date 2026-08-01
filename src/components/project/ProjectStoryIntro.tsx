@@ -20,7 +20,7 @@ export function ProjectStoryIntro({ project }: ProjectStoryIntroProps) {
   const { language } = useLanguage();
   const copy = siteCopy[language].project;
   const sectionRef = useRef<HTMLElement | null>(null);
-  const projectArea = formatProjectArea(project.credits);
+  const projectArea = formatProjectArea(project.siteSize);
   const serviceRows = Array.from(
     { length: Math.ceil(project.services.length / 2) },
     (_, rowIndex) => project.services.slice(rowIndex * 2, rowIndex * 2 + 2),

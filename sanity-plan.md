@@ -1,117 +1,58 @@
-# Sanity Integration Plan
+# Sanity production architecture
 
-Sanity is scaffolded for Lagom Arkitektur. The Work page and the homepage
-Selected Work section read published content from Sanity, with
-`src/data/projects.ts` retained as a safe fallback when the dataset is empty or
-unavailable.
+Sanity is the only production source for project text and imagery. The website
+does not bundle a local project catalogue or project-image fallback.
+
+## Runtime flow
+
+- The Work page loads every published project through `workProjectListQuery`.
+- Individual `/work/:slug` pages use the same cached project response.
+- Project transitions use the same Sanity CDN hero URL.
+- Homepage Selected Work uses the `homeProjectShowcase` singleton.
+- Sanity's image CDN creates full, preview and atlas image variants on demand.
+- A small neutral SVG is the only local project placeholder.
+
+If Sanity is unavailable, the website shows a localized loading/error state. It
+does not silently serve stale project content.
 
 ## Scripts
 
 - `npm run cms` starts Sanity Studio.
 - `npm run cms:deploy` deploys the Studio.
-- `npm run cms:import-projects` imports the 11 local projects and uploads images.
 - `npm run cms:seed-home-showcase` creates the initial five-project homepage
   showcase without overwriting an existing client-edited document.
-- `npm run cms:migrate-public-project-ids` repairs legacy dotted project IDs,
-  updates homepage references, verifies the replacements, and removes only the
-  superseded private duplicates.
-- Copy `.env.example` to `.env.local` and replace `replace-me` with the real
-  project ID before starting Studio.
+- `npm run cms:migrate-public-project-ids` repairs legacy dotted project IDs.
+- `npm run cms:repair-gallery-keys` repairs missing gallery item keys.
 
-## Importing Existing Projects
+## Required environment
 
-The importer lives at `scripts/import-sanity-projects.mjs`.
+```env
+VITE_SANITY_PROJECT_ID=jrg1q51h
+VITE_SANITY_DATASET=production
+SANITY_STUDIO_PROJECT_ID=jrg1q51h
+SANITY_STUDIO_DATASET=production
+```
 
-1. In Sanity Manage, create an API token with write permissions.
-2. Add it to `.env.local`:
+Published reads use the public CDN and require no secret token. Studio writes
+and one-time content migrations require `SANITY_AUTH_TOKEN` in `.env.local`.
+Never place that token in a `VITE_*` variable.
 
-   ```env
-   SANITY_AUTH_TOKEN=your_write_token
-   ```
+## Current content migration note
 
-3. Check the local folders/image paths:
+The published dataset contains all 11 projects and their image galleries. The
+documents were created before localized field objects were introduced, so some
+project text and image alt values are still stored in the legacy English-only
+shape. The frontend reads both legacy and localized shapes safely. A one-time
+authenticated migration is still required to place Swedish and English copy in
+the current schema before Swedish project content can be managed entirely in
+Studio.
 
-   ```bash
-   npm run cms:import-projects -- --dry-run
-   ```
+## Client editing workflow
 
-4. Import all 11 projects and upload images:
-
-   ```bash
-   npm run cms:import-projects
-   ```
-
-5. Create the initial Homepage — Selected work document:
-
-   ```bash
-   npm run cms:seed-home-showcase
-   ```
-
-The importer uses stable document IDs like `project.quiet-mid-modernity`, so
-running it again updates the same project documents instead of creating
-duplicates.
-
-## Client Editing Workflow
-
-1. Open Studio.
-2. Choose `Projects`.
-3. Click `Create new`.
-4. Fill the `Overview` tab first: title, slug, short intro, and project story.
-5. Fill `Details`: year, location, category, site size, and services.
-6. Upload the original rendered images in `Images`. The CMS stores originals;
-   the website can request high-quality display versions from Sanity.
-7. Use `Publishing` to control display order and whether the project is visible
-   on the website.
-8. Use `SEO` only when the default title/description needs manual control.
-
-## Homepage Selected Work
-
-The `homeProjectShowcase` singleton controls the complete homepage project
-showcase while preserving the layout and GSAP animation in code.
-
-- The intro frame controls its title, background image, and two metadata lines.
-- The client chooses exactly five published project references and drags them
-  into display order.
-- Project title, category, service, year, location, area, and URL come from the
-  referenced project document.
-- Each selected project has an optional full-screen background override and two
-  required clip-path animation images.
-- Duplicate project references are rejected.
-- The seed command uses the first five ordered published projects and does not
-  overwrite a singleton that already exists.
-
-## Project Document
-
-| Field | Type |
-| --- | --- |
-| title | string |
-| slug | slug |
-| excerpt | text |
-| description | block content |
-| year | string |
-| location | string |
-| category | string |
-| siteSize | string |
-| services | array(string) |
-| featuredImage | image with alt |
-| gallery | array(image with alt) |
-| credits | block content |
-| thumbnailImage | image with alt |
-| seoTitle | string |
-| seoDescription | text |
-| isPublished | boolean |
-| orderRank | number |
-
-## Singleton Documents
-
-- `siteSettings`
-
-## Migration Strategy
-
-1. Create the Sanity project and dataset.
-2. Add env values in `.env.local`.
-3. Run `npm run cms`.
-4. Create project entries using the folder content as the source.
-5. Verify the Work page and Homepage — Selected work section against the
-   published dataset.
-6. Keep the local project content available as a fault-tolerant fallback.
+1. Open Studio and choose `Projects`.
+2. Fill both Swedish and English values in `Overview`.
+3. Complete year, location, category, area and services in `Details`.
+4. Upload originals in `Images`; the website requests optimized CDN variants.
+5. Add localized alt text to every image.
+6. Use `Publishing` to control order and visibility.
+7. Use `Homepage — Selected work` to choose exactly five homepage projects.

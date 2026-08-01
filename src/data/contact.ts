@@ -9,11 +9,11 @@ import {
 import type { Language } from "../i18n/language";
 
 export interface ContactFormField {
-  id: "name" | "email" | "location" | "message";
+  id: "name" | "email" | "phone" | "location" | "message";
   label: string;
   placeholder: string;
   autoComplete: string;
-  type: "text" | "email";
+  type: "text" | "email" | "tel";
   required: boolean;
   multiline?: boolean;
   wide?: boolean;
@@ -79,8 +79,8 @@ export const contactContent: Record<Language, ContactPageContent> = {
         { id: "location", label: "Projektets plats", placeholder: "Stad / land", autoComplete: "off", type: "text", required: false, wide: true },
         { id: "message", label: "Projektöversikt", placeholder: "Berätta om rummet, omfattningen och den ungefärliga tidsramen.", autoComplete: "off", type: "text", required: true, multiline: true, wide: true },
       ],
-      submitLabel: "Fortsätt i e-post", submitNote: "Öppnar ett förberett meddelande i ert vanliga e-postprogram.",
-      mailSubject: "Ny projektförfrågan", openingStatus: "Öppnar ett förberett e-postmeddelande…",
+      submitLabel: "Skicka förfrågan", submitNote: "Era uppgifter skickas säkert till Lagom Arkitektur.",
+      mailSubject: "Ny projektförfrågan", openingStatus: "Skickar projektförfrågan…",
       bodyLabels: { name: "Namn", email: "E-post", location: "Projektets plats", notSpecified: "Ej angivet" },
     },
     social: { label: "Följ oss", links: [
@@ -119,8 +119,8 @@ export const contactContent: Record<Language, ContactPageContent> = {
         { id: "location", label: "Project location", placeholder: "City / country", autoComplete: "off", type: "text", required: false, wide: true },
         { id: "message", label: "Project overview", placeholder: "Tell us about the space, scope, and approximate timeframe.", autoComplete: "off", type: "text", required: true, multiline: true, wide: true },
       ],
-      submitLabel: "Continue in email", submitNote: "Opens a prepared message in your default email app.",
-      mailSubject: "New project enquiry", openingStatus: "Opening a prepared email…",
+      submitLabel: "Send enquiry", submitNote: "Your details are sent securely to Lagom Arkitektur.",
+      mailSubject: "New project enquiry", openingStatus: "Sending project enquiry…",
       bodyLabels: { name: "Name", email: "Email", location: "Project location", notSpecified: "Not specified" },
     },
     social: { label: "Elsewhere", links: [
@@ -137,10 +137,13 @@ export const contactOverlayContent = {
     imageAlt: "Lagom bostadsarkitektur", formLabel: "Formulär för projektförfrågan",
     details: "Era uppgifter", required: "Obligatoriskt *", overview: "Projektöversikt *",
     overviewPlaceholder: "Plats, omfattning, tidsram och annat vi bör känna till", send: "Skicka förfrågan", footer: "Studioförfrågningar",
+    submitNote: "Era uppgifter skickas säkert till Lagom Arkitektur.",
+    mailSubject: "Ny projektförfrågan", openingStatus: "Skickar projektförfrågan…",
     fields: [
       { id: "name", label: "Namn", type: "text", autoComplete: "name", required: true, placeholder: "Ert namn" },
       { id: "email", label: "E-postadress", type: "email", autoComplete: "email", required: true, placeholder: "ni@studio.se" },
       { id: "phone", label: "Telefonnummer", type: "tel", autoComplete: "tel", required: false, placeholder: "+46 00 000 00 00" },
+      { id: "message", label: "Projektöversikt", type: "text", autoComplete: "off", required: true, placeholder: "Plats, omfattning, tidsram och annat vi bör känna till", multiline: true, wide: true },
     ],
   },
   en: {
@@ -149,10 +152,13 @@ export const contactOverlayContent = {
     imageAlt: "Lagom residential architecture", formLabel: "Project enquiry form",
     details: "Your details", required: "Required *", overview: "Project overview *",
     overviewPlaceholder: "Location, scope, timeline and anything else we should know", send: "Send enquiry", footer: "Studio enquiries",
+    submitNote: "Your details are sent securely to Lagom Arkitektur.",
+    mailSubject: "New project enquiry", openingStatus: "Sending project enquiry…",
     fields: [
       { id: "name", label: "Name", type: "text", autoComplete: "name", required: true, placeholder: "Your name" },
       { id: "email", label: "Email address", type: "email", autoComplete: "email", required: true, placeholder: "you@studio.com" },
       { id: "phone", label: "Phone number", type: "tel", autoComplete: "tel", required: false, placeholder: "+46 00 000 00 00" },
+      { id: "message", label: "Project overview", type: "text", autoComplete: "off", required: true, placeholder: "Location, scope, timeline and anything else we should know", multiline: true, wide: true },
     ],
   },
 } as const satisfies Record<Language, object>;

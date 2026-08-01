@@ -1,5 +1,9 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 
+function localizedListItem(key: string, sv: string, en: string) {
+  return { _key: key, _type: "localizedString", sv, en };
+}
+
 function hasDuplicateProjectReferences(value: unknown) {
   if (!Array.isArray(value)) return false;
 
@@ -39,9 +43,9 @@ export const homeProjectShowcase = defineType({
       description: "Displayed at the top left, separated by centered dots.",
       of: [defineArrayMember({ type: "localizedString" })],
       initialValue: [
-        { sv: "Lagom Arkitektur", en: "Lagom Arkitektur" },
-        { sv: "Utvalda projekt", en: "Selected work" },
-        { sv: "Rumslig portfolio", en: "Spatial portfolio" },
+        localizedListItem("studio", "Lagom Arkitektur", "Lagom Arkitektur"),
+        localizedListItem("selection", "Utvalda projekt", "Selected work"),
+        localizedListItem("portfolio", "Rumslig portfolio", "Spatial portfolio"),
       ],
       validation: (rule) => rule.required().min(1).max(4),
     }),
@@ -53,9 +57,9 @@ export const homeProjectShowcase = defineType({
       description: "Disciplines and year range displayed at the top right.",
       of: [defineArrayMember({ type: "localizedString" })],
       initialValue: [
-        { sv: "Arkitektur", en: "Architecture" },
-        { sv: "Interiörer", en: "Interiors" },
-        { sv: "2022–2026", en: "2022-2026" },
+        localizedListItem("architecture", "Arkitektur", "Architecture"),
+        localizedListItem("interiors", "Interiörer", "Interiors"),
+        localizedListItem("years", "2022–2026", "2022-2026"),
       ],
       validation: (rule) => rule.required().min(1).max(4),
     }),
