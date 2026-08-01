@@ -61,7 +61,7 @@ export const contactContent: Record<Language, ContactPageContent> = {
       scrollLabel: "Starta en förfrågan", directoryLabel: "Lagom Arkitektur kontaktuppgifter",
     },
     enquiry: {
-      eyebrow: "Projektförfrågningar / Malmö", titleLines: ["Berätta om", "ert projekt."],
+      eyebrow: "Projektförfrågningar / Malmö", titleLines: ["Berätta om", "ditt projekt."],
       introduction: "Vi arbetar med ett omsorgsfullt urval av projekt så att varje uppdrag får den tid, tydlighet och närvaro det förtjänar.",
     },
     direct: {

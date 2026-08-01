@@ -39,7 +39,7 @@ export const processStory: Record<Language, ProcessStoryContent> = {
   sv: {
     intro: {
       eyebrow: "Så arbetar vi", headingLead: "Ett samtal", headingTail: "blir en plats.",
-      description: "Följ en sammanhängande arkitektonisk process – från den första stilla briefen till ett hem löst i struktur, material och ljus.",
+      description: "Följ en sammanhängande arkitektonisk process – från den första briefen till ett hem grundat på struktur, material och ljus.",
       scrollPrompt: "Scrolla för att gå in i processen",
     },
     ledger: [

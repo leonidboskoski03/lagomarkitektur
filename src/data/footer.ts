@@ -52,7 +52,7 @@ export const footerContent: Record<Language, FooterContent> = {
     },
     studio: {
       name: "Lagom Arkitektur",
-      description: "Interiörarkitektur, visualisering och rumslig rådgivning formade med tydlighet, värme och återhållsamhet.",
+      description: "Interiörarkitektur, visualisering och rumslig rådgivning formade med tydlighet, värme och balans.",
       disciplines: "Arkitektur · Interiörer · Visualisering · Rådgivning",
       location: "Malmö, Sverige",
       email: CONTACT_EMAIL,

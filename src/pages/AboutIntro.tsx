@@ -252,7 +252,11 @@ export const AboutIntro = () => {
     }, {scope: sectionRef});
 
     return (
-        <section ref={sectionRef} className="relative z-[2] min-h-screen bg-white text-[#171717] -mt-[100vh]">
+        <section
+            ref={sectionRef}
+            data-about-intro
+            className="relative z-[2] min-h-screen bg-white text-[#171717] -mt-[100vh]"
+        >
             <div ref={stageRef} className="relative h-dvh w-full overflow-hidden [perspective:1600px] [perspective-origin:50%_48%]">
                 <div data-about-heading-block className="absolute left-[var(--spacing-viewport-gutter)] top-[7vh] z-10 max-w-[58rem] md:top-[8vh]">
                     <h2 className="text-[clamp(1.85rem,3.6vw,4.1rem)] font-medium leading-[1.02] tracking-[-0.055em]">

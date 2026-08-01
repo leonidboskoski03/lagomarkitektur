@@ -36,7 +36,7 @@ export const services: Record<Language, ServiceItem[]> = {
     },
     {
       id: "visualization", index: "03", title: "3D-visualisering",
-      description: "Realistiska 3D-visualiseringar som ger koncept tydlig form, förbättrar kommunikationen i projektet och stödjer trygga beslut före genomförandet.",
+      description: "Realistiska 3D-visualiseringar som ger konceptet tydlig form, förbättrar kommunikationen i projektet och stödjer trygga beslut före genomförandet.",
       image: serviceMedia.visualization,
       imageAlt: "Arbetsstation för arkitekturvisualisering med en neutral interiörbild",
     },

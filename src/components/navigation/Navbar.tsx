@@ -84,6 +84,7 @@ export function Navbar() {
     const primaryMenuButtonRef = useRef<HTMLButtonElement | null>(null);
     const languageSwitcherRef = useRef<HTMLDivElement | null>(null);
     const secondaryNavRef = useRef<HTMLDivElement | null>(null);
+    const secondaryContactRef = useRef<HTMLDivElement | null>(null);
     const menuButtonRef = useRef<HTMLButtonElement | null>(null);
     const contactButtonRef = useRef<HTMLButtonElement | null>(null);
     const closeMenu = useCallback(() => setIsMenuOpen(false), []);
@@ -177,6 +178,7 @@ export function Navbar() {
             languageSwitcherRef.current,
         ].filter(Boolean);
         const secondaryNavTargets = [secondaryNavRef.current].filter(Boolean);
+        const secondaryContact = secondaryContactRef.current;
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         const pageLoader = pathname === "/"
             ? document.querySelector<HTMLElement>("[data-lagom-loader]")
@@ -187,6 +189,8 @@ export function Navbar() {
             pageLoader && window.getComputedStyle(pageLoader).display !== "none"
         );
         let workViewSuppressesNavbar = false;
+        let mobileAboutSuppressesContact = false;
+        const mobileNavMedia = gsap.matchMedia();
 
         if (!reduceMotion) {
             gsap.set(animatedItems, {clearProps: "transform"});
@@ -267,6 +271,17 @@ export function Navbar() {
                 ease: motionEases.enter,
                 overwrite: "auto",
             });
+            if (secondaryContact) {
+                gsap.to(secondaryContact, {
+                    autoAlpha: mobileAboutSuppressesContact ? 0 : 1,
+                    pointerEvents: mobileAboutSuppressesContact ? "none" : "auto",
+                    duration: reduceMotion ? 0 : 0.4,
+                    ease: mobileAboutSuppressesContact
+                        ? motionEases.depart
+                        : motionEases.enter,
+                    overwrite: "auto",
+                });
+            }
         });
 
         const hideSecondaryNavbar = contextSafe!(() => {
@@ -362,7 +377,54 @@ export function Navbar() {
         });
 
         if (usesProcessNavSequence) {
+            const aboutIntro = document.querySelector("[data-about-intro]");
             const projectSection = document.querySelector("[data-project-section]");
+
+            if (aboutIntro) {
+                mobileNavMedia.add("(max-width: 767px)", () => {
+                    const suppressContact = () => {
+                        mobileAboutSuppressesContact = true;
+                        if (!secondaryContact) return;
+                        gsap.to(secondaryContact, {
+                            autoAlpha: 0,
+                            pointerEvents: "none",
+                            duration: reduceMotion ? 0 : 0.38,
+                            ease: motionEases.depart,
+                            overwrite: "auto",
+                        });
+                    };
+                    const restoreContact = () => {
+                        mobileAboutSuppressesContact = false;
+                        if (!secondaryContact) return;
+                        gsap.to(secondaryContact, {
+                            autoAlpha: 1,
+                            pointerEvents: "auto",
+                            duration: reduceMotion ? 0 : 0.42,
+                            ease: motionEases.enter,
+                            overwrite: "auto",
+                        });
+                    };
+
+                    const aboutNavTrigger = ScrollTrigger.create({
+                        trigger: aboutIntro,
+                        start: "top 12%",
+                        end: "bottom top",
+                        invalidateOnRefresh: true,
+                        onEnter: suppressContact,
+                        onEnterBack: suppressContact,
+                        onLeave: restoreContact,
+                        onLeaveBack: restoreContact,
+                    });
+
+                    return () => {
+                        aboutNavTrigger.kill();
+                        mobileAboutSuppressesContact = false;
+                        if (secondaryContact) {
+                            gsap.set(secondaryContact, {clearProps: "opacity,visibility,pointerEvents"});
+                        }
+                    };
+                });
+            }
 
             if (projectSection) {
                 ScrollTrigger.create({
@@ -427,6 +489,7 @@ export function Navbar() {
         if (loaderIsHidden) revealNavbar();
 
         return () => {
+            mobileNavMedia.revert();
             window.removeEventListener(NAVBAR_REVEAL_EVENT, revealNavbar);
             window.removeEventListener(WORK_CONTENT_REVEAL_EVENT, revealWorkNavbar);
             window.removeEventListener(
@@ -567,7 +630,7 @@ export function Navbar() {
             role="navigation"
             aria-label={copy.secondaryNavigation}
         >
-            <div>
+            <div ref={secondaryContactRef}>
                 <GetInTouchButton label={copy.getInTouch} variant="dark" onClick={(event) => {
                     contactButtonRef.current = event.currentTarget;
                     setIsContactOpen(true);

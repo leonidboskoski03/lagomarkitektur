@@ -23,7 +23,7 @@ export const siteCopy = {
     work: {
       eyebrow: "Lagom Arkitektur / Projekt",
       titleLines: ["Utvalda", "rumsliga projekt"], mobileTitleLines: ["Utvalda rumsliga", "projekt"],
-      description: "Interiörer, bostäder, miljöer inom hotell och restaurang samt lågmälda arkitektoniska koncept, formade genom ljus, proportioner, återhållsam materialitet och omsorgsfullt iscensatt atmosfär.",
+      description: "Interiörer, bostäder, miljöer inom hotell och restaurang samt lågmälda arkitektoniska koncept, formade genom ljus, proportioner, balanserade materialval och omsorgsfullt iscensatt atmosfär.",
       loadingProjects: "Laddar projekt", composition: "Komposition", index: "Index", atlas: "Atlas",
       projectsUnavailable: "Projekten kunde inte laddas just nu. Försök igen om en stund.",
       changeView: "Byt projektvy", openProject: "Öppna projektet", viewProject: "Se projektet",
